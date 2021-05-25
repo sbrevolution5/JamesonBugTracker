@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -9,28 +10,49 @@ namespace JamesonBugTracker.Models
     public class Ticket
     {
         public int Id { get; set; }
+        
+        [Required]
+        [StringLength(50)]
         public string Title { get; set; }
+        
+        [Required]
         public string Description { get; set; }
+        
+        [DataType(DataType.Date)]
         public DateTimeOffset Created { get; set; }
-        public DateTimeOffset Updated { get; set; }
-        public DateTimeOffset Archived { get; set; }
+
+        [DataType(DataType.Date)]
+        public DateTimeOffset? Updated { get; set; }
+
+        [DisplayName("Date Archived")]
+        [DataType(DataType.Date)]
+        public DateTimeOffset? ArchiveDate { get; set; }
+        
+        public bool Archived { get; set; }
+        
         [DisplayName("Project")]
         public int ProjectId { get; set; }
+        
         [DisplayName("Ticket Priority")]
         public int TicketPriorityId { get; set; }
+        
         [DisplayName("Ticket Status")]
         public int TicketStatusId { get; set; }
+        
         [DisplayName("Ticket Type")]
         public int TicketTypeId { get; set; }
+        
         [DisplayName("Owner User")]
         public string OwnerUserId { get; set; }
+        
         [DisplayName("Developer User")]
         public string DeveloperUserId { get; set; }
+        
         // Navigational
-        public List<TicketAttachment> Attachments { get; set; } = new List<TicketAttachment>();
-        public List<TicketComment> Comments { get; set; } = new List<TicketComment>();
-        public List<TicketHistory> History { get; set; } = new List<TicketHistory>();
-        public List<Notification> Notification { get; set; } = new List<Notification>();
+        public ICollection<TicketAttachment> Attachments { get; set; } = new HashSet<TicketAttachment>();
+        public ICollection<TicketComment> Comments { get; set; } = new HashSet<TicketComment>();
+        public ICollection<TicketHistory> History { get; set; } = new HashSet<TicketHistory>();
+        public ICollection<Notification> Notification { get; set; } = new HashSet<Notification>();
         public virtual Project Project { get; set; }
         public virtual TicketPriority TicketPriority { get; set; }
         public virtual TicketStatus TicketStatus { get; set; }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -18,6 +19,8 @@ namespace JamesonBugTracker.Models
         public string OldValue { get; set; }
         [DisplayName("New Value")]
         public string NewValue { get; set; }
+        
+        [DataType(DataType.Date)]
         public DateTimeOffset Created { get; set; }
         public string Description { get; set; }
         public virtual Ticket Ticket { get; set; }
