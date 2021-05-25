@@ -42,17 +42,17 @@ namespace JamesonBugTracker.Models
         [DisplayName("Ticket Type")]
         public int TicketTypeId { get; set; }
         
-        [DisplayName("Owner User")]
+        [DisplayName("Ticket Owner")]
         public string OwnerUserId { get; set; }
         
-        [DisplayName("Developer User")]
+        [DisplayName("Ticket Developer")]
         public string DeveloperUserId { get; set; }
         
         // Navigational
-        public ICollection<TicketAttachment> Attachments { get; set; } = new HashSet<TicketAttachment>();
-        public ICollection<TicketComment> Comments { get; set; } = new HashSet<TicketComment>();
-        public ICollection<TicketHistory> History { get; set; } = new HashSet<TicketHistory>();
-        public ICollection<Notification> Notification { get; set; } = new HashSet<Notification>();
+        public virtual ICollection<TicketAttachment> Attachments { get; set; } = new HashSet<TicketAttachment>();
+        public virtual ICollection<TicketComment> Comments { get; set; } = new HashSet<TicketComment>();
+        public virtual ICollection<TicketHistory> History { get; set; } = new HashSet<TicketHistory>();
+        public virtual ICollection<Notification> Notification { get; set; } = new HashSet<Notification>();
         public virtual Project Project { get; set; }
         public virtual TicketPriority TicketPriority { get; set; }
         public virtual TicketStatus TicketStatus { get; set; }

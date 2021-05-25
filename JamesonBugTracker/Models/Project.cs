@@ -14,24 +14,42 @@ namespace JamesonBugTracker.Models
         public int Id { get; set; }
         [DisplayName("Company")]
         public int CompanyId { get; set; }
+        [Required]
+        [StringLength(50)]
+        [DisplayName("Project Name")]
         public string Name { get; set; }
+
+        [Required]
+        [DisplayName("Project Description")]
         public string Description { get; set; }
+        
         [DisplayName("Start Date")]
+        [DataType(DataType.Date)]
         public DateTimeOffset StartDate { get; set; }
+        
         [DisplayName("Start Date")]
+        [DataType(DataType.Date)]
         public DateTimeOffset EndDate { get; set; }
+        
+        [DisplayName("Date Archived")]
+        [DataType(DataType.Date)]
+        public DateTimeOffset? ArchiveDate { get; set; }
+
+        public bool Archived { get; set; }
+
         //Image properties
         [NotMapped]
         [DataType(DataType.Upload)]
-        public IFormFile FormFile { get; set; }
-        public string FileName { get; set; }
-        public byte[] FileData { get; set; }
+        //[MaxFileSize(1024*1024)]
+        //[AllowedExtensions(".jpg",".png" )]
+        public IFormFile ImageFormFile { get; set; }
+        public string ImageFileName { get; set; }
+        public byte[] ImageFileData { get; set; }
         [DisplayName("File Extension")]
-        public string FileContentType { get; set; }
+        public string ImageFileContentType { get; set; }
         public int MyProperty { get; set; }
         [DisplayName("Project Priority")]
         public int ProjectPriorityId { get; set; }
-        public bool Archived { get; set; }
         public virtual ProjectPriority ProjectPriority { get; set; }
         public virtual Company Company { get; set; }
         public virtual List<BTUser> Members { get; set; }

@@ -12,18 +12,31 @@ namespace JamesonBugTracker.Models
     public class Company
     {
         public int Id { get; set; }
+        [Required]
+        [StringLength(50)]
+        [DisplayName("Company Name")]
         public string Name { get; set; }
+
+        [DisplayName("Company Description")]
         public string Description { get; set; }
+
         //image/company logo
         [NotMapped]
         [DataType(DataType.Upload)]
-        public IFormFile FormFile { get; set; }
-        public string FileName { get; set; }
-        public byte[] FileData { get; set; }
-        [DisplayName("File Extension")]
-        public string FileContentType { get; set; }
-        public List<Project> Projects { get; set; }
-        public List<BTUser> Members { get; set; }
+        //[MaxFileSize(1024*1024)]
+        //[AllowedExtensions(".jpg",".png" )]
+        public IFormFile ImageFormFile { get; set; }
+        
+        [DisplayName("File Name")]
+        public string ImageFileName { get; set; }
+        public byte[] ImageFileData { get; set; }
 
+        [DisplayName("File Extension")]
+        public string ImageFileContentType { get; set; }
+
+        // Navigation 
+        public virtual ICollection<Project> Projects { get; set; }
+        public virtual ICollection<BTUser> Members { get; set; }
+        public virtual ICollection<Invite> Invites { get; set; }
     }
 }

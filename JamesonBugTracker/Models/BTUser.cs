@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -26,5 +27,22 @@ namespace JamesonBugTracker.Models
             get
             { return $"{FirstName} + {LastName}"; }
         }
+        [NotMapped]
+        [DataType(DataType.Upload)]
+        //[MaxFileSize(1024*1024)]
+        //[AllowedExtensions(".jpg",".png" )]
+        public IFormFile AvatarFormFile { get; set; }
+        
+        [DisplayName("File Name")]
+        public string AvatarFileName { get; set; }
+        public byte[] AvatarFileData { get; set; }
+
+        [DisplayName("File Extension")]
+        public string AvatarFileContentType { get; set; }
+        public int? CompanyId { get; set; }
+
+        //Navigational
+        public virtual Company Company { get; set; }
+        public virtual ICollection<Project> Projects { get; set; }
     }
 }
