@@ -47,7 +47,7 @@ namespace JamesonBugTracker.Models
         public byte[] ImageFileData { get; set; }
         [DisplayName("File Extension")]
         public string ImageFileContentType { get; set; }
-        public int MyProperty { get; set; }
+
         [DisplayName("Project Priority")]
         public int ProjectPriorityId { get; set; }
         public virtual ProjectPriority ProjectPriority { get; set; }

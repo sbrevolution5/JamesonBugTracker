@@ -10,9 +10,8 @@ namespace JamesonBugTracker.Models
     {
         public int Id { get; set; }
 
-        [DisplayName("Project")]
-        public int ProjectId { get; set; }
+        
         public string Priority { get; set; }
-        public virtual Project Project { get; set; }
+        
     }
 }
