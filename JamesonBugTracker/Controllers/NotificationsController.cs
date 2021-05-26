@@ -22,7 +22,7 @@ namespace JamesonBugTracker.Controllers
         // GET: Notifications
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Notifications.Include(n => n.Recipient).Include(n => n.Ticket);
+            var applicationDbContext = _context.Notification.Include(n => n.Recipient).Include(n => n.Ticket);
             return View(await applicationDbContext.ToListAsync());
         }
 
@@ -34,7 +34,7 @@ namespace JamesonBugTracker.Controllers
                 return NotFound();
             }
 
-            var notification = await _context.Notifications
+            var notification = await _context.Notification
                 .Include(n => n.Recipient)
                 .Include(n => n.Ticket)
                 .FirstOrDefaultAsync(m => m.Id == id);
@@ -50,7 +50,7 @@ namespace JamesonBugTracker.Controllers
         public IActionResult Create()
         {
             ViewData["RecipientId"] = new SelectList(_context.Users, "Id", "Id");
-            ViewData["TicketId"] = new SelectList(_context.Tickets, "Id", "Description");
+            ViewData["TicketId"] = new SelectList(_context.Ticket, "Id", "Description");
             return View();
         }
 
@@ -68,7 +68,7 @@ namespace JamesonBugTracker.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["RecipientId"] = new SelectList(_context.Users, "Id", "Id", notification.RecipientId);
-            ViewData["TicketId"] = new SelectList(_context.Tickets, "Id", "Description", notification.TicketId);
+            ViewData["TicketId"] = new SelectList(_context.Ticket, "Id", "Description", notification.TicketId);
             return View(notification);
         }
 
@@ -80,13 +80,13 @@ namespace JamesonBugTracker.Controllers
                 return NotFound();
             }
 
-            var notification = await _context.Notifications.FindAsync(id);
+            var notification = await _context.Notification.FindAsync(id);
             if (notification == null)
             {
                 return NotFound();
             }
             ViewData["RecipientId"] = new SelectList(_context.Users, "Id", "Id", notification.RecipientId);
-            ViewData["TicketId"] = new SelectList(_context.Tickets, "Id", "Description", notification.TicketId);
+            ViewData["TicketId"] = new SelectList(_context.Ticket, "Id", "Description", notification.TicketId);
             return View(notification);
         }
 
@@ -123,7 +123,7 @@ namespace JamesonBugTracker.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["RecipientId"] = new SelectList(_context.Users, "Id", "Id", notification.RecipientId);
-            ViewData["TicketId"] = new SelectList(_context.Tickets, "Id", "Description", notification.TicketId);
+            ViewData["TicketId"] = new SelectList(_context.Ticket, "Id", "Description", notification.TicketId);
             return View(notification);
         }
 
@@ -135,7 +135,7 @@ namespace JamesonBugTracker.Controllers
                 return NotFound();
             }
 
-            var notification = await _context.Notifications
+            var notification = await _context.Notification
                 .Include(n => n.Recipient)
                 .Include(n => n.Ticket)
                 .FirstOrDefaultAsync(m => m.Id == id);
@@ -152,15 +152,15 @@ namespace JamesonBugTracker.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var notification = await _context.Notifications.FindAsync(id);
-            _context.Notifications.Remove(notification);
+            var notification = await _context.Notification.FindAsync(id);
+            _context.Notification.Remove(notification);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool NotificationExists(int id)
         {
-            return _context.Notifications.Any(e => e.Id == id);
+            return _context.Notification.Any(e => e.Id == id);
         }
     }
 }

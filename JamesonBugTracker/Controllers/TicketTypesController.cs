@@ -22,7 +22,7 @@ namespace JamesonBugTracker.Controllers
         // GET: TicketTypes
         public async Task<IActionResult> Index()
         {
-            return View(await _context.TicketTypes.ToListAsync());
+            return View(await _context.TicketType.ToListAsync());
         }
 
         // GET: TicketTypes/Details/5
@@ -33,7 +33,7 @@ namespace JamesonBugTracker.Controllers
                 return NotFound();
             }
 
-            var ticketType = await _context.TicketTypes
+            var ticketType = await _context.TicketType
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (ticketType == null)
             {
@@ -73,7 +73,7 @@ namespace JamesonBugTracker.Controllers
                 return NotFound();
             }
 
-            var ticketType = await _context.TicketTypes.FindAsync(id);
+            var ticketType = await _context.TicketType.FindAsync(id);
             if (ticketType == null)
             {
                 return NotFound();
@@ -124,7 +124,7 @@ namespace JamesonBugTracker.Controllers
                 return NotFound();
             }
 
-            var ticketType = await _context.TicketTypes
+            var ticketType = await _context.TicketType
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (ticketType == null)
             {
@@ -139,15 +139,15 @@ namespace JamesonBugTracker.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var ticketType = await _context.TicketTypes.FindAsync(id);
-            _context.TicketTypes.Remove(ticketType);
+            var ticketType = await _context.TicketType.FindAsync(id);
+            _context.TicketType.Remove(ticketType);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool TicketTypeExists(int id)
         {
-            return _context.TicketTypes.Any(e => e.Id == id);
+            return _context.TicketType.Any(e => e.Id == id);
         }
     }
 }

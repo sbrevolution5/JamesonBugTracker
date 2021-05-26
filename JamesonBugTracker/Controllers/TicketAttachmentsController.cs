@@ -22,7 +22,7 @@ namespace JamesonBugTracker.Controllers
         // GET: TicketAttachments
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.TicketAttachments.Include(t => t.Ticket).Include(t => t.User);
+            var applicationDbContext = _context.TicketAttachment.Include(t => t.Ticket).Include(t => t.User);
             return View(await applicationDbContext.ToListAsync());
         }
 
@@ -34,7 +34,7 @@ namespace JamesonBugTracker.Controllers
                 return NotFound();
             }
 
-            var ticketAttachment = await _context.TicketAttachments
+            var ticketAttachment = await _context.TicketAttachment
                 .Include(t => t.Ticket)
                 .Include(t => t.User)
                 .FirstOrDefaultAsync(m => m.Id == id);
@@ -49,7 +49,7 @@ namespace JamesonBugTracker.Controllers
         // GET: TicketAttachments/Create
         public IActionResult Create()
         {
-            ViewData["TicketId"] = new SelectList(_context.Tickets, "Id", "Description");
+            ViewData["TicketId"] = new SelectList(_context.Ticket, "Id", "Description");
             ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id");
             return View();
         }
@@ -67,7 +67,7 @@ namespace JamesonBugTracker.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["TicketId"] = new SelectList(_context.Tickets, "Id", "Description", ticketAttachment.TicketId);
+            ViewData["TicketId"] = new SelectList(_context.Ticket, "Id", "Description", ticketAttachment.TicketId);
             ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", ticketAttachment.UserId);
             return View(ticketAttachment);
         }
@@ -80,12 +80,12 @@ namespace JamesonBugTracker.Controllers
                 return NotFound();
             }
 
-            var ticketAttachment = await _context.TicketAttachments.FindAsync(id);
+            var ticketAttachment = await _context.TicketAttachment.FindAsync(id);
             if (ticketAttachment == null)
             {
                 return NotFound();
             }
-            ViewData["TicketId"] = new SelectList(_context.Tickets, "Id", "Description", ticketAttachment.TicketId);
+            ViewData["TicketId"] = new SelectList(_context.Ticket, "Id", "Description", ticketAttachment.TicketId);
             ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", ticketAttachment.UserId);
             return View(ticketAttachment);
         }
@@ -122,7 +122,7 @@ namespace JamesonBugTracker.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["TicketId"] = new SelectList(_context.Tickets, "Id", "Description", ticketAttachment.TicketId);
+            ViewData["TicketId"] = new SelectList(_context.Ticket, "Id", "Description", ticketAttachment.TicketId);
             ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", ticketAttachment.UserId);
             return View(ticketAttachment);
         }
@@ -135,7 +135,7 @@ namespace JamesonBugTracker.Controllers
                 return NotFound();
             }
 
-            var ticketAttachment = await _context.TicketAttachments
+            var ticketAttachment = await _context.TicketAttachment
                 .Include(t => t.Ticket)
                 .Include(t => t.User)
                 .FirstOrDefaultAsync(m => m.Id == id);
@@ -152,15 +152,15 @@ namespace JamesonBugTracker.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var ticketAttachment = await _context.TicketAttachments.FindAsync(id);
-            _context.TicketAttachments.Remove(ticketAttachment);
+            var ticketAttachment = await _context.TicketAttachment.FindAsync(id);
+            _context.TicketAttachment.Remove(ticketAttachment);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool TicketAttachmentExists(int id)
         {
-            return _context.TicketAttachments.Any(e => e.Id == id);
+            return _context.TicketAttachment.Any(e => e.Id == id);
         }
     }
 }
