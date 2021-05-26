@@ -22,7 +22,7 @@ namespace JamesonBugTracker.Controllers
         // GET: Projects
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Projects.Include(p => p.Company).Include(p => p.ProjectPriority);
+            var applicationDbContext = _context.Project.Include(p => p.Company).Include(p => p.ProjectPriority);
             return View(await applicationDbContext.ToListAsync());
         }
 
@@ -34,7 +34,7 @@ namespace JamesonBugTracker.Controllers
                 return NotFound();
             }
 
-            var project = await _context.Projects
+            var project = await _context.Project
                 .Include(p => p.Company)
                 .Include(p => p.ProjectPriority)
                 .FirstOrDefaultAsync(m => m.Id == id);
@@ -80,7 +80,7 @@ namespace JamesonBugTracker.Controllers
                 return NotFound();
             }
 
-            var project = await _context.Projects.FindAsync(id);
+            var project = await _context.Project.FindAsync(id);
             if (project == null)
             {
                 return NotFound();
@@ -135,7 +135,7 @@ namespace JamesonBugTracker.Controllers
                 return NotFound();
             }
 
-            var project = await _context.Projects
+            var project = await _context.Project
                 .Include(p => p.Company)
                 .Include(p => p.ProjectPriority)
                 .FirstOrDefaultAsync(m => m.Id == id);
@@ -152,15 +152,15 @@ namespace JamesonBugTracker.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var project = await _context.Projects.FindAsync(id);
-            _context.Projects.Remove(project);
+            var project = await _context.Project.FindAsync(id);
+            _context.Project.Remove(project);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool ProjectExists(int id)
         {
-            return _context.Projects.Any(e => e.Id == id);
+            return _context.Project.Any(e => e.Id == id);
         }
     }
 }

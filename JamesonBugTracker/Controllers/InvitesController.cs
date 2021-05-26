@@ -22,7 +22,7 @@ namespace JamesonBugTracker.Controllers
         // GET: Invites
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Invites.Include(i => i.Company).Include(i => i.Project).Include(i => i.Recipient).Include(i => i.Sender);
+            var applicationDbContext = _context.Invite.Include(i => i.Company).Include(i => i.Project).Include(i => i.Recipient).Include(i => i.Sender);
             return View(await applicationDbContext.ToListAsync());
         }
 
@@ -34,7 +34,7 @@ namespace JamesonBugTracker.Controllers
                 return NotFound();
             }
 
-            var invite = await _context.Invites
+            var invite = await _context.Invite
                 .Include(i => i.Company)
                 .Include(i => i.Project)
                 .Include(i => i.Recipient)
@@ -86,7 +86,7 @@ namespace JamesonBugTracker.Controllers
                 return NotFound();
             }
 
-            var invite = await _context.Invites.FindAsync(id);
+            var invite = await _context.Invite.FindAsync(id);
             if (invite == null)
             {
                 return NotFound();
@@ -145,7 +145,7 @@ namespace JamesonBugTracker.Controllers
                 return NotFound();
             }
 
-            var invite = await _context.Invites
+            var invite = await _context.Invite
                 .Include(i => i.Company)
                 .Include(i => i.Project)
                 .Include(i => i.Recipient)
@@ -164,15 +164,15 @@ namespace JamesonBugTracker.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var invite = await _context.Invites.FindAsync(id);
-            _context.Invites.Remove(invite);
+            var invite = await _context.Invite.FindAsync(id);
+            _context.Invite.Remove(invite);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool InviteExists(int id)
         {
-            return _context.Invites.Any(e => e.Id == id);
+            return _context.Invite.Any(e => e.Id == id);
         }
     }
 }

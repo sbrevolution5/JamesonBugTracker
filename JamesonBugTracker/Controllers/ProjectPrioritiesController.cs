@@ -22,7 +22,7 @@ namespace JamesonBugTracker.Controllers
         // GET: ProjectPriorities
         public async Task<IActionResult> Index()
         {
-            return View(await _context.ProjectPriorities.ToListAsync());
+            return View(await _context.ProjectPriority.ToListAsync());
         }
 
         // GET: ProjectPriorities/Details/5
@@ -33,7 +33,7 @@ namespace JamesonBugTracker.Controllers
                 return NotFound();
             }
 
-            var projectPriority = await _context.ProjectPriorities
+            var projectPriority = await _context.ProjectPriority
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (projectPriority == null)
             {
@@ -73,7 +73,7 @@ namespace JamesonBugTracker.Controllers
                 return NotFound();
             }
 
-            var projectPriority = await _context.ProjectPriorities.FindAsync(id);
+            var projectPriority = await _context.ProjectPriority.FindAsync(id);
             if (projectPriority == null)
             {
                 return NotFound();
@@ -124,7 +124,7 @@ namespace JamesonBugTracker.Controllers
                 return NotFound();
             }
 
-            var projectPriority = await _context.ProjectPriorities
+            var projectPriority = await _context.ProjectPriority
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (projectPriority == null)
             {
@@ -139,15 +139,15 @@ namespace JamesonBugTracker.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var projectPriority = await _context.ProjectPriorities.FindAsync(id);
-            _context.ProjectPriorities.Remove(projectPriority);
+            var projectPriority = await _context.ProjectPriority.FindAsync(id);
+            _context.ProjectPriority.Remove(projectPriority);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool ProjectPriorityExists(int id)
         {
-            return _context.ProjectPriorities.Any(e => e.Id == id);
+            return _context.ProjectPriority.Any(e => e.Id == id);
         }
     }
 }
