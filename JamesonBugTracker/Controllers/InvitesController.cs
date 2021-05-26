@@ -51,8 +51,8 @@ namespace JamesonBugTracker.Controllers
         // GET: Invites/Create
         public IActionResult Create()
         {
-            ViewData["CompanyId"] = new SelectList(_context.Companies, "Id", "Name");
-            ViewData["ProjectId"] = new SelectList(_context.Projects, "Id", "Description");
+            ViewData["CompanyId"] = new SelectList(_context.Company, "Id", "Name");
+            ViewData["ProjectId"] = new SelectList(_context.Project, "Id", "Description");
             ViewData["RecipientId"] = new SelectList(_context.Users, "Id", "Id");
             ViewData["SenderId"] = new SelectList(_context.Users, "Id", "Id");
             return View();
@@ -71,8 +71,8 @@ namespace JamesonBugTracker.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CompanyId"] = new SelectList(_context.Companies, "Id", "Name", invite.CompanyId);
-            ViewData["ProjectId"] = new SelectList(_context.Projects, "Id", "Description", invite.ProjectId);
+            ViewData["CompanyId"] = new SelectList(_context.Company, "Id", "Name", invite.CompanyId);
+            ViewData["ProjectId"] = new SelectList(_context.Project, "Id", "Description", invite.ProjectId);
             ViewData["RecipientId"] = new SelectList(_context.Users, "Id", "Id", invite.RecipientId);
             ViewData["SenderId"] = new SelectList(_context.Users, "Id", "Id", invite.SenderId);
             return View(invite);
@@ -91,8 +91,8 @@ namespace JamesonBugTracker.Controllers
             {
                 return NotFound();
             }
-            ViewData["CompanyId"] = new SelectList(_context.Companies, "Id", "Name", invite.CompanyId);
-            ViewData["ProjectId"] = new SelectList(_context.Projects, "Id", "Description", invite.ProjectId);
+            ViewData["CompanyId"] = new SelectList(_context.Company, "Id", "Name", invite.CompanyId);
+            ViewData["ProjectId"] = new SelectList(_context.Project, "Id", "Description", invite.ProjectId);
             ViewData["RecipientId"] = new SelectList(_context.Users, "Id", "Id", invite.RecipientId);
             ViewData["SenderId"] = new SelectList(_context.Users, "Id", "Id", invite.SenderId);
             return View(invite);
@@ -130,8 +130,8 @@ namespace JamesonBugTracker.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CompanyId"] = new SelectList(_context.Companies, "Id", "Name", invite.CompanyId);
-            ViewData["ProjectId"] = new SelectList(_context.Projects, "Id", "Description", invite.ProjectId);
+            ViewData["CompanyId"] = new SelectList(_context.Company, "Id", "Name", invite.CompanyId);
+            ViewData["ProjectId"] = new SelectList(_context.Project, "Id", "Description", invite.ProjectId);
             ViewData["RecipientId"] = new SelectList(_context.Users, "Id", "Id", invite.RecipientId);
             ViewData["SenderId"] = new SelectList(_context.Users, "Id", "Id", invite.SenderId);
             return View(invite);
