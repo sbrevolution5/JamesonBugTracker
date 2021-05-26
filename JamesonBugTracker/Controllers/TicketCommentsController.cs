@@ -22,7 +22,7 @@ namespace JamesonBugTracker.Controllers
         // GET: TicketComments
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.TicketComment.Include(t => t.Ticket).Include(t => t.User);
+            var applicationDbContext = _context.TicketComments.Include(t => t.Ticket).Include(t => t.User);
             return View(await applicationDbContext.ToListAsync());
         }
 
@@ -34,7 +34,7 @@ namespace JamesonBugTracker.Controllers
                 return NotFound();
             }
 
-            var ticketComment = await _context.TicketComment
+            var ticketComment = await _context.TicketComments
                 .Include(t => t.Ticket)
                 .Include(t => t.User)
                 .FirstOrDefaultAsync(m => m.Id == id);
@@ -49,7 +49,7 @@ namespace JamesonBugTracker.Controllers
         // GET: TicketComments/Create
         public IActionResult Create()
         {
-            ViewData["TicketId"] = new SelectList(_context.Ticket, "Id", "Description");
+            ViewData["TicketId"] = new SelectList(_context.Tickets, "Id", "Description");
             ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id");
             return View();
         }
@@ -67,7 +67,7 @@ namespace JamesonBugTracker.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["TicketId"] = new SelectList(_context.Ticket, "Id", "Description", ticketComment.TicketId);
+            ViewData["TicketId"] = new SelectList(_context.Tickets, "Id", "Description", ticketComment.TicketId);
             ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", ticketComment.UserId);
             return View(ticketComment);
         }
@@ -80,12 +80,12 @@ namespace JamesonBugTracker.Controllers
                 return NotFound();
             }
 
-            var ticketComment = await _context.TicketComment.FindAsync(id);
+            var ticketComment = await _context.TicketComments.FindAsync(id);
             if (ticketComment == null)
             {
                 return NotFound();
             }
-            ViewData["TicketId"] = new SelectList(_context.Ticket, "Id", "Description", ticketComment.TicketId);
+            ViewData["TicketId"] = new SelectList(_context.Tickets, "Id", "Description", ticketComment.TicketId);
             ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", ticketComment.UserId);
             return View(ticketComment);
         }
@@ -122,7 +122,7 @@ namespace JamesonBugTracker.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["TicketId"] = new SelectList(_context.Ticket, "Id", "Description", ticketComment.TicketId);
+            ViewData["TicketId"] = new SelectList(_context.Tickets, "Id", "Description", ticketComment.TicketId);
             ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", ticketComment.UserId);
             return View(ticketComment);
         }
@@ -135,7 +135,7 @@ namespace JamesonBugTracker.Controllers
                 return NotFound();
             }
 
-            var ticketComment = await _context.TicketComment
+            var ticketComment = await _context.TicketComments
                 .Include(t => t.Ticket)
                 .Include(t => t.User)
                 .FirstOrDefaultAsync(m => m.Id == id);
@@ -152,15 +152,15 @@ namespace JamesonBugTracker.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var ticketComment = await _context.TicketComment.FindAsync(id);
-            _context.TicketComment.Remove(ticketComment);
+            var ticketComment = await _context.TicketComments.FindAsync(id);
+            _context.TicketComments.Remove(ticketComment);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool TicketCommentExists(int id)
         {
-            return _context.TicketComment.Any(e => e.Id == id);
+            return _context.TicketComments.Any(e => e.Id == id);
         }
     }
 }

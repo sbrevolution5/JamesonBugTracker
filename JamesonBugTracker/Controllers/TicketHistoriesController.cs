@@ -22,7 +22,7 @@ namespace JamesonBugTracker.Controllers
         // GET: TicketHistories
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.TicketHistory.Include(t => t.Ticket).Include(t => t.User);
+            var applicationDbContext = _context.TicketHistories.Include(t => t.Ticket).Include(t => t.User);
             return View(await applicationDbContext.ToListAsync());
         }
 
@@ -34,7 +34,7 @@ namespace JamesonBugTracker.Controllers
                 return NotFound();
             }
 
-            var ticketHistory = await _context.TicketHistory
+            var ticketHistory = await _context.TicketHistories
                 .Include(t => t.Ticket)
                 .Include(t => t.User)
                 .FirstOrDefaultAsync(m => m.Id == id);
@@ -49,7 +49,7 @@ namespace JamesonBugTracker.Controllers
         // GET: TicketHistories/Create
         public IActionResult Create()
         {
-            ViewData["TicketId"] = new SelectList(_context.Ticket, "Id", "Description");
+            ViewData["TicketId"] = new SelectList(_context.Tickets, "Id", "Description");
             ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id");
             return View();
         }
@@ -67,7 +67,7 @@ namespace JamesonBugTracker.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["TicketId"] = new SelectList(_context.Ticket, "Id", "Description", ticketHistory.TicketId);
+            ViewData["TicketId"] = new SelectList(_context.Tickets, "Id", "Description", ticketHistory.TicketId);
             ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", ticketHistory.UserId);
             return View(ticketHistory);
         }
@@ -80,12 +80,12 @@ namespace JamesonBugTracker.Controllers
                 return NotFound();
             }
 
-            var ticketHistory = await _context.TicketHistory.FindAsync(id);
+            var ticketHistory = await _context.TicketHistories.FindAsync(id);
             if (ticketHistory == null)
             {
                 return NotFound();
             }
-            ViewData["TicketId"] = new SelectList(_context.Ticket, "Id", "Description", ticketHistory.TicketId);
+            ViewData["TicketId"] = new SelectList(_context.Tickets, "Id", "Description", ticketHistory.TicketId);
             ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", ticketHistory.UserId);
             return View(ticketHistory);
         }
@@ -122,7 +122,7 @@ namespace JamesonBugTracker.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["TicketId"] = new SelectList(_context.Ticket, "Id", "Description", ticketHistory.TicketId);
+            ViewData["TicketId"] = new SelectList(_context.Tickets, "Id", "Description", ticketHistory.TicketId);
             ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", ticketHistory.UserId);
             return View(ticketHistory);
         }
@@ -135,7 +135,7 @@ namespace JamesonBugTracker.Controllers
                 return NotFound();
             }
 
-            var ticketHistory = await _context.TicketHistory
+            var ticketHistory = await _context.TicketHistories
                 .Include(t => t.Ticket)
                 .Include(t => t.User)
                 .FirstOrDefaultAsync(m => m.Id == id);
@@ -152,15 +152,15 @@ namespace JamesonBugTracker.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var ticketHistory = await _context.TicketHistory.FindAsync(id);
-            _context.TicketHistory.Remove(ticketHistory);
+            var ticketHistory = await _context.TicketHistories.FindAsync(id);
+            _context.TicketHistories.Remove(ticketHistory);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool TicketHistoryExists(int id)
         {
-            return _context.TicketHistory.Any(e => e.Id == id);
+            return _context.TicketHistories.Any(e => e.Id == id);
         }
     }
 }

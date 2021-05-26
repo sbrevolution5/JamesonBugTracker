@@ -22,7 +22,7 @@ namespace JamesonBugTracker.Controllers
         // GET: TicketPriorities
         public async Task<IActionResult> Index()
         {
-            return View(await _context.TicketPriority.ToListAsync());
+            return View(await _context.TicketPriorities.ToListAsync());
         }
 
         // GET: TicketPriorities/Details/5
@@ -33,7 +33,7 @@ namespace JamesonBugTracker.Controllers
                 return NotFound();
             }
 
-            var ticketPriority = await _context.TicketPriority
+            var ticketPriority = await _context.TicketPriorities
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (ticketPriority == null)
             {
@@ -73,7 +73,7 @@ namespace JamesonBugTracker.Controllers
                 return NotFound();
             }
 
-            var ticketPriority = await _context.TicketPriority.FindAsync(id);
+            var ticketPriority = await _context.TicketPriorities.FindAsync(id);
             if (ticketPriority == null)
             {
                 return NotFound();
@@ -124,7 +124,7 @@ namespace JamesonBugTracker.Controllers
                 return NotFound();
             }
 
-            var ticketPriority = await _context.TicketPriority
+            var ticketPriority = await _context.TicketPriorities
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (ticketPriority == null)
             {
@@ -139,15 +139,15 @@ namespace JamesonBugTracker.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var ticketPriority = await _context.TicketPriority.FindAsync(id);
-            _context.TicketPriority.Remove(ticketPriority);
+            var ticketPriority = await _context.TicketPriorities.FindAsync(id);
+            _context.TicketPriorities.Remove(ticketPriority);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool TicketPriorityExists(int id)
         {
-            return _context.TicketPriority.Any(e => e.Id == id);
+            return _context.TicketPriorities.Any(e => e.Id == id);
         }
     }
 }
