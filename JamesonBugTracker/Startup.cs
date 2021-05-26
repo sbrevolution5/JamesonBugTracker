@@ -1,5 +1,7 @@
 using JamesonBugTracker.Data;
 using JamesonBugTracker.Models;
+using JamesonBugTracker.Services;
+using JamesonBugTracker.Services.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -37,6 +39,7 @@ namespace JamesonBugTracker
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultUI()
                 .AddDefaultTokenProviders();
+            services.AddScoped<IBTRolesService, BTRolesService>();
             services.AddMvc();
         }
 

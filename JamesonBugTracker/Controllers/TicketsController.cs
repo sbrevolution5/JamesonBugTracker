@@ -22,7 +22,12 @@ namespace JamesonBugTracker.Controllers
         // GET: Tickets
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Ticket.Include(t => t.DeveloperUser).Include(t => t.OwnerUser).Include(t => t.Project).Include(t => t.TicketPriority).Include(t => t.TicketStatus).Include(t => t.TicketType);
+            var applicationDbContext = _context.Ticket.Include(t => t.DeveloperUser)
+                                                      .Include(t => t.OwnerUser)
+                                                      .Include(t => t.Project)
+                                                      .Include(t => t.TicketPriority)
+                                                      .Include(t => t.TicketStatus)
+                                                      .Include(t => t.TicketType);
             return View(await applicationDbContext.ToListAsync());
         }
 
