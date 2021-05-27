@@ -1,6 +1,7 @@
 ﻿using JamesonBugTracker.Models;
 using JamesonBugTracker.Models.Enums;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -294,10 +295,10 @@ namespace JamesonBugTracker.Data
             //Seed Default ProjectManager2 User
             defaultUser = new BTUser
             {
-                UserName = "pquill@coderfoundry.com",
-                Email = "pquill@coderfoundry.com",
-                FirstName = "Peter",
-                LastName = "Quill",
+                UserName = "mmorales@mailinator.com",
+                Email = "mmorales@mailinator.com",
+                FirstName = "Miles",
+                LastName = "Morales",
                 EmailConfirmed = true,
                 CompanyId = company3Id
             };
@@ -352,10 +353,10 @@ namespace JamesonBugTracker.Data
             //Seed Default Developer2 User
             defaultUser = new BTUser
             {
-                UserName = "jhowlett@coderfoundry.com",
-                Email = "jhowlett@coderfoundry.com",
-                FirstName = "James",
-                LastName = "Howlett",
+                UserName = "bbarnes@Mailinator.com",
+                Email = "bbarnes@Mailinator.com",
+                FirstName = "Bucky",
+                LastName = "Barnes",
                 EmailConfirmed = true,
                 CompanyId = company3Id
             };
@@ -381,10 +382,10 @@ namespace JamesonBugTracker.Data
             //Seed Default Developer3 User
             defaultUser = new BTUser
             {
-                UserName = "nromanova@coderfoundry.com",
-                Email = "nromanova@coderfoundry.com",
-                FirstName = "Natasha",
-                LastName = "Romanova",
+                UserName = "wmaximoff@coderfoundry.com",
+                Email = "wmaximoff@coderfoundry.com",
+                FirstName = "Wanda",
+                LastName = "Maximoff",
                 EmailConfirmed = true,
                 CompanyId = company3Id
             };
@@ -468,10 +469,10 @@ namespace JamesonBugTracker.Data
             //Seed Default Submitter1 User
             defaultUser = new BTUser
             {
-                UserName = "ssummers@coderfoundry.com",
-                Email = "ssummers@coderfoundry.com",
-                FirstName = "Scott",
-                LastName = "Summers",
+                UserName = "vision@coderfoundry.com",
+                Email = "vision@coderfoundry.com",
+                FirstName = "Jarvis",
+                LastName = "Vision",
                 EmailConfirmed = true,
                 CompanyId = company3Id
             };
@@ -497,10 +498,10 @@ namespace JamesonBugTracker.Data
             //Seed Default Submitter2 User
             defaultUser = new BTUser
             {
-                UserName = "sstorm@coderfoundry.com",
-                Email = "sstorm@coderfoundry.com",
-                FirstName = "Sue",
-                LastName = "Storm",
+                UserName = "pparker@coderfoundry.com",
+                Email = "pparker@coderfoundry.com",
+                FirstName = "Peter",
+                LastName = "Parker",
                 EmailConfirmed = true,
                 CompanyId = company3Id
             };
