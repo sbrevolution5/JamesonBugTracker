@@ -12,9 +12,9 @@ namespace JamesonBugTracker.Services.Interfaces
 
         Task<List<BTUser>> GetAllMembersAsync(int companyId);
 
-        Task<List<BTUser>> GetAllProjectsAsync(int companyId);
+        Task<List<Project>> GetAllProjectsAsync(int companyId);
 
-        Task<List<BTUser>> GetAllTicketsAsync(int companyId);
+        Task<List<Ticket>> GetAllTicketsAsync(int companyId);
 
         Task<List<BTUser>> GetMembersInRoleAsync(string roleName, int companyId);
     }
