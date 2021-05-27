@@ -25,7 +25,7 @@ namespace JamesonBugTracker.Models
         public string FullName
         {
             get
-            { return $"{FirstName} + {LastName}"; }
+            { return $"{FirstName} {LastName}"; }
         }
         [NotMapped]
         [DataType(DataType.Upload)]

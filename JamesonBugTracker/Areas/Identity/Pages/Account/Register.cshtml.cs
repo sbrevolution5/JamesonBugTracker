@@ -52,7 +52,7 @@ namespace JamesonBugTracker.Areas.Identity.Pages.Account
             [Display(Name = "Email")]
             public string Email { get; set; }
             [Required]
-            [DisplayName("Last Name")]
+            [DisplayName("First Name")]
             [StringLength(50)]
             public string FirstName { get; set; }
             [Required]

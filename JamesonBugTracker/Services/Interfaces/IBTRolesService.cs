@@ -17,5 +17,6 @@ namespace JamesonBugTracker.Services.Interfaces
         public Task<bool> RemoveUserFromRoleAsync(BTUser user, string roleName);
 
         public Task<List<BTUser>> UsersNotInRoleAsync(string roleName);
+        public Task<bool> RemoveUserFromRolesAsync(BTUser user, IEnumerable<string> roles);
     }
 }

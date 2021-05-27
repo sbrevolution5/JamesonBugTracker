@@ -11,7 +11,7 @@ namespace JamesonBugTracker.Models
         public int Id { get; set; }
 
         
-        public string Priority { get; set; }
+        public string Name { get; set; }
         
     }
 }

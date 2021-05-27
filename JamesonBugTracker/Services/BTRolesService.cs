@@ -57,6 +57,12 @@ namespace JamesonBugTracker.Services
             return result.Succeeded;
         }
 
+        public async Task<bool> RemoveUserFromRolesAsync(BTUser user, IEnumerable<string> roles)
+        {
+            var result = await _userManager.RemoveFromRolesAsync(user, roles);
+            return result.Succeeded;
+        }
+
         public async Task<List<BTUser>> UsersNotInRoleAsync(string roleName)
         {
             var userDB = _context.Users;
