@@ -14,16 +14,18 @@ namespace JamesonBugTracker.Services
         private readonly ApplicationDbContext _context;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly UserManager<BTUser> _userManager;
+        private readonly IBTCompanyInfoService _companyInfoService;
 
         // using dependency injection, this service isn't responsible for creating/managing the instance
         // analogy: Teacher hands kindergarten the fingerprints, so the kid isn't responsible for that.
-        public BTRolesService(ApplicationDbContext context, 
-                              RoleManager<IdentityRole> roleManager, 
-                              UserManager<BTUser> userManager)
+        public BTRolesService(ApplicationDbContext context,
+                              RoleManager<IdentityRole> roleManager,
+                              UserManager<BTUser> userManager, IBTCompanyInfoService companyInfoService)
         {
             _context = context;
             _roleManager = roleManager;
             _userManager = userManager;
+            _companyInfoService = companyInfoService;
         }
 
         public async Task<bool> AddUserToRoleAsync(BTUser user, string roleName)
@@ -63,13 +65,12 @@ namespace JamesonBugTracker.Services
             return result.Succeeded;
         }
 
-        public async Task<List<BTUser>> UsersNotInRoleAsync(string roleName)
+        public async Task<List<BTUser>> UsersNotInRoleAsync(string roleName, int companyId)
         {
-            var userDB = _context.Users;
             List<BTUser> usersNotInRole = new();
             try{
                 // TODO Modify for multi tenancy
-                foreach (var user in _context.Users.ToList())
+                foreach (var user in await _companyInfoService.GetAllMembersAsync(companyId))
                 {
                     if (!await _userManager.IsInRoleAsync(user, roleName))
                     {
