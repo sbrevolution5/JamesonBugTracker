@@ -4,6 +4,7 @@ using JamesonBugTracker.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -15,55 +16,83 @@ namespace JamesonBugTracker.Services
         private readonly IBTCompanyInfoService _companyInfoService;
         private readonly IBTRolesService _rolesService;
 
-        public BTProjectService(ApplicationDbContext context, IBTCompanyInfoService companyInfoService)
+        public BTProjectService(ApplicationDbContext context, IBTCompanyInfoService companyInfoService, IBTRolesService rolesService)
         {
             _context = context;
             _companyInfoService = companyInfoService;
+            _rolesService = rolesService;
         }
         private async Task<Project> GetProjectByIdAsync(int projectId)
         {
             return await _context.Project.FirstOrDefaultAsync(p => p.Id == projectId);
         }
-        /// <summary>
-        /// returns false if project has a manager, or supplied user is not a manager.  Otherwise adds manager and returns true
-        /// </summary>
-        /// <param name="userId"></param>
-        /// <param name="projectId"></param>
-        /// <returns></returns>
         public async Task<bool> AddProjectManagerAsync(string userId, int projectId)
         {
+            //TODO This doesn't belong
             //if the user supplied isn't a manager, return false
-            BTUser newManager = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
-            if (!await _rolesService.IsUserInRoleAsync(newManager, "ProjectManager"))
+            try
+            {
+
+                Project project = await GetProjectByIdAsync(projectId);
+                //This returns a user who is a member, or it returns null?
+                foreach (var user in project.Members)
+                {
+                    // If user is a project manager, return false.  
+                    if (await _rolesService.IsUserInRoleAsync(user, "ProjectManager"))
+                    {
+                        project.Members.Remove(user);
+                    }
+                }
+                //else, assign the new project manager to the project, then return true
+                BTUser newManager = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
+                project.Members.Add(newManager);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch
             {
                 return false;
             }
-            Project project = await GetProjectByIdAsync(projectId);
-            //This returns a user who is a member, or it returns null?
-            foreach (var user in project.Members)
+        }
+        //TODO Don't add them twice
+        public async Task<bool> AddUserToProjectAsync(string userId, int projectId)
+        {
+            try
             {
-                // If user is a project manager, return false.  
-                if (await _rolesService.IsUserInRoleAsync(user, "ProjectManager"))
+                BTUser user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
+                if (user is not null)
+                {
+
+                    Project project = await GetProjectByIdAsync(projectId);
+                    if (!await IsUserOnProjectAsync(userId, projectId))
+                    {
+                        try
+                        {
+                            project.Members.Add(user);
+                            await _context.SaveChangesAsync();
+                            return true;
+                        }
+                        catch
+                        {
+                            throw;
+                        }
+
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+                else
                 {
                     return false;
                 }
             }
-            //else, assign the new project manager to the project, then return true
-            project.Members.Add(newManager);
-            return true;
-        }
-
-        public async Task<bool> AddUserToProjectAsync(string userId, int projectId)
-        {
-            Project project = await GetProjectByIdAsync(projectId);
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
-            project.Members.Add(user);
-            var res = await _context.SaveChangesAsync();
-            if (res >= 1)
+            catch (Exception ex)
             {
-                return true;
+                Debug.WriteLine($"***ERROR*** - Error Adding user to project. --> {ex.Message}");
+                return false;
             }
-            return false;
         }
 
         public async Task<List<BTUser>> DevelopersOnProjectAsync(int projectId)
@@ -95,7 +124,7 @@ namespace JamesonBugTracker.Services
         public async Task<List<Project>> GetArchivedProjectsByCompanyAsync(int companyId)
         {
             var companyProjects = await GetAllProjectsByCompanyAsync(companyId);
-            var archivedCompanyProjects = companyProjects.Where(p => p.Archived).ToList();
+            var archivedCompanyProjects = companyProjects.Where(p => p.Archived == true).ToList();
             return archivedCompanyProjects;
         }
 
@@ -148,34 +177,43 @@ namespace JamesonBugTracker.Services
             return false;
         }
 
-        //TODO Does this need to be async?!
-        public List<Project> ListUserProjects(string userId)
+        
+        public async Task<List<Project>> ListUserProjectsAsync(string userId)
         {
-            // All projects
-            List<Project> userProjects = new();
-            foreach (var project in _context.Project)
-            {
-                foreach (var user in project.Members)
-                {
-                    //If user is in project, add to list of projects
-                    if (user.Id == userId)
-                    {
-                        userProjects.Add(project);
-                        //TODO skip remaining loops?
-                        //Maybe a while loop checking if we're at the end of the user list or if we found the user???
-                        // or find a way to return like a method
-                    }
-                }
-            }
-            return userProjects;
+            var projectList = (await _context.Users.Include(u => u.Projects)
+                                    .ThenInclude(p => p.Tickets)
+                                                .ThenInclude(t => t.DeveloperUser)
+                                    .Include(u => u.Projects)
+                                        .ThenInclude(p => p.Tickets)
+                                            .ThenInclude(t => t.TicketPriority)
+                                    .Include(u => u.Projects)
+                                        .ThenInclude(p => p.Tickets)
+                                                .ThenInclude(t => t.TicketStatus)
+                                    .Include(u => u.Projects)
+                                        .ThenInclude(p => p.Tickets)
+                                                .ThenInclude(t => t.TicketType)
+                                    .Include(u => u.Projects)
+                                        .ThenInclude(p => p.Tickets)
+                                            .ThenInclude(t => t.Attachments)
+                                    .Include(u => u.Projects)
+                                        .ThenInclude(p => p.Tickets)
+                                            .ThenInclude(t => t.History)
+                                    .Include(u => u.Projects)
+                                        .ThenInclude(p => p.Tickets)
+                                            .ThenInclude(t => t.Comments)
+                                    .Include(u => u.Projects)
+                                        .ThenInclude(p => p.Company)
+                                .FirstOrDefaultAsync(u => u.Id == userId)).Projects.ToList();
+            return projectList;
         }
 
-        //TODO Now returns a bool signifiying if removal was successful or not
-        public async Task<bool> RemoveProjectManagerAsync(int projectId)
+        public async Task RemoveProjectManagerAsync(int projectId)
         {
             Project project = await GetProjectByIdAsync(projectId);
             BTUser projectManager = (await GetProjectMembersByRoleAsync(projectId, "ProjectManager")).FirstOrDefault();
-            return project.Members.Remove(projectManager);
+            project.Members.Remove(projectManager);
+            await _context.SaveChangesAsync();
+            return;
         }
         //Should this be boolean, in case user is not on project in the first place? TODO
         public async Task RemoveUserFromProjectAsync(string userId, int projectId)
@@ -183,6 +221,7 @@ namespace JamesonBugTracker.Services
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
             Project project = await GetProjectByIdAsync(projectId);
             project.Members.Remove(user);
+            await _context.SaveChangesAsync();
             return;
         }
 
@@ -198,6 +237,8 @@ namespace JamesonBugTracker.Services
                     project.Members.Remove(user);
                 }
             }
+            await _context.SaveChangesAsync();
+
             return;
 
         }

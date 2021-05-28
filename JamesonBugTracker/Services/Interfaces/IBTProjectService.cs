@@ -16,7 +16,7 @@ namespace JamesonBugTracker.Services.Interfaces
 
         public Task RemoveUsersFromProjectByRoleAsync(string role, int projectId);
 
-        public List<Project> ListUserProjects(string userId);
+        public Task<List<Project>> ListUserProjectsAsync(string userId);
 
         public Task<List<Project>> GetAllProjectsByCompanyAsync(int companyId);
 
@@ -30,7 +30,7 @@ namespace JamesonBugTracker.Services.Interfaces
 
         public Task<bool> AddProjectManagerAsync(string userId, int projectId);
 
-        public Task<bool> RemoveProjectManagerAsync(int projectId);
+        public Task RemoveProjectManagerAsync(int projectId);
 
         public Task<List<BTUser>> GetMembersWithoutPMAsync(int projectId);
 

@@ -40,6 +40,13 @@ namespace JamesonBugTracker
                 .AddDefaultUI()
                 .AddDefaultTokenProviders();
             services.AddScoped<IBTRolesService, BTRolesService>();
+            services.AddScoped<IBTCompanyInfoService, BTCompanyInfoService>();
+            services.AddScoped<IBTFileService, BTFileService>();
+            services.AddScoped<IBTHistoryService, BTHistoryService>();
+            services.AddScoped<IBTInviteService, BTInviteService>();
+            services.AddScoped<IBTNotificationService, BTNotificationService>();
+            services.AddScoped<IBTProjectService, BTProjectService>();
+            services.AddScoped<IBTTicketService, BTTicketService>();
             services.AddMvc();
         }
 

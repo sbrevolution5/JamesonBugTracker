@@ -116,7 +116,7 @@ namespace JamesonBugTracker.Data
                 //Get company Ids
                 company1Id = context.Company.FirstOrDefault(p => p.Name == "Company1").Id;
                 company2Id = context.Company.FirstOrDefault(p => p.Name == "Company2").Id;
-                company3Id = context.Company.FirstOrDefault(p => p.Name == "Company3").Id;
+                company3Id = context.Company.FirstOrDefault(p => p.Name == "Stark Industries").Id;
                 company4Id = context.Company.FirstOrDefault(p => p.Name == "Company4").Id;
                 company5Id = context.Company.FirstOrDefault(p => p.Name == "Company5").Id;
                 company6Id = context.Company.FirstOrDefault(p => p.Name == "Company6").Id;
@@ -176,8 +176,8 @@ namespace JamesonBugTracker.Data
                          CompanyId = company1Id,
                          Name = "Build a Personal Porfolio",
                          Description="Single page html, css & javascript page.  Serves as a landing page for candidates and contains a bio and links to all applications and challenges." ,
-                         StartDate = new DateTime(2021,1,4),
-                         EndDate = new DateTime(2021,1,4).AddMonths(3),
+                         StartDate = new DateTime(2021,3,4),
+                         EndDate = new DateTime(2021,3,4).AddMonths(3),
                          ProjectPriorityId = priorityLow
                      },
                      new Project()
@@ -185,8 +185,8 @@ namespace JamesonBugTracker.Data
                          CompanyId = company2Id,
                          Name = "Build a supplemental Blog Web Application",
                          Description="Candidate's custom built web application using .Net Core with MVC, a postgres database and hosted in a heroku container.  The app is designed for the candidate to create, update and maintain a live blog site.",
-                         StartDate = new DateTime(2021,1,4),
-                         EndDate = new DateTime(2021,1,4).AddMonths(3),
+                         StartDate = new DateTime(2021,3,4),
+                         EndDate = new DateTime(2021,3,4).AddMonths(3),
                          ProjectPriorityId = priorityMedium
                      },
                      new Project()
@@ -194,8 +194,8 @@ namespace JamesonBugTracker.Data
                          CompanyId = company3Id,
                          Name = "Build an Issue Tracking Web Application",
                          Description="A custom designed .Net Core application with postgres database.  The application is a multi tennent application designed to track issue tickets' progress.  Implemented with identity and user roles, Tickets are maintained in projects which are maintained by users in the role of projectmanager.  Each project has a team and team members.",
-                         StartDate = new DateTime(2021,1,4),
-                         EndDate = new DateTime(2021,1,4).AddMonths(3),
+                         StartDate = new DateTime(2021,3,4),
+                         EndDate = new DateTime(2021,3,4).AddMonths(3),
                          ProjectPriorityId = priorityHigh
                      },
                     new Project()
@@ -203,8 +203,8 @@ namespace JamesonBugTracker.Data
                          CompanyId = company1Id,
                          Name = "Build a Movie Information Web Application",
                          Description="A custom designed .Net Core application with postgres database.  An API based application allows users to input and import movie posters and details including cast and crew information.",
-                         StartDate = new DateTime(2021,1,4),
-                         EndDate = new DateTime(2021,1,4).AddMonths(3),
+                         StartDate = new DateTime(2021,3,4),
+                         EndDate = new DateTime(2021,3,4).AddMonths(3),
                          ProjectPriorityId = priorityHigh
                      },
                      new Project()
@@ -212,8 +212,8 @@ namespace JamesonBugTracker.Data
                          CompanyId = company2Id,
                          Name = "Build an Address Book Web Application",
                          Description="A custom designed .Net Core application with postgres database.  This is an application to serve as a rolodex of contacts for a given user..",
-                         StartDate = new DateTime(2021,1,4),
-                         EndDate = new DateTime(2021,1,4).AddMonths(3),
+                         StartDate = new DateTime(2021,3,4),
+                         EndDate = new DateTime(2021,3,4).AddMonths(3),
                          ProjectPriorityId = priorityHigh
                      }
                 };
