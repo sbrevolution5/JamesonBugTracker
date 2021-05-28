@@ -50,6 +50,7 @@ namespace JamesonBugTracker.Models
 
         [DisplayName("Project Priority")]
         public int ProjectPriorityId { get; set; }
+        //Navigational Properties
         public virtual ProjectPriority ProjectPriority { get; set; }
         public virtual Company Company { get; set; }
         public virtual List<BTUser> Members { get; set; }

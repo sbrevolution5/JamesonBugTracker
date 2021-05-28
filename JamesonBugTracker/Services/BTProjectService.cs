@@ -20,6 +20,10 @@ namespace JamesonBugTracker.Services
             _context = context;
             _companyInfoService = companyInfoService;
         }
+        private async Task<Project> GetProjectByIdAsync(int projectId)
+        {
+            return await _context.Project.FirstOrDefaultAsync(p => p.Id == projectId);
+        }
         /// <summary>
         /// returns false if project has a manager, or supplied user is not a manager.  Otherwise adds manager and returns true
         /// </summary>
@@ -34,7 +38,7 @@ namespace JamesonBugTracker.Services
             {
                 return false;
             }
-            var project = await _context.Project.FirstOrDefaultAsync(p => p.Id == projectId);
+            Project project = await GetProjectByIdAsync(projectId);
             //This returns a user who is a member, or it returns null?
             foreach (var user in project.Members)
             {
@@ -51,7 +55,7 @@ namespace JamesonBugTracker.Services
 
         public async Task<bool> AddUserToProjectAsync(string userId, int projectId)
         {
-            var project = await _context.Project.FirstOrDefaultAsync(p => p.Id == projectId);
+            Project project = await GetProjectByIdAsync(projectId);
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
             project.Members.Add(user);
             var res = await _context.SaveChangesAsync();
@@ -74,9 +78,18 @@ namespace JamesonBugTracker.Services
 
         }
 
-        public Task<List<Project>> GetAllProjectsByPriorityAsync(int companyId, string priorityName)
+        public async Task<List<Project>> GetAllProjectsByPriorityAsync(int companyId, string priorityName)
         {
-            throw new NotImplementedException();
+            var companyProjects = await _companyInfoService.GetAllProjectsAsync(companyId);
+            List<Project> byPriority = new();
+            foreach (var project in companyProjects)
+            {
+                if (project.ProjectPriority.Name == priorityName)
+                {
+                    byPriority.Add(project);
+                }
+            }
+            return byPriority;
         }
 
         public async Task<List<Project>> GetArchivedProjectsByCompanyAsync(int companyId)
@@ -88,7 +101,7 @@ namespace JamesonBugTracker.Services
 
         public async Task<List<BTUser>> GetMembersWithoutPMAsync(int projectId)
         {
-            var project = await _context.Project.FirstOrDefaultAsync(p => p.Id == projectId);
+            Project project = await GetProjectByIdAsync(projectId);
             List<BTUser> nonPMUsers = new();
             foreach (var user in project.Members)
             {
@@ -100,15 +113,17 @@ namespace JamesonBugTracker.Services
             return nonPMUsers;
         }
 
-        public Task<BTUser> GetProjectManagerAsync(int projectId)
+        public async Task<BTUser> GetProjectManagerAsync(int projectId)
         {
             //What if there isn't one?!
-            throw new NotImplementedException();
+            // can we return a nullable? or do we return default
+            BTUser projectManager = (await GetProjectMembersByRoleAsync(projectId, "ProjectManager")).FirstOrDefault();
+            return projectManager;
         }
 
         public async Task<List<BTUser>> GetProjectMembersByRoleAsync(int projectId, string role)
         {
-            var project = await _context.Project.FirstOrDefaultAsync(p => p.Id == projectId);
+            Project project = await GetProjectByIdAsync(projectId);
             List<BTUser> membersByRole = new();
             foreach (var user in project.Members)
             {
@@ -122,7 +137,7 @@ namespace JamesonBugTracker.Services
 
         public async Task<bool> IsUserOnProjectAsync(string userId, int projectId)
         {
-            var project = await _context.Project.FirstOrDefaultAsync(p => p.Id == projectId);
+            Project project = await GetProjectByIdAsync(projectId);
             foreach (var user in project.Members)
             {
                 if (user.Id == userId)
@@ -133,34 +148,74 @@ namespace JamesonBugTracker.Services
             return false;
         }
 
-        public Task<List<Project>> ListUserProjectsAsync(string userId)
+        //TODO Does this need to be async?!
+        public List<Project> ListUserProjects(string userId)
         {
-            throw new NotImplementedException();
+            // All projects
+            List<Project> userProjects = new();
+            foreach (var project in _context.Project)
+            {
+                foreach (var user in project.Members)
+                {
+                    //If user is in project, add to list of projects
+                    if (user.Id == userId)
+                    {
+                        userProjects.Add(project);
+                        //TODO skip remaining loops?
+                        //Maybe a while loop checking if we're at the end of the user list or if we found the user???
+                        // or find a way to return like a method
+                    }
+                }
+            }
+            return userProjects;
         }
 
-        public Task RemoveProjectManagerAsync(int projectId)
+        //TODO Now returns a bool signifiying if removal was successful or not
+        public async Task<bool> RemoveProjectManagerAsync(int projectId)
         {
-            throw new NotImplementedException();
+            Project project = await GetProjectByIdAsync(projectId);
+            BTUser projectManager = (await GetProjectMembersByRoleAsync(projectId, "ProjectManager")).FirstOrDefault();
+            return project.Members.Remove(projectManager);
+        }
+        //Should this be boolean, in case user is not on project in the first place? TODO
+        public async Task RemoveUserFromProjectAsync(string userId, int projectId)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
+            Project project = await GetProjectByIdAsync(projectId);
+            project.Members.Remove(user);
+            return;
         }
 
-        public Task RemoveUserFromProjectAsync(string userId, int projectId)
-        {
-            throw new NotImplementedException();
-        }
 
-        public Task RemoveUsersFromProjectByRoleAsync(string role, int projectId)
+        public async Task RemoveUsersFromProjectByRoleAsync(string role, int projectId)
         {
-            throw new NotImplementedException();
+            List<BTUser> usersToRemove = await GetProjectMembersByRoleAsync(projectId, role);
+            Project project = await GetProjectByIdAsync(projectId);
+            foreach (var user in project.Members)
+            {
+                if (usersToRemove.Contains(user))
+                {
+                    project.Members.Remove(user);
+                }
+            }
+            return;
+
         }
 
         public Task<List<BTUser>> SubmittersOnProjectAsync(int projectId)
         {
-            throw new NotImplementedException();
+            return GetProjectMembersByRoleAsync(projectId, "Submitter");
         }
 
-        public Task<List<BTUser>> UsersNotOnProjectAsync(int projectId, int companyId)
+        public async Task<List<BTUser>> UsersNotOnProjectAsync(int projectId, int companyId)
         {
-            throw new NotImplementedException();
+            List<BTUser> allNonProjectUsers = await _context.Users.ToListAsync();
+            Project project = await GetProjectByIdAsync(projectId);
+            foreach (var user in project.Members)
+            {
+                allNonProjectUsers.Remove(user);
+            }
+            return allNonProjectUsers;
         }
     }
 }
