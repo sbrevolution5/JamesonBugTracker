@@ -1,4 +1,5 @@
-﻿using JamesonBugTracker.Models;
+﻿using JamesonBugTracker.Data;
+using JamesonBugTracker.Models;
 using JamesonBugTracker.Services.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -9,6 +10,13 @@ namespace JamesonBugTracker.Services
 {
     public class BTNotificationService : IBTNotificationService
     {
+        private readonly ApplicationDbContext _context;
+
+        public BTNotificationService(ApplicationDbContext context)
+        {
+            _context = context;
+        }
+
         public Task AdminsNotificationAsync(Notification notification, int companyId)
         {
             throw new NotImplementedException();

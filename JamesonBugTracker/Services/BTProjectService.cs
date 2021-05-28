@@ -28,8 +28,6 @@ namespace JamesonBugTracker.Services
         }
         public async Task<bool> AddProjectManagerAsync(string userId, int projectId)
         {
-            //TODO This doesn't belong
-            //if the user supplied isn't a manager, return false
             try
             {
 
@@ -54,7 +52,6 @@ namespace JamesonBugTracker.Services
                 return false;
             }
         }
-        //TODO Don't add them twice
         public async Task<bool> AddUserToProjectAsync(string userId, int projectId)
         {
             try
@@ -209,11 +206,18 @@ namespace JamesonBugTracker.Services
 
         public async Task RemoveProjectManagerAsync(int projectId)
         {
-            Project project = await GetProjectByIdAsync(projectId);
-            BTUser projectManager = (await GetProjectMembersByRoleAsync(projectId, "ProjectManager")).FirstOrDefault();
-            project.Members.Remove(projectManager);
-            await _context.SaveChangesAsync();
-            return;
+            try
+            {
+                Project project = await GetProjectByIdAsync(projectId);
+                BTUser projectManager = (await GetProjectMembersByRoleAsync(projectId, "ProjectManager")).FirstOrDefault();
+                project.Members.Remove(projectManager);
+                await _context.SaveChangesAsync();
+                return;
+            }
+            catch
+            {
+                throw;
+            }
         }
         //Should this be boolean, in case user is not on project in the first place? TODO
         public async Task RemoveUserFromProjectAsync(string userId, int projectId)

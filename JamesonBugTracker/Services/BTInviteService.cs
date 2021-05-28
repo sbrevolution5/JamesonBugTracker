@@ -1,5 +1,7 @@
-﻿using JamesonBugTracker.Models;
+﻿using JamesonBugTracker.Data;
+using JamesonBugTracker.Models;
 using JamesonBugTracker.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +11,13 @@ namespace JamesonBugTracker.Services
 {
     public class BTInviteService : IBTInviteService
     {
+        private readonly ApplicationDbContext _context;
+
+        public BTInviteService(ApplicationDbContext context)
+        {
+            _context = context;
+        }
+
         public Task<bool> AcceptInviteAsync(Guid? token, string userId)
         {
             throw new NotImplementedException();
@@ -24,9 +33,9 @@ namespace JamesonBugTracker.Services
             throw new NotImplementedException();
         }
 
-        public Task<Invite> GetInviteAsync(int id)
+        public async Task<Invite> GetInviteAsync(int id)
         {
-            throw new NotImplementedException();
+            return await _context.Invite.FirstOrDefaultAsync(i => i.Id == id);
         }
 
         public Task<bool> ValidateInviteCodeAsync(Guid? token)

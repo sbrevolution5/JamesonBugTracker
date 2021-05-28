@@ -31,7 +31,6 @@ namespace JamesonBugTracker.Models
         public bool Viewed { get; set; }
         public virtual Ticket Ticket { get; set; }
         public virtual BTUser Recipient { get; set; }
-        //TODO Change type?
-        public int Sender { get; set; }
+        public virtual BTUser Sender { get; set; }
     }
 }

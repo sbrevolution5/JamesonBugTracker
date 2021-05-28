@@ -1,6 +1,7 @@
 ﻿using JamesonBugTracker.Data;
 using JamesonBugTracker.Models;
 using JamesonBugTracker.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,18 +19,35 @@ namespace JamesonBugTracker.Services
             _context = context;
             _companyInfoService = companyInfoService;
         }
-
-        public Task AssignTicketAsync(int ticketId, string userId)
+        private async  Task<Ticket> GetTicketByIdAsync(int ticketId)
         {
-            BTUser user = _context.Users.FirstOrDefault(u => u.Id == userId);
-            Ticket ticket = _context.Ticket.FirstOrDefault(t => t.Id == ticketId);
-            ticket.DeveloperUser = user; // or should it be DeveloperUserId?? TODO
-            throw new NotImplementedException();
+            return await _context.Ticket.FirstOrDefaultAsync(t => t.Id == ticketId);
+        }
+        private async Task<BTUser> GetUserByIdAsync(string userId)
+        {
+            return  await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
         }
 
-        public Task<List<Ticket>> GetAllPMTicketsAsync(string userId)
+        public async Task AssignTicketAsync(int ticketId, string userId)
         {
-            throw new NotImplementedException();
+            BTUser user = await GetUserByIdAsync(userId); 
+            Ticket ticket = await GetTicketByIdAsync(ticketId);
+            ticket.DeveloperUser = user;
+            await _context.SaveChangesAsync();
+            return;
+        }
+        public async Task<List<Ticket>> GetAllPMTicketsAsync(string userId)
+        {
+            BTUser user = await GetUserByIdAsync(userId);
+            List<Ticket> allTickets = new();
+            foreach (var project in user.Projects)
+            {
+                foreach (var ticket in project.Tickets)
+                {
+                    allTickets.Add(ticket);
+                }
+            }
+            return allTickets;
         }
 
         public async Task<List<Ticket>> GetAllTicketsByCompanyAsync(int companyId)
@@ -38,9 +56,18 @@ namespace JamesonBugTracker.Services
             return tickets;
         }
 
-        public Task<List<Ticket>> GetAllTicketsByPriorityAsync(int companyId, string priorityName)
+        public async Task<List<Ticket>> GetAllTicketsByPriorityAsync(int companyId, string priorityName)
         {
-            throw new NotImplementedException();
+            var allTickets = await _companyInfoService.GetAllTicketsAsync(companyId);
+            List<Ticket> ticketsWithPriority = new();
+            foreach (var ticket in allTickets)
+            {
+                if (ticket.TicketPriority.Name == priorityName)
+                {
+                    ticketsWithPriority.Add(ticket);
+                }
+            }
+            return ticketsWithPriority;
         }
 
         public Task<List<Ticket>> GetAllTicketsByRoleAsync(string role, string userId)
@@ -48,46 +75,69 @@ namespace JamesonBugTracker.Services
             throw new NotImplementedException();
         }
 
-        public Task<List<Ticket>> GetAllTicketsByStatusAsync(int companyId, string statusName)
+        public async Task<List<Ticket>> GetAllTicketsByStatusAsync(int companyId, string statusName)
         {
-            throw new NotImplementedException();
+
+            var allTickets = await _companyInfoService.GetAllTicketsAsync(companyId);
+            List<Ticket> ticketsWithStatus = new();
+            foreach (var ticket in allTickets)
+            {
+                if (ticket.TicketStatus.Name == statusName)
+                {
+                    ticketsWithStatus.Add(ticket);
+                }
+            }
+            return ticketsWithStatus;
         }
 
-        public Task<List<Ticket>> GetAllTicketsByTypeAsync(int companyId, string typeName)
+        public async Task<List<Ticket>> GetAllTicketsByTypeAsync(int companyId, string typeName)
         {
-            throw new NotImplementedException();
+            var allTickets = await _companyInfoService.GetAllTicketsAsync(companyId);
+            List<Ticket> ticketsOfType = new();
+            foreach (var ticket in allTickets)
+            {
+                if (ticket.TicketType.Name == typeName)
+                {
+                    ticketsOfType.Add(ticket);
+                }
+            }
+            return ticketsOfType;
         }
 
-        public Task<List<Ticket>> GetArchivedTicketsByCompanyAsync(int companyId)
+        public async Task<List<Ticket>> GetArchivedTicketsByCompanyAsync(int companyId)
         {
-            throw new NotImplementedException();
+            List<Ticket> companyTickets = await _companyInfoService.GetAllTicketsAsync(companyId);
+            List<Ticket> filteredTickets = companyTickets.Where(t => t.Archived == true).ToList();
+            return filteredTickets;
         }
 
         public Task<List<Ticket>> GetProjectTicketsByRoleAsync(string role, string userId, int projectId)
         {
+            //Is this role the role of the user who gets the project?  Isn't that always developer?!  
             throw new NotImplementedException();
         }
-        // WHY IS THIS ASYNC TODO
-        public Task<BTUser> GetTicketDeveloperAsync(int ticketId)
+        public async Task<BTUser> GetTicketDeveloperAsync(int ticketId)
         {
-            var ticket = _context.Ticket.Where(t => t.Id == ticketId).FirstOrDefault();
-            //return ticket.DeveloperUser;
-            throw new NotImplementedException();
-        }
-
-        public Task<int?> LookupTicketPriorityIdAsync(string priorityName)
-        {
-            throw new NotImplementedException();
+            var ticket = await _context.Ticket.Where(t => t.Id == ticketId).FirstOrDefaultAsync();
+            return ticket.DeveloperUser;
         }
 
-        public Task<int?> LookupTicketStatusIdAsync(string statusName)
+        public async Task<int?> LookupTicketPriorityIdAsync(string priorityName)
         {
-            throw new NotImplementedException();
+            TicketPriority ticketPriority = await _context.TicketPriority.FirstOrDefaultAsync(t => t.Name == priorityName);
+            return ticketPriority.Id;
         }
 
-        public Task<int?> LookupTicketTypeIdAsync(string typeName)
+        public async Task<int?> LookupTicketStatusIdAsync(string statusName)
         {
-            throw new NotImplementedException();
+            TicketStatus ticketStatus = await _context.TicketStatus.FirstOrDefaultAsync(t => t.Name == statusName);
+            return ticketStatus.Id;
+        }
+
+        public async Task<int?> LookupTicketTypeIdAsync(string typeName)
+        {
+            TicketType ticketType = await _context.TicketType.FirstOrDefaultAsync(t => t.Name == typeName);
+            return ticketType.Id;
         }
     }
 }
