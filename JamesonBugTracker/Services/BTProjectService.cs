@@ -13,13 +13,11 @@ namespace JamesonBugTracker.Services
     public class BTProjectService : IBTProjectService
     {
         private readonly ApplicationDbContext _context;
-        private readonly IBTCompanyInfoService _companyInfoService;
         private readonly IBTRolesService _rolesService;
 
         public BTProjectService(ApplicationDbContext context, IBTCompanyInfoService companyInfoService, IBTRolesService rolesService)
         {
             _context = context;
-            _companyInfoService = companyInfoService;
             _rolesService = rolesService;
         }
         private async Task<Project> GetProjectByIdAsync(int projectId)
@@ -99,14 +97,34 @@ namespace JamesonBugTracker.Services
 
         public async Task<List<Project>> GetAllProjectsByCompanyAsync(int companyId)
         {
-            var companyProjects = (await _companyInfoService.GetAllProjectsAsync(companyId)).ToList();
-            return companyProjects;
+            List<Project> projects = new();
+            projects = await _context.Project
+                                             .Include(p => p.Members)
+                                             .Include(p => p.Tickets)
+                                                .ThenInclude(t => t.OwnerUser)
+                                             .Include(p => p.Tickets)
+                                                .ThenInclude(t => t.DeveloperUser)
+                                             .Include(p => p.Tickets)
+                                                .ThenInclude(t => t.TicketPriority)
+                                             .Include(p => p.Tickets)
+                                                .ThenInclude(t => t.TicketStatus)
+                                             .Include(p => p.Tickets)
+                                                .ThenInclude(t => t.TicketType)
+                                             .Include(p => p.Tickets)
+                                                .ThenInclude(t => t.Attachments)
+                                             .Include(p => p.Tickets)
+                                                .ThenInclude(t => t.History)
+                                             .Include(p => p.Tickets)
+                                                .ThenInclude(t => t.Comments)
+                                             .Where(p => p.CompanyId == companyId)
+                                             .ToListAsync();
+            return projects;
 
         }
 
         public async Task<List<Project>> GetAllProjectsByPriorityAsync(int companyId, string priorityName)
         {
-            var companyProjects = await _companyInfoService.GetAllProjectsAsync(companyId);
+            var companyProjects = await GetAllProjectsByCompanyAsync(companyId);
             List<Project> byPriority = new();
             foreach (var project in companyProjects)
             {
@@ -141,8 +159,6 @@ namespace JamesonBugTracker.Services
 
         public async Task<BTUser> GetProjectManagerAsync(int projectId)
         {
-            //What if there isn't one?!
-            // can we return a nullable? or do we return default
             BTUser projectManager = (await GetProjectMembersByRoleAsync(projectId, "ProjectManager")).FirstOrDefault();
             return projectManager;
         }
@@ -214,36 +230,54 @@ namespace JamesonBugTracker.Services
                 await _context.SaveChangesAsync();
                 return;
             }
-            catch
+            catch(Exception ex)
             {
+                Debug.WriteLine($"***ERROR*** - Error removing project manager. --> {ex.Message}");
                 throw;
             }
         }
-        //Should this be boolean, in case user is not on project in the first place? TODO
+        
         public async Task RemoveUserFromProjectAsync(string userId, int projectId)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
-            Project project = await GetProjectByIdAsync(projectId);
-            project.Members.Remove(user);
-            await _context.SaveChangesAsync();
-            return;
+            try
+            {
+                var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
+                Project project = await GetProjectByIdAsync(projectId);
+                project.Members.Remove(user);
+                await _context.SaveChangesAsync();
+                return;
+
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"***ERROR*** - Error Removing user from project. --> {ex.Message}");
+                throw;
+            }
         }
 
 
         public async Task RemoveUsersFromProjectByRoleAsync(string role, int projectId)
         {
-            List<BTUser> usersToRemove = await GetProjectMembersByRoleAsync(projectId, role);
-            Project project = await GetProjectByIdAsync(projectId);
-            foreach (var user in project.Members)
+            try
             {
-                if (usersToRemove.Contains(user))
+                List<BTUser> usersToRemove = await GetProjectMembersByRoleAsync(projectId, role);
+                Project project = await GetProjectByIdAsync(projectId);
+                foreach (var user in project.Members)
                 {
-                    project.Members.Remove(user);
+                    if (usersToRemove.Contains(user))
+                    {
+                        project.Members.Remove(user);
+                    }
                 }
+                await _context.SaveChangesAsync();
+                return;
             }
-            await _context.SaveChangesAsync();
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"***ERROR*** - Error Removing users from project by role. --> {ex.Message}");
+                throw;
+            }
 
-            return;
 
         }
 
