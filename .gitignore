@@ -361,3 +361,7 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+# User defined
+# Removes template folder used to build site
+AdminLTE-3.1.0
