@@ -129,7 +129,16 @@ namespace JamesonBugTracker.Services
                 {
                     tickets = tickets.Where(t => t.DeveloperUserId == userId).ToList();
                 }
-                else
+                else if (role == "ProjectManager")
+                {
+                    tickets = await GetAllPMTicketsAsync(userId);
+                }
+                else if (role == "Admin")
+                {
+                    BTUser admin = await GetUserByIdAsync(userId);
+                    tickets = await GetAllTicketsByCompanyAsync(admin.CompanyId.Value);
+                }
+                else//submitter
                 {
                     tickets = tickets.Where(t => t.OwnerUserId == userId).ToList();
 
@@ -158,6 +167,27 @@ namespace JamesonBugTracker.Services
                 return ticketsWithStatus;
             }
             catch { throw; }
+        }
+        public async Task<List<Ticket>> GetProjectTicketsByPriorityAsync(string priorityName, int companyId, int projectId)
+        {
+            List<Ticket> tickets = new();
+
+            tickets = (await GetAllTicketsByPriorityAsync(companyId, priorityName)).Where(t => t.ProjectId == projectId).ToList();
+            return tickets;
+        }
+        public async Task<List<Ticket>> GetProjectTicketsByStatusAsync(string statusName, int companyId, int projectId)
+        {
+            List<Ticket> tickets = new();
+
+            tickets = (await GetAllTicketsByStatusAsync(companyId, statusName)).Where(t => t.ProjectId == projectId).ToList();
+            return tickets;
+        }
+        public async Task<List<Ticket>> GetProjectTicketsByTypeAsync(string typeName, int companyId, int projectId)
+        {
+            List<Ticket> tickets = new();
+
+            tickets = (await GetAllTicketsByTypeAsync(companyId, typeName)).Where(t => t.ProjectId == projectId).ToList();
+            return tickets;
         }
             
 
