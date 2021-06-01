@@ -7,16 +7,20 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using JamesonBugTracker.Data;
 using JamesonBugTracker.Models;
+using JamesonBugTracker.Services.Interfaces;
+using JamesonBugTracker.Models.ViewModels;
 
 namespace JamesonBugTracker.Controllers
 {
     public class ProjectsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IBTProjectService _projectService;
 
-        public ProjectsController(ApplicationDbContext context)
+        public ProjectsController(ApplicationDbContext context, IBTProjectService projectService)
         {
             _context = context;
+            _projectService = projectService;
         }
 
         // GET: Projects
@@ -127,6 +131,18 @@ namespace JamesonBugTracker.Controllers
             return View(project);
         }
 
+        //[Authorize(Roles = "Admin,ProjectManager")]
+        [HttpGet]
+        public async Task<IActionResult> AssignUsers(int id)
+        {
+            ProjectMembersViewModel model = new();
+            var project = _projectService.GetAllProjectsByCompanyAsync
+            model.Project = project;
+            List<BTUser> users = await _context.Users.ToListAsync();
+            List<BTUser> members = (List<BTUser>)await _projectService.GetMembersWithoutPMAsync(id);
+            model.Users = new MultiSelectList(users);
+            return View(model);
+        }
         // GET: Projects/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
