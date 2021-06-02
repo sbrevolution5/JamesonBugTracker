@@ -25,7 +25,7 @@ namespace JamesonBugTracker.Services.Interfaces
         public Task<List<Project>> GetAllProjectsByPriorityAsync(int companyId, string priorityName);
 
         public Task<List<BTUser>> GetProjectMembersByRoleAsync(int projectId, string role);
-
+        //public Task<Project> GetProjectById(int projectId);
         public Task<BTUser> GetProjectManagerAsync(int projectId);
 
         public Task<bool> AddProjectManagerAsync(string userId, int projectId);

@@ -9,6 +9,7 @@ using JamesonBugTracker.Data;
 using JamesonBugTracker.Models;
 using JamesonBugTracker.Services.Interfaces;
 using JamesonBugTracker.Models.ViewModels;
+using JamesonBugTracker.Extensions;
 
 namespace JamesonBugTracker.Controllers
 {
@@ -135,8 +136,10 @@ namespace JamesonBugTracker.Controllers
         [HttpGet]
         public async Task<IActionResult> AssignUsers(int id)
         {
+            int companyId = User.Identity.GetCompanyId().Value;
             ProjectMembersViewModel model = new();
-            var project = _projectService.GetAllProjectsByCompanyAsync
+            var project = (await _projectService.GetAllProjectsByCompanyAsync(companyId))
+                                               .FirstOrDefaultAsync(p => p.Id == id);
             model.Project = project;
             List<BTUser> users = await _context.Users.ToListAsync();
             List<BTUser> members = (List<BTUser>)await _projectService.GetMembersWithoutPMAsync(id);
