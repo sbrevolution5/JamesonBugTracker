@@ -8,12 +8,6 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - JamesonBugTracker</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" />
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>AdminLTE 3 | Starter</title>
-    @await RenderSectionAsync("Header", required: false)
     <link href="~/plugins/datatables-bs4/css/dataTables.bootstrap4.css" rel="stylesheet" />
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
@@ -21,6 +15,9 @@
     <link rel="stylesheet" href="~/plugins/fontawesome-free/css/all.min.css">
     <!-- Theme style -->
     <link rel="stylesheet" href="~/css/adminlte.min.css">
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    @await RenderSectionAsync("Header", required: false)
+    <link rel="stylesheet" href="~/css/site.css" />
 </head>
 <body id="layoutBody" class="hold-transition sidebar-mini">
     <div class="wrapper">
@@ -65,7 +62,7 @@
                 </li>
                 <!--Dark Mode toggler-->
                 <li class="nav-item">
-                    <button onclick="toggleDark()">
+                    <button onclick="toggleDark()" class="btn-default">
                         <i id="darkIcon" class="far fa-moon"></i>
                     </button>
                 </li>
@@ -170,7 +167,7 @@
         <!-- Main Sidebar Container -->
         <aside class="main-sidebar sidebar-dark-primary elevation-4">
             <!-- Brand Logo -->
-            <a href="index3.html" class="brand-link">
+            <a asp-controller="Home" asp-action="Index" class="brand-link">
                 <img src="~/favicon.ico" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
                 <span class="brand-text font-weight-light">Jameson Bug Tracker</span>
             </a>
@@ -276,8 +273,10 @@
 
         <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper">
+            <div class="container-fluid">
 
             @RenderBody()
+            </div>
         </div>
         <!-- /.content-wrapper -->
         <!-- Control Sidebar -->
