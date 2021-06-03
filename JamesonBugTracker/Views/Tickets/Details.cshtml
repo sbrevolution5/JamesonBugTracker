@@ -54,15 +54,22 @@
                 <hr />
                 <div class="row">
                     <div class="col-12">
-                        
-                                <h5>
-                                    Add a Comment
-                                </h5>
-                            
-                                <textarea id="summernote">
+
+                        <h5>
+                            Add a Comment
+                        </h5>
+                        <form asp-action="Create" asp-controller="Comments" method="POST">
+                        <div class="form-group">
+                            <input type="hidden" class="form-control" name="TicketId" id="TicketId" value="@Model.Id">
+                            <textarea class="form-control" name="Body" id="" aria-describedby="helpId" rows="5" required></textarea>
+                            <button type="submit" class="btn btn-primary btn-block btn-dark">Submit</button>
+                            @*<span asp-validation-for="PostState" class="text-danger"></span>*@
+                        </div>
+                        </form>
+                        <textarea id="summernote">
                 Place <em>some</em> <u>text</u> <strong>here</strong>
               </textarea>
-                            
+
                         <button class="btn btn-primary">Post Comment</button>
                         <h4>Ticket Comments</h4>
                         @foreach (var comment in Model.Comments)
