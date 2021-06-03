@@ -3,6 +3,10 @@
 @{
     ViewData["Title"] = "Details";
 }
+@using Microsoft.AspNetCore.Identity;
+@using JamesonBugTracker.Services.Interfaces;
+@inject UserManager<BTUser> _userManager
+@inject IBTProjectService _projectService
 @section Header{
     <link rel="stylesheet" href="~/plugins/summernote/summernote-bs4.min.css">
 }
@@ -10,6 +14,10 @@
 <div class="card">
     <div class="card-header">
         <h3 class="card-title">@Model.Title</h3>
+        <div class="nav-links text-right">
+            <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
+            <a asp-action="Index">Back to List</a>
+        </div>
     </div>
     <div class="card-body">
         <div class="row">
@@ -21,7 +29,7 @@
                                 <span class="info-box-text text-center text-muted">Created by:</span>
                                 <span class="info-box-number text-center text-muted mb-0">@Model.OwnerUser?.FullName</span>
                                 <span class="info-box-text text-center text-muted">On:</span>
-                                <span class="info-box-number text-center text-muted mb-0">@Model.Created</span>
+                                <span class="info-box-number text-center text-muted mb-0">@string.Format("{0:MMM dd yyyy}", Model.Created)</span>
                             </div>
                         </div>
                     </div>
@@ -35,7 +43,7 @@
                         </div>
                     </div>
                     <div class="col-12 col-sm-4">
-                        <div class="info-box bg-light">
+                        <div class="info-box">
                             <div class="info-box-content">
                                 <span class="info-box-text text-center text-muted">Assigned to:</span>
                                 @if (Model.DeveloperUserId is not null)
@@ -58,80 +66,95 @@
                         <h5>
                             Add a Comment
                         </h5>
-                        <form asp-action="Create" asp-controller="Comments" method="POST">
-                        <div class="form-group">
-                            <input type="hidden" class="form-control" name="TicketId" id="TicketId" value="@Model.Id">
-                            <textarea class="form-control" name="Body" id="" aria-describedby="helpId" rows="5" required></textarea>
-                            <button type="submit" class="btn btn-primary btn-block btn-dark">Submit</button>
-                            @*<span asp-validation-for="PostState" class="text-danger"></span>*@
-                        </div>
-                        </form>
-                        <textarea id="summernote">
-                Place <em>some</em> <u>text</u> <strong>here</strong>
+                        <form asp-action="Create" asp-controller="TicketComments" method="POST">
+                            <div class="form-group">
+                                <input type="hidden" class="form-control" name="TicketId" id="TicketId" value="@Model.Id">
+                                <textarea id="summernote" name="Comment" required placeholder="Type your comment here">
               </textarea>
+                                <button type="submit" class="btn btn-primary">Post Comment</button>
+                            </div>
+                        </form>
 
-                        <button class="btn btn-primary">Post Comment</button>
+
                         <h4>Ticket Comments</h4>
+                        <hr />
                         @foreach (var comment in Model.Comments)
                         {
+                            <div class="card">
+                                <div class="card-body">
 
                             <div class="post">
                                 <div class="user-block">
                                     <img class="img-circle img-bordered-sm" src="../../dist/img/user1-128x128.jpg" alt="user image">
                                     <span class="username">
-                                        <a href="#">@comment.User.FullName</a>
+                                        <a href="#">@comment.User.FullName</a> 
+                                        @if (Model.DeveloperUserId == comment.UserId)
+                                        {
+                                            <span class="text-success">Assigned developer</span>
+                                        }@*else if ((await _projectService.GetProjectManagerAsync(Model.ProjectId)).Id == comment.UserId) { 
+                                            <span class="text-primary">Project Manager</span>
+                                        }*@else if (Model.OwnerUserId == comment.UserId)
+                {
+                    <span class="text-danger">Submitter</span>
+                }
                                     </span>
-                                    <span class="description">@comment.Created</span>
+                                    <span class="description">@string.Format("{0:MMM dd yyyy}", comment.Created)</span>
                                 </div>
                                 <!-- /.user-block -->
                                 <p>
                                     @comment.Comment
                                 </p>
+                                @*Potential comment edit*@
+                                @*@if (_userManager.GetUserId(User) == comment.UserId)
+                                {
 
-                                <p>
-                                    <a href="#" class="link-black text-sm"><i class="fas fa-link mr-1"></i> Demo File 1 v2</a>
-                                </p>
+
+                                    <p>
+                                        <button type="button" data-toggle="modal" data-target="#modal-@comment.Id" class="btn btn-warning"><i class="far fa-pencil mr-1"></i> Edit comment</button>
+                                    </p>
+                                    <div class="modal fade" id="modal-@comment.Id" tabindex="-1" role="dialog"
+                                         aria-labelledby="modelTitleId" aria-hidden="true">
+                                        <div class="modal-dialog" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title">Edit your comment</h5>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <form asp-controller="TicketComments" asp-action="Edit">
+                                                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                                        <div class="form-group">
+                                                        <input type="hidden" value="@comment.Id" name="id" />
+                                                        <input type="hidden" asp-for="@comment.Id" />
+                                                        <input type="hidden" asp-for="@comment.TicketId" />
+                                                        <input type="hidden" asp-for="@comment.UserId" />
+                                                        <input type="hidden" asp-for="@comment.Created" />
+
+
+                                                            <label asp-for="@comment.Comment" class="control-label"></label>
+                                                            <textarea id="summernote" class="summernoteEditComment" name="Comment" required placeholder="Type your comment here">
+              </textarea>
+                                                            <span asp-validation-for="@comment.Comment" class="text-danger"></span>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <input type="submit" value="Save" class="btn btn-primary" />
+                                                        </div>
+                                                    </form>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                }*@
+                            </div>
+                                </div>
                             </div>
                         }
 
-                        <div class="post clearfix">
-                            <div class="user-block">
-                                <img class="img-circle img-bordered-sm" src="../../dist/img/user7-128x128.jpg" alt="User Image">
-                                <span class="username">
-                                    <a href="#">Sarah Ross</a>
-                                </span>
-                                <span class="description">Sent you a message - 3 days ago</span>
-                            </div>
-                            <!-- /.user-block -->
-                            <p>
-                                Lorem ipsum represents a long-held tradition for designers,
-                                typographers and the like. Some people hate it and argue for
-                                its demise, but others ignore.
-                            </p>
-                            <p>
-                                <a href="#" class="link-black text-sm"><i class="fas fa-link mr-1"></i> Demo File 2</a>
-                            </p>
-                        </div>
 
-                        <div class="post">
-                            <div class="user-block">
-                                <img class="img-circle img-bordered-sm" src="../../dist/img/user1-128x128.jpg" alt="user image">
-                                <span class="username">
-                                    <a href="#">Jonathan Burke Jr.</a>
-                                </span>
-                                <span class="description">Shared publicly - 5 days ago</span>
-                            </div>
-                            <!-- /.user-block -->
-                            <p>
-                                Lorem ipsum represents a long-held tradition for designers,
-                                typographers and the like. Some people hate it and argue for
-                                its demise, but others ignore.
-                            </p>
-
-                            <p>
-                                <a href="#" class="link-black text-sm"><i class="fas fa-link mr-1"></i> Demo File 1 v1</a>
-                            </p>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -294,96 +317,14 @@
     </div>
     <!-- /.col -->
 </div>
-<h1>Details</h1>
 
-<div>
-    <h4>Ticket</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Title)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Title)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Description)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Created)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Created)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Updated)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Updated)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.ArchiveDate)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.ArchiveDate)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Archived)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Archived)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Project)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Project.Description)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.TicketPriority)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.TicketPriority.Id)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.TicketStatus)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.TicketStatus.Id)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.TicketType)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.TicketType.Id)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.OwnerUser)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.OwnerUser.Id)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.DeveloperUser)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.DeveloperUser.Id)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
 @section Scripts{
     <script src="../../plugins/summernote/summernote-bs4.min.js"></script>
     <script>
         $(function () {
             // Summernote
             $('#summernote').summernote()
+            $('.summernoteEditComment').summernote()
         })
     </script>
 }

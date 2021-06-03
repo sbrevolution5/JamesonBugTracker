@@ -10,6 +10,7 @@ using JamesonBugTracker.Models;
 using JamesonBugTracker.Services.Interfaces;
 using JamesonBugTracker.Models.ViewModels;
 using JamesonBugTracker.Extensions;
+using Microsoft.AspNetCore.Identity;
 
 namespace JamesonBugTracker.Controllers
 {
@@ -17,17 +18,41 @@ namespace JamesonBugTracker.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly IBTProjectService _projectService;
+        private readonly UserManager<BTUser> _userManager;
 
-        public ProjectsController(ApplicationDbContext context, IBTProjectService projectService)
+
+        public ProjectsController(ApplicationDbContext context, IBTProjectService projectService, UserManager<BTUser> userManager)
         {
             _context = context;
             _projectService = projectService;
+            _userManager = userManager;
         }
 
         // GET: Projects
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Project.Include(p => p.Company).Include(p => p.ProjectPriority);
+            var applicationDbContext = _context.Project.Include(p => p.Company)
+                                                       .Include(p => p.ProjectPriority)
+                                                       .Include(p => p.Members);
+            return View(await applicationDbContext.ToListAsync());
+        }
+
+        // GET: Projects
+        public async Task<IActionResult> AllProjects()
+        {
+            var userId = _userManager.GetUserId(User);
+            var userProjects = await _projectService.ListUserProjectsAsync(userId);
+            return View(userProjects);
+        }
+
+        // GET: Projects
+        public async Task<IActionResult> MyProjects()
+        {
+            int companyId = User.Identity.GetCompanyId().Value;
+            var applicationDbContext = _context.Project.Where(p =>p.CompanyId==companyId)
+                                                       .Include(p => p.Company)
+                                                       .Include(p => p.ProjectPriority)
+                                                       .Include(p => p.Members);
             return View(await applicationDbContext.ToListAsync());
         }
 

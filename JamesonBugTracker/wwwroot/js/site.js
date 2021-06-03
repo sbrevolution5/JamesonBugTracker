@@ -2,6 +2,11 @@
 function toggleDark() {
     var element = document.getElementById("layoutBody")
     element.classList.toggle("dark-mode")
+    var buttonElement = document.getElementById("darkIcon")
+    buttonElement.classList.toggle("fa-moon")
+    buttonElement.classList.toggle("fas")
+    buttonElement.classList.toggle("far")
+    buttonElement.classList.toggle("fa-sun")
     let dark = JSON.parse(localStorage.getItem("jamesonDarkMode")) 
     if (dark) {
         localStorage.setItem("jamesonDarkMode", JSON.stringify(false))

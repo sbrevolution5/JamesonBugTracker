@@ -1,13 +1,18 @@
-﻿@model IEnumerable<JamesonBugTracker.Models.Project>
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@model IEnumerable<JamesonBugTracker.Models.Project>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "All Projects";
 }
 @section Header{
     <link href="~/plugins/datatables-bs4/css/dataTables.bootstrap4.css" rel="stylesheet" />
 
 }
-<h1>Index</h1>
+<h1>All Projects</h1>
 
 <p>
     <a asp-action="Create">Create New</a>
@@ -123,7 +128,7 @@
     <script src="~/plugins/datatables-bs4/js/dataTables.bootstrap4.js"></script>
     <script>
         $(document).ready(function () {
-            $('#projectTable').DataTable();            
+            $('#projectTable').DataTable();
         });
     </script>
 }

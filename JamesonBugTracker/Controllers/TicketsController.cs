@@ -19,12 +19,14 @@ namespace JamesonBugTracker.Controllers
         private readonly ApplicationDbContext _context;
         private readonly IBTTicketService _ticketService;
         private readonly UserManager<BTUser> _userManager;
+        private readonly IBTProjectService _projectService;
 
-        public TicketsController(ApplicationDbContext context, IBTTicketService ticketService, UserManager<BTUser> userManager)
+        public TicketsController(ApplicationDbContext context, IBTTicketService ticketService, UserManager<BTUser> userManager, IBTProjectService projectService)
         {
             _context = context;
             _ticketService = ticketService;
             _userManager = userManager;
+            _projectService = projectService;
         }
 
         // GET: Tickets
@@ -48,7 +50,8 @@ namespace JamesonBugTracker.Controllers
                                                       .Include(t => t.TicketStatus)
                                                       .Include(t => t.TicketType);
             return View(await applicationDbContext.ToListAsync());
-        }public async Task<IActionResult> MyTickets()
+        }
+        public async Task<IActionResult> MyTickets()
         {
             var userId = _userManager.GetUserId(User);
             var devTickets = await _ticketService.GetAllTicketsByRoleAsync("Developer", userId);
@@ -57,7 +60,7 @@ namespace JamesonBugTracker.Controllers
             {
                 DevTickets = devTickets,
                 SubmittedTickets = subTickets
-            };
+            }; 
             return View(viewModel);
         }
 
