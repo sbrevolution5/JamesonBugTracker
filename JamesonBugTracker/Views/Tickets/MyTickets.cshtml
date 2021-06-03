@@ -1,0 +1,71 @@
+﻿@model JamesonBugTracker.Models.ViewModels.MyTicketsViewModel
+@{
+    ViewData["Title"] = "MyTickets";
+}
+<div class="container-fluid">
+    <h1> My Development Tickets</h1>
+    <div class="card">
+        <table class="dataTable striped">
+            <thead>
+                <tr>
+
+                    <th>Name</th>
+                    <th>Created</th>
+                    <th>Developer</th>
+                    <th>Description</th>
+                    <th>Type</th>
+                    <th>Priority</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var ticket in Model.DevTickets)
+                {
+                    <tr>
+                        <td>@ticket.Title</td>
+                        <td>@ticket.Created</td>
+                        <td>@ticket.DeveloperUser.FullName</td>
+                        <td>@ticket.Description</td>
+                        <td>@ticket.TicketType.Name</td>
+                        <td>@ticket.TicketPriority.Name</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <h1> My Submitted Tickets</h1>
+    <div class="card">
+        <table class="dataTable striped">
+            <thead>
+                <tr>
+
+                    <th>Name</th>
+                    <th>Created</th>
+                    <th>Developer</th>
+                    <th>Description</th>
+                    <th>Type</th>
+                    <th>Priority</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var ticket in Model.SubmittedTickets)
+                {
+                    <tr>
+                        <td>@ticket.Title</td>
+                        <td>@ticket.Created</td>
+                        <td>@ticket.OwnerUser.FullName</td>
+                        <td>@ticket.Description</td>
+                        <td>@ticket.TicketType.Name</td>
+                        <td>@ticket.TicketPriority.Name</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            $('#ticketTable').DataTable();
+        });</script>
+}

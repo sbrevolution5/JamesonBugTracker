@@ -40,6 +40,7 @@ namespace JamesonBugTracker.Controllers
             }
 
             var project = await _context.Project
+                .Include(p => p.Members)
                 .Include(p => p.Company)
                 .Include(p => p.ProjectPriority)
                 .FirstOrDefaultAsync(m => m.Id == id);
@@ -134,16 +135,46 @@ namespace JamesonBugTracker.Controllers
 
         //[Authorize(Roles = "Admin,ProjectManager")]
         [HttpGet]
-        public async Task<IActionResult> AssignUsers(int id)
+        public async Task<IActionResult> AddMembers(int id)
         {
+            //We extended Identity 
             int companyId = User.Identity.GetCompanyId().Value;
             ProjectMembersViewModel model = new();
             var project = (await _projectService.GetAllProjectsByCompanyAsync(companyId))
-                                               .FirstOrDefaultAsync(p => p.Id == id);
+                                               .FirstOrDefault(p => p.Id == id);
             model.Project = project;
-            List<BTUser> users = await _context.Users.ToListAsync();
-            List<BTUser> members = (List<BTUser>)await _projectService.GetMembersWithoutPMAsync(id);
-            model.Users = new MultiSelectList(users);
+            List<BTUser> users = await _projectService.UsersNotOnProjectAsync(id, companyId);
+            List<string> members = project.Members.Select(m=>m.Id).ToList();  // we can do this because our project eagerly loaded its members
+            model.Users = new MultiSelectList(users, "Id", "FullName", members);
+            return View(model);
+        }
+        //POST: AssignUsers
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddMembers(ProjectMembersViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                if (model.SelectedUsers != null)
+                {
+                    //Get list of all project members, but without the project manager. 
+                    //these will be removed from project, We do not want to ever remove project manager.
+                    List<string> memberIds = (await _projectService.GetMembersWithoutPMAsync(model.Project.Id)).Select(m => m.Id).ToList();
+                    foreach (string id in memberIds)
+                    {
+                        await _projectService.RemoveUserFromProjectAsync(id, model.Project.Id);
+                    }
+                    foreach (string id in model.SelectedUsers)
+                    {
+                        await _projectService.AddUserToProjectAsync(id, model.Project.Id);
+                    }
+                    return RedirectToAction("Details", "Projects", new {id = model.Project.Id});
+                }
+                else
+                {
+                    //send an error message to user, that they didnt'  select anyone
+                }
+            }
             return View(model);
         }
         // GET: Projects/Delete/5

@@ -127,7 +127,14 @@ namespace JamesonBugTracker.Services
                 List<Ticket> tickets = await _context.Ticket.ToListAsync();
                 if (role == "Developer")
                 {
-                    tickets = tickets.Where(t => t.DeveloperUserId == userId).ToList();
+                    tickets = await _context.Ticket.Include(t => t.OwnerUser)
+                                                .Include(t => t.DeveloperUser)
+                                                .Include(t => t.TicketPriority)
+                                                .Include(t => t.TicketStatus)
+                                                .Include(t => t.TicketType)
+                                                .Include(t => t.Attachments)
+                                                .Include(t => t.History)
+                                                .Include(t => t.Comments).Where(t => t.DeveloperUserId == userId).ToListAsync();
                 }
                 else if (role == "ProjectManager")
                 {
@@ -140,7 +147,14 @@ namespace JamesonBugTracker.Services
                 }
                 else//submitter
                 {
-                    tickets = tickets.Where(t => t.OwnerUserId == userId).ToList();
+                    tickets = await _context.Ticket.Include(t => t.OwnerUser)
+                                                .Include(t => t.DeveloperUser)
+                                                .Include(t => t.TicketPriority)
+                                                .Include(t => t.TicketStatus)
+                                                .Include(t => t.TicketType)
+                                                .Include(t => t.Attachments)
+                                                .Include(t => t.History)
+                                                .Include(t => t.Comments).Where(t => t.OwnerUserId == userId).ToListAsync();
 
                 }
                 return tickets;

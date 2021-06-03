@@ -1,31 +1,32 @@
-﻿@model IEnumerable<JamesonBugTracker.Models.Project>
+﻿@model IEnumerable<JamesonBugTracker.Models.Ticket>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "AllTickets";
 }
-@section Header{ 
-<link href="~/plugins/datatables-bs4/css/dataTables.bootstrap4.css" rel="stylesheet" />
 
-}
-<h1>Index</h1>
+<h1>AllTickets</h1>
 
 <p>
     <a asp-action="Create">Create New</a>
 </p>
-<table class="table dataTable dtr-inline">
+<div class="m-3">
+
+<div class="card p-1 m-1">
+
+<table id="ticketTable" class="table dataTable">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Name)
+                @Html.DisplayNameFor(model => model.Title)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Description)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.StartDate)
+                @Html.DisplayNameFor(model => model.Created)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.EndDate)
+                @Html.DisplayNameFor(model => model.Updated)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.ArchiveDate)
@@ -34,19 +35,22 @@
                 @Html.DisplayNameFor(model => model.Archived)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ImageFileName)
+                @Html.DisplayNameFor(model => model.Project)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ImageFileData)
+                @Html.DisplayNameFor(model => model.TicketPriority)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ImageFileContentType)
+                @Html.DisplayNameFor(model => model.TicketStatus)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ProjectPriority)
+                @Html.DisplayNameFor(model => model.TicketType)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Company)
+                @Html.DisplayNameFor(model => model.OwnerUser)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DeveloperUser)
             </th>
             <th></th>
         </tr>
@@ -56,16 +60,16 @@
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Name)
+                    @Html.DisplayFor(modelItem => item.Title)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Description)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.StartDate)
+                    @Html.DisplayFor(modelItem => item.Created)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.EndDate)
+                    @Html.DisplayFor(modelItem => item.Updated)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.ArchiveDate)
@@ -74,19 +78,22 @@
                     @Html.DisplayFor(modelItem => item.Archived)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.ImageFileName)
+                    @Html.DisplayFor(modelItem => item.Project.Description)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.ImageFileData)
+                    @Html.DisplayFor(modelItem => item.TicketPriority.Id)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.ImageFileContentType)
+                    @Html.DisplayFor(modelItem => item.TicketStatus.Id)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.ProjectPriority.Id)
+                    @Html.DisplayFor(modelItem => item.TicketType.Id)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Company.Name)
+                    @Html.DisplayFor(modelItem => item.OwnerUser.Id)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DeveloperUser.Id)
                 </td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
@@ -97,7 +104,12 @@
         }
     </tbody>
 </table>
-@section Scripts{
-    <script src="~/plugins/datatables/jquery.dataTables.js"></script>
-    <script src="~/plugins/datatables-bs4/js/dataTables.bootstrap4.js"></script>
+</div>
+</div>
+    
+@section Scripts{ 
+<script>
+    $(document).ready(function () {
+        $('#ticketTable').DataTable();
+    });</script>
 }

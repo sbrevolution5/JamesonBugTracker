@@ -81,7 +81,7 @@ namespace JamesonBugTracker.Data
             await SeedDefaultTicketPriorityAsync(dbContextSvc);
             await SeedDefaultProjectPriorityAsync(dbContextSvc);
             await SeedDefautProjectsAsync(dbContextSvc);
-            await SeedDefautTicketsAsync(dbContextSvc);
+            await SeedDefautTicketsAsync(dbContextSvc, userManagerSvc);
         }
 
         public static async Task SeedRolesAsync(UserManager<BTUser> userManager, RoleManager<IdentityRole> roleManager)
@@ -758,7 +758,7 @@ namespace JamesonBugTracker.Data
             }
         }
 
-        public static async Task SeedDefautTicketsAsync(ApplicationDbContext context)
+        public static async Task SeedDefautTicketsAsync(ApplicationDbContext context, UserManager<BTUser> userManager)
         {
             //Get project Ids
             int portfolioId = context.Project.FirstOrDefault(p => p.Name == "Build a Personal Porfolio").Id;
@@ -786,6 +786,7 @@ namespace JamesonBugTracker.Data
 
             try
             {
+                var adminUser = await userManager.FindByEmailAsync("sethbcoding@gmail.com");
                 IList<Ticket> tickets = new List<Ticket>() {
                                 //PORTFOLIO
                                 new Ticket() {Title = "Portfolio Ticket 1", Description = "Ticket details for portfolio ticket 1", Created = DateTimeOffset.Now, ProjectId = portfolioId, TicketPriorityId = priorityLow, TicketStatusId = statusNew, TicketTypeId = typeNewDev},
@@ -815,8 +816,9 @@ namespace JamesonBugTracker.Data
                                 new Ticket() {Title = "Blog Ticket 16", Description = "Ticket details for blog ticket 16", Created = DateTimeOffset.Now, ProjectId = blogId, TicketPriorityId = priorityUrgent, TicketStatusId = statusUnassigned, TicketTypeId = typeNewDev},
                                 new Ticket() {Title = "Blog Ticket 17", Description = "Ticket details for blog ticket 17", Created = DateTimeOffset.Now, ProjectId = blogId, TicketPriorityId = priorityHigh, TicketStatusId = statusDev,  TicketTypeId = typeNewDev},
                                 //BUGTRACKER                                                                                                                         
-                                new Ticket() {Title = "Bug Tracker Ticket 1", Description = "Ticket details for blog ticket 1", Created = DateTimeOffset.Now, ProjectId = bugtrackerId, TicketPriorityId = priorityHigh, TicketStatusId = statusUnassigned, TicketTypeId = typeNewDev},
-                                new Ticket() {Title = "Bug Tracker Ticket 2", Description = "Ticket details for blog ticket 2", Created = DateTimeOffset.Now, ProjectId = bugtrackerId, TicketPriorityId = priorityHigh, TicketStatusId = statusUnassigned, TicketTypeId = typeNewDev},
+
+                                new Ticket() {Title = "Bug Tracker Ticket 1", Description = "Ticket details for blog ticket 1", Created = DateTimeOffset.Now, ProjectId = bugtrackerId, TicketPriorityId = priorityHigh, TicketStatusId = statusUnassigned, TicketTypeId = typeNewDev, DeveloperUserId= adminUser.Id},
+                                new Ticket() {Title = "Bug Tracker Ticket 2", Description = "Ticket details for blog ticket 2", Created = DateTimeOffset.Now, ProjectId = bugtrackerId, TicketPriorityId = priorityHigh, TicketStatusId = statusUnassigned, TicketTypeId = typeNewDev, OwnerUserId = adminUser.Id},
                                 new Ticket() {Title = "Bug Tracker Ticket 3", Description = "Ticket details for blog ticket 3", Created = DateTimeOffset.Now, ProjectId = bugtrackerId, TicketPriorityId = priorityHigh, TicketStatusId = statusUnassigned, TicketTypeId = typeNewDev},
                                 new Ticket() {Title = "Bug Tracker Ticket 4", Description = "Ticket details for blog ticket 4", Created = DateTimeOffset.Now, ProjectId = bugtrackerId, TicketPriorityId = priorityHigh, TicketStatusId = statusUnassigned, TicketTypeId = typeNewDev},
                                 new Ticket() {Title = "Bug Tracker Ticket 5", Description = "Ticket details for blog ticket 5", Created = DateTimeOffset.Now, ProjectId = bugtrackerId, TicketPriorityId = priorityHigh, TicketStatusId = statusUnassigned, TicketTypeId = typeNewDev},
