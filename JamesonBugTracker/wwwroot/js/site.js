@@ -17,12 +17,11 @@ function toggleDark() {
 function loadDark() {
     //default is light mode
     console.log("dark mode is ", JSON.parse(localStorage.getItem("jamesonDarkMode")))
-    let dark = JSON.parse(localStorage.getItem("jamesonDarkMode")) || "false"
-    if (dark == false) {
+    let dark = JSON.parse(localStorage.getItem("jamesonDarkMode"))
+    if (dark === null) {
         localStorage.setItem("jamesonDarkMode", JSON.stringify(false))
-
     }
-    else {
-        toggleDark()
+    else if (dark === true) {
+        document.getElementById("layoutBody").classList.add("dark-mode")
     }
 }

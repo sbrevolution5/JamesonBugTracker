@@ -309,7 +309,7 @@
     <script src="~/plugins/datatables-bs4/js/dataTables.bootstrap4.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script>
-        $(document).ready(loadDark());
+        $(window).on("load",loadDark());
     </script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
