@@ -81,19 +81,19 @@
                     @Html.DisplayFor(modelItem => item.Project.Description)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.TicketPriority.Id)
+                    @item.TicketPriority.Name
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.TicketStatus.Id)
+                    @item.TicketStatus.Name
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.TicketType.Id)
+                    @item.TicketType.Name
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.OwnerUser.Id)
+                    @item.OwnerUser?.FullName
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.DeveloperUser.Id)
+                    @item.DeveloperUser?.FullName
                 </td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |

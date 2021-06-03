@@ -6,10 +6,10 @@
 @if (SignInManager.IsSignedIn(User))
 {
     BTUser btUser = await UserManager.GetUserAsync(User); //Principal = person using application
-    @*<li class="nav-item">
+    <li class="nav-item">
         <a  class="nav-link" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">
         Hello @btUser.FullName!</a>
-    </li>*@
+    </li>
     <li class="nav-item">
         <form  class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
             <button  type="submit" class="nav-link btn btn-link">Logout</button>
