@@ -210,6 +210,8 @@ namespace JamesonBugTracker.Services
         public async Task<List<Project>> ListUserProjectsAsync(string userId)
         {
             var projectList = (await _context.Users.Include(u => u.Projects)
+                .ThenInclude(p => p.ProjectPriority)
+                                    .Include(u=>u.Projects)
                                     .ThenInclude(p => p.Tickets)
                                                 .ThenInclude(t => t.DeveloperUser)
                                     .Include(u => u.Projects)

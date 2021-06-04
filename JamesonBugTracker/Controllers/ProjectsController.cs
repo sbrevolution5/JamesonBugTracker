@@ -19,13 +19,15 @@ namespace JamesonBugTracker.Controllers
         private readonly ApplicationDbContext _context;
         private readonly IBTProjectService _projectService;
         private readonly UserManager<BTUser> _userManager;
+        private readonly IBTCompanyInfoService _companyInfoService;
 
 
-        public ProjectsController(ApplicationDbContext context, IBTProjectService projectService, UserManager<BTUser> userManager)
+        public ProjectsController(ApplicationDbContext context, IBTProjectService projectService, UserManager<BTUser> userManager, IBTCompanyInfoService companyInfoService)
         {
             _context = context;
             _projectService = projectService;
             _userManager = userManager;
+            _companyInfoService = companyInfoService;
         }
 
         // GET: Projects
@@ -40,20 +42,17 @@ namespace JamesonBugTracker.Controllers
         // GET: Projects
         public async Task<IActionResult> AllProjects()
         {
-            var userId = _userManager.GetUserId(User);
-            var userProjects = await _projectService.ListUserProjectsAsync(userId);
-            return View(userProjects);
+            int companyId = User.Identity.GetCompanyId().Value;
+            var companyProjects = await _companyInfoService.GetAllProjectsAsync(companyId);
+            return View(companyProjects);
         }
 
         // GET: Projects
         public async Task<IActionResult> MyProjects()
         {
-            int companyId = User.Identity.GetCompanyId().Value;
-            var applicationDbContext = _context.Project.Where(p =>p.CompanyId==companyId)
-                                                       .Include(p => p.Company)
-                                                       .Include(p => p.ProjectPriority)
-                                                       .Include(p => p.Members);
-            return View(await applicationDbContext.ToListAsync());
+            var userId = _userManager.GetUserId(User);
+            var userProjects = await _projectService.ListUserProjectsAsync(userId);
+            return View(userProjects);
         }
 
         // GET: Projects/Details/5

@@ -36,6 +36,7 @@ namespace JamesonBugTracker.Services
         {
             List<Project> projects = new();
             projects = await _context.Project
+                                             .Include(p=> p.ProjectPriority)
                                              .Include(p => p.Members)
                                              .Include(p => p.Tickets)
                                                 .ThenInclude(t => t.OwnerUser)
