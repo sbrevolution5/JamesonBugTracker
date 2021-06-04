@@ -64,6 +64,12 @@ namespace JamesonBugTracker.Controllers
             }
 
             var project = await _context.Project
+                .Include(p => p.Tickets)
+                .ThenInclude(t => t.TicketPriority)
+                .Include(p => p.Tickets)
+                .ThenInclude(t => t.TicketStatus)
+                .Include(p => p.Tickets)
+                .ThenInclude(t => t.TicketType)
                 .Include(p => p.Members)
                 .Include(p => p.Company)
                 .Include(p => p.ProjectPriority)
@@ -79,8 +85,8 @@ namespace JamesonBugTracker.Controllers
         // GET: Projects/Create
         public IActionResult Create()
         {
-            ViewData["CompanyId"] = new SelectList(_context.Set<Company>(), "Id", "Name");
-            ViewData["ProjectPriorityId"] = new SelectList(_context.Set<ProjectPriority>(), "Id", "Id");
+
+            ViewData["ProjectPriorityId"] = new SelectList(_context.Set<ProjectPriority>(), "Id", "Name");
             return View();
         }
 
@@ -89,10 +95,11 @@ namespace JamesonBugTracker.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,CompanyId,Name,Description,StartDate,EndDate,ArchiveDate,Archived,ImageFileName,ImageFileData,ImageFileContentType,ProjectPriorityId")] Project project)
+        public async Task<IActionResult> Create([Bind("Id,Name,Description,StartDate,EndDate,ProjectPriorityId")] Project project)
         {
             if (ModelState.IsValid)
             {
+                project.CompanyId = User.Identity.GetCompanyId().Value;
                 _context.Add(project);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));

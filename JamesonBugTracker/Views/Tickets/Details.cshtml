@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="~/plugins/summernote/summernote-bs4.min.css">
 }
 <!-- Default box -->
-<div class="card">
+<div class="card mt-3 shadow-sm">
     <div class="card-header">
         <h3 class="card-title">@Model.Title</h3>
         <div class="nav-links text-right">
@@ -23,41 +23,59 @@
         <div class="row">
             <div class="col-12 col-md-12 col-lg-8 order-2 order-md-1">
                 <div class="row">
-                    <div class="col-12 col-sm-4">
-                        <div class="small-box">
+                    <div class="col-12 col-sm-3">
+                        <div class="small-box bg-gradient-red">
                             <div class="inner">
-                                <p>Created by:</p>
+                                <h3>Owner:</h3>
                                 <p>@Model.OwnerUser?.FullName</p>
-                                <h3>On:</h3>
-                                <p>@string.Format("{0:MMM dd yyyy}", Model.Created)</p>
                             </div>
                             <div class="icon">
                                 <i class="fas fa-user-plus"></i>
                             </div>
                         </div>
                     </div>
-                    <div class="col-12 col-sm-4">
-                        <div class="info-box">
-                            <div class="info-box-content">
+                    <div class="col-12 col-sm-3">
+                        <div class="small-box bg-gradient-blue">
+                            <div class="inner">
 
-                                <span class="info-box-text text-center text-muted">Status:</span>
-                                <span class="info-box-number text-center text-muted">@Model.TicketStatus.Name</span>
+                                <h3>Created</h3>
+                                <p>@string.Format("{0:MMM dd yyyy}", Model.Created)</p>
+
+                            </div>
+                            <div class="icon">
+                                <i class="fas fa-calendar"></i>
                             </div>
                         </div>
                     </div>
-                    <div class="col-12 col-sm-4">
-                        <div class="info-box">
-                            <div class="info-box-content">
-                                <span class="info-box-text text-center text-muted">Assigned to:</span>
+                    @* Conditional formatting based on status *@
+                    <div class="col-12 col-sm-3">
+                        <div class="small-box" id="ticketStatusBox">
+                            <div class="inner">
+
+                                <h3>Status:</h3>
+                                <p id="ticketStatusText">@Model.TicketStatus.Name</p>
+                            </div>
+                            <div class="icon">
+                                <i class="far fa-check-circle"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-3">
+                        <div class="small-box bg-info">
+                            <div class="inner">
+                                <h3>Assigned to:</h3>
                                 @if (Model.DeveloperUserId is not null)
                                 {
-                                    <span class="info-box-number text-center text-muted mb-0">@Model.DeveloperUser?.FullName</span>
+                                    <p>@Model.DeveloperUser?.FullName</p>
                                 }
                                 else
                                 {
-                                    <span class="info-box-number text-center text-warning mb-0">Unassigned</span>
+                                    <p>Unassigned</p>
 
                                 }
+                            </div>
+                            <div class="icon">
+                                <i class="far fa-address-card"></i>
                             </div>
                         </div>
                     </div>
@@ -86,73 +104,73 @@
                             <div class="card">
                                 <div class="card-body">
 
-                            <div class="post">
-                                <div class="user-block">
-                                    <img class="img-circle img-bordered-sm" src="../../dist/img/user1-128x128.jpg" alt="user image">
-                                    <span class="username">
-                                        <a href="#">@comment.User.FullName</a> 
-                                        @if (Model.DeveloperUserId == comment.UserId)
-                                        {
-                                            <span class="text-success">Assigned developer</span>
-                                        }@*else if ((await _projectService.GetProjectManagerAsync(Model.ProjectId)).Id == comment.UserId) { 
-                                            <span class="text-primary">Project Manager</span>
-                                        }*@else if (Model.OwnerUserId == comment.UserId)
-                {
-                    <span class="text-danger">Submitter</span>
-                }
-                                    </span>
-                                    <span class="description">@string.Format("{0:MMM dd yyyy}", comment.Created)</span>
-                                </div>
-                                <!-- /.user-block -->
-                                <p>
-                                    @Html.Raw(comment.Comment)
-                                </p>
-                                @*Potential comment edit*@
-                                @*@if (_userManager.GetUserId(User) == comment.UserId)
-                                {
-
-
-                                    <p>
-                                        <button type="button" data-toggle="modal" data-target="#modal-@comment.Id" class="btn btn-warning"><i class="far fa-pencil mr-1"></i> Edit comment</button>
-                                    </p>
-                                    <div class="modal fade" id="modal-@comment.Id" tabindex="-1" role="dialog"
-                                         aria-labelledby="modelTitleId" aria-hidden="true">
-                                        <div class="modal-dialog" role="document">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title">Edit your comment</h5>
-                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                        <span aria-hidden="true">&times;</span>
-                                                    </button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <form asp-controller="TicketComments" asp-action="Edit">
-                                                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                                                        <div class="form-group">
-                                                        <input type="hidden" value="@comment.Id" name="id" />
-                                                        <input type="hidden" asp-for="@comment.Id" />
-                                                        <input type="hidden" asp-for="@comment.TicketId" />
-                                                        <input type="hidden" asp-for="@comment.UserId" />
-                                                        <input type="hidden" asp-for="@comment.Created" />
-
-
-                                                            <label asp-for="@comment.Comment" class="control-label"></label>
-                                                            <textarea id="summernote" class="summernoteEditComment" name="Comment" required placeholder="Type your comment here">
-              </textarea>
-                                                            <span asp-validation-for="@comment.Comment" class="text-danger"></span>
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <input type="submit" value="Save" class="btn btn-primary" />
-                                                        </div>
-                                                    </form>
-
-                                                </div>
-                                            </div>
+                                    <div class="post">
+                                        <div class="user-block">
+                                            <img class="img-circle img-bordered-sm" src="../../dist/img/user1-128x128.jpg" alt="user image">
+                                            <span class="username">
+                                                <a href="#">@comment.User.FullName</a>
+                                                @if (Model.DeveloperUserId == comment.UserId)
+                                                {
+                                                    <span class="text-success">Assigned developer</span>
+                                                }@*else if ((await _projectService.GetProjectManagerAsync(Model.ProjectId)).Id == comment.UserId) {
+                                                        <span class="text-primary">Project Manager</span>
+                                                    }*@else if (Model.OwnerUserId == comment.UserId)
+                                                {
+                                                    <span class="text-danger">Submitter</span>
+                                                }
+                                            </span>
+                                            <span class="description">@string.Format("{0:MMM dd yyyy}", comment.Created)</span>
                                         </div>
-                                    </div>
+                                        <!-- /.user-block -->
+                                        <p>
+                                            @Html.Raw(comment.Comment)
+                                        </p>
+                                        @*Potential comment edit*@
+                                        @*@if (_userManager.GetUserId(User) == comment.UserId)
+                                                              {
 
-                                }*@
-                            </div>
+
+                                                                  <p>
+                                                                      <button type="button" data-toggle="modal" data-target="#modal-@comment.Id" class="btn btn-warning"><i class="far fa-pencil mr-1"></i> Edit comment</button>
+                                                                  </p>
+                                                                  <div class="modal fade" id="modal-@comment.Id" tabindex="-1" role="dialog"
+                                                                       aria-labelledby="modelTitleId" aria-hidden="true">
+                                                                      <div class="modal-dialog" role="document">
+                                                                          <div class="modal-content">
+                                                                              <div class="modal-header">
+                                                                                  <h5 class="modal-title">Edit your comment</h5>
+                                                                                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                                      <span aria-hidden="true">&times;</span>
+                                                                                  </button>
+                                                                              </div>
+                                                                              <div class="modal-body">
+                                                                                  <form asp-controller="TicketComments" asp-action="Edit">
+                                                                                      <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                                                                      <div class="form-group">
+                                                                                      <input type="hidden" value="@comment.Id" name="id" />
+                                                                                      <input type="hidden" asp-for="@comment.Id" />
+                                                                                      <input type="hidden" asp-for="@comment.TicketId" />
+                                                                                      <input type="hidden" asp-for="@comment.UserId" />
+                                                                                      <input type="hidden" asp-for="@comment.Created" />
+
+
+                                                                                          <label asp-for="@comment.Comment" class="control-label"></label>
+                                                                                          <textarea id="summernote" class="summernoteEditComment" name="Comment" required placeholder="Type your comment here">
+                                            </textarea>
+                                                                                          <span asp-validation-for="@comment.Comment" class="text-danger"></span>
+                                                                                      </div>
+                                                                                      <div class="form-group">
+                                                                                          <input type="submit" value="Save" class="btn btn-primary" />
+                                                                                      </div>
+                                                                                  </form>
+
+                                                                              </div>
+                                                                          </div>
+                                                                      </div>
+                                                                  </div>
+
+                                                              }*@
+                                    </div>
                                 </div>
                             </div>
                         }
@@ -162,21 +180,28 @@
                 </div>
             </div>
             <div class="col-12 col-md-12 col-lg-4 order-1 order-md-2">
-                <div class="info-box">
-                    <div class="info-box-content">
+                <div class="small-box" id="ticketTypeBox">
+                    <div class="inner">
 
-                        <span class="info-box-text text-center text-muted">Type:</span>
-                        <span class="info-box-number text-center text-muted">@Model.TicketType.Name</span>
+                        <h3>Type:</h3>
+                        <p id="ticketTypeText">@Model.TicketType.Name</p>
+                    </div>
+                    <div class="icon">
+                        <i class="far fa-sticky-note"></i>
                     </div>
                 </div>
-                <div class="info-box">
-                    <div class="info-box-content">
+                @* Javascript needed, check contents of one of the spans, then toggle class of this element based on that*@
+            <div class="small-box" id="ticketPriorityBox">
+                <div class="inner">
 
-                        <span class="info-box-text text-center text-muted">Priority:</span>
-                        <span class="info-box-number text-center text-muted">@Model.TicketPriority.Name</span>
-                    </div>
+                    <h3>Priority:</h3>
+                    <p id="ticketPriorityText">@Model.TicketPriority.Name</p>
                 </div>
-
+                <div class="icon">
+                    <i class="fas fa-exclamation"></i>
+                </div>
+            </div>
+                @* TODO: icon based on ticket type? *@
                 <h3 class="text-primary"><i class="fas fa-bug"></i>@Model.Title</h3>
                 <p class="text-muted">@Model.Description</p>
                 <br>
@@ -323,11 +348,15 @@
 
 @section Scripts{
     <script src="../../plugins/summernote/summernote-bs4.min.js"></script>
+    <script src="~/js/ticketDetails.js"></script>
     <script>
         $(function () {
             // Summernote
             $('#summernote').summernote()
             $('.summernoteEditComment').summernote()
         })
+        $(window).on("load", ticketPriBgColor());
+        $(window).on("load", ticketStatusBgColor());
+        $(window).on("load", ticketTypeBgColor());
     </script>
 }
