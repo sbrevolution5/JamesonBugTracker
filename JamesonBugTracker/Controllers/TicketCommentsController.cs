@@ -73,8 +73,6 @@ namespace JamesonBugTracker.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Details", "Tickets", new { id = ticketComment.TicketId });
             }
-            ViewData["TicketId"] = new SelectList(_context.Ticket, "Id", "Description", ticketComment.TicketId);
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", ticketComment.UserId);
             return RedirectToAction("Details", "Tickets", new { id = ticketComment.TicketId });
         }
 

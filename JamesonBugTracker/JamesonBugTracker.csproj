@@ -28,7 +28,6 @@
 
   <ItemGroup>
     <None Include="compilerconfig.json" />
-    <None Include="wwwroot\lib\bootstrap\dist\css\_bootswatch %281%29.scss" />
   </ItemGroup>
 
 </Project>

@@ -24,12 +24,15 @@
             <div class="col-12 col-md-12 col-lg-8 order-2 order-md-1">
                 <div class="row">
                     <div class="col-12 col-sm-4">
-                        <div class="info-box">
-                            <div class="info-box-content">
-                                <span class="info-box-text text-center text-muted">Created by:</span>
-                                <span class="info-box-number text-center text-muted mb-0">@Model.OwnerUser?.FullName</span>
-                                <span class="info-box-text text-center text-muted">On:</span>
-                                <span class="info-box-number text-center text-muted mb-0">@string.Format("{0:MMM dd yyyy}", Model.Created)</span>
+                        <div class="small-box">
+                            <div class="inner">
+                                <p>Created by:</p>
+                                <p>@Model.OwnerUser?.FullName</p>
+                                <h3>On:</h3>
+                                <p>@string.Format("{0:MMM dd yyyy}", Model.Created)</p>
+                            </div>
+                            <div class="icon">
+                                <i class="fas fa-user-plus"></i>
                             </div>
                         </div>
                     </div>

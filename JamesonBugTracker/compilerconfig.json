@@ -1,6 +1,10 @@
 ﻿[
   {
-    "outputFile": "wwwroot/lib/bootstrap/dist/css/_bootswatch (1).css",
-    "inputFile": "wwwroot/lib/bootstrap/dist/css/_bootswatch (1).scss"
+    "outputFile": "wwwroot/scss/CustomColors.css",
+    "inputFile": "wwwroot/scss/CustomColors.scss"
+  },
+  {
+    "outputFile": "wwwroot/scss/bootstrap.css",
+    "inputFile": "wwwroot/scss/bootstrap.scss"
   }
 ]
