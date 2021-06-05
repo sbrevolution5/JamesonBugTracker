@@ -45,13 +45,8 @@ namespace JamesonBugTracker.Controllers
         public async Task<IActionResult> AllTickets()
         {
             int companyId = User.Identity.GetCompanyId().Value;
-            var applicationDbContext = _context.Ticket.Include(t => t.DeveloperUser)
-                                                      .Include(t => t.OwnerUser)
-                                                      .Include(t => t.Project)
-                                                      .Include(t => t.TicketPriority)
-                                                      .Include(t => t.TicketStatus)
-                                                      .Include(t => t.TicketType);
-            return View(await applicationDbContext.ToListAsync());
+            var allTickets = await _companyInfoService.GetAllTicketsAsync(companyId);
+            return View(allTickets);
         }
         public async Task<IActionResult> MyTickets()
         {
