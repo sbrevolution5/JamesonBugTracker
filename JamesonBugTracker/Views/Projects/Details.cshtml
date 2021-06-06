@@ -76,7 +76,7 @@
                     <!-- DONUT CHART -->
                     <div class="card card-danger">
                         <div class="card-header">
-                            <h3 class="card-title">Ticket Types (NO DATA)</h3>
+                            <h3 class="card-title">Ticket Types</h3>
 
                             <div class="card-tools">
                                 <button type="button" class="btn btn-tool" data-card-widget="collapse">
@@ -99,7 +99,7 @@
 
                     <div class="card card-danger">
                         <div class="card-header">
-                            <h3 class="card-title">Ticket Status (NO DATA)</h3>
+                            <h3 class="card-title">Ticket Status</h3>
 
                             <div class="card-tools">
                                 <button type="button" class="btn btn-tool" data-card-widget="collapse">
@@ -122,7 +122,7 @@
 
                     <div class="card card-danger">
                         <div class="card-header">
-                            <h3 class="card-title">Ticket Priority (NO DATA)</h3>
+                            <h3 class="card-title">Ticket Priority</h3>
 
                             <div class="card-tools">
                                 <button type="button" class="btn btn-tool" data-card-widget="collapse">
@@ -229,7 +229,17 @@
 </div>
 @section Scripts{
     <script src="~/plugins/chart.js/Chart.bundle.js"></script>
-
+    <script>
+        let types = [0,0,0,0]
+        let statuses = [0,0,0,0,0]
+        let priority = [0,0,0,0]
+        @foreach (var ticket in Model.Tickets)
+        {
+            @:types[@(ticket.TicketTypeId-1)]+=1
+            @:statuses[@(ticket.TicketStatusId-1)]++
+            @:priority[@(ticket.TicketPriorityId-1)]++
+        }
+    </script>
     <script>
         $(document).ready(function () {
             $('#ticketTable').DataTable();
