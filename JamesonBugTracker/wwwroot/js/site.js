@@ -15,8 +15,8 @@ function toggleDark() {
     else {
         localStorage.setItem("jamesonDarkMode", JSON.stringify(true))
         console.log("Dark mode on")
-
     }
+    darkSwap() // changes color of graph
 }
 //Checks localstorage for dark mode toggler obj, and creates one if it isn't there
 function loadDark() {
@@ -29,4 +29,5 @@ function loadDark() {
     else if (dark === true) {
         document.getElementById("layoutBody").classList.add("dark-mode")
     }
+    darkSwap()
 }
