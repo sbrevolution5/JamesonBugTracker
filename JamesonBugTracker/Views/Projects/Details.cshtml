@@ -5,6 +5,9 @@
     ViewData["Title"] = "Details";
     var projectManager = await _projectService.GetProjectManagerAsync(Model.Id);
 }
+@section Header{
+    <link href="~/plugins/chart.js/Chart.css" rel="stylesheet" />
+}
 <div class="container-fluid">
     <div class="row">
         <div class="col-md-3">
@@ -24,10 +27,10 @@
 
                     <ul class="list-group list-group-unbordered mb-3">
                         <li class="list-group-item">
-                            <b>Start Date</b> <a class="float-right">@Model.StartDate</a>
+                            <b>Start Date</b> <a class="float-right">@string.Format("{0:MMM dd yyyy}", Model.StartDate)</a>
                         </li>
                         <li class="list-group-item">
-                            <b>EndDate</b> <a class="float-right">@Model.EndDate</a>
+                            <b>EndDate</b> <a class="float-right">@string.Format("{0:MMM dd yyyy}", Model.EndDate)</a>
                         </li>
                         <li class="list-group-item">
                             <b>Priority</b> <a class="float-right">@Model.ProjectPriority.Name</a>
@@ -46,7 +49,7 @@
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
-                    <strong>Project Manager: @projectManager.FullName</strong>
+                    <strong>Project Manager: @projectManager?.FullName</strong>
                     <hr />
                     @foreach (var member in Model.Members)
                     {
@@ -66,234 +69,151 @@
         </div>
         <!-- /.col -->
         <div class="col-md-9">
-            <div class="card">
-                <div class="card-header p-2">
-                    <ul class="nav nav-pills">
-                        <li class="nav-item"><a class="nav-link active" href="#activity" data-toggle="tab">Activity</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#timeline" data-toggle="tab">Timeline</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#settings" data-toggle="tab">Edit</a></li>
-                    </ul>
-                </div><!-- /.card-header -->
-                <div class="card-body">
-                    <div class="tab-content">
-                        <div class="active tab-pane" id="activity">
-                            <table id="ticketTable" class="table dataTable">
-                                <thead>
-                                    <tr>
-                                        <th>
-                                            Name
-                                        </th>
-                                        <th>
-                                            Description
-                                        </th>
-                                        <th>
-                                            Created
-                                        </th>
-                                        <th>
-                                            Priority
-                                        </th>
-                                        <th>
-                                            Status
-                                        </th>
-                                        <th>
-                                            Type
-                                        </th>
-                                        <th>
-                                            Submitter
-                                        </th>
-                                        <th>
-                                            Developer
-                                        </th>
-                                        <th></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach (var item in Model.Tickets)
-                                    {
-                                        <tr>
-                                            <td>
-                                                @Html.DisplayFor(modelItem => item.Title)
-                                            </td>
-                                            <td>
-                                                @Html.DisplayFor(modelItem => item.Description)
-                                            </td>
-                                            <td>
-                                                @Html.DisplayFor(modelItem => item.Created)
-                                            </td>
-                                            <td>
-                                                @item.TicketPriority.Name
-                                            </td>
-                                            <td>
-                                                @item.TicketStatus.Name
-                                            </td>
-                                            <td>
-                                                @item.TicketType.Name
-                                            </td>
-                                            <td>
-                                                @item.OwnerUser?.FullName
-                                            </td>
-                                            <td>
-                                                @item.DeveloperUser?.FullName
-                                            </td>
-                                            <td>
-                                                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                                                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                                                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-                                            </td>
-                                        </tr>
-                                    }
-                                </tbody>
-                            </table>
-                        </div>
-                        <!-- /.tab-pane -->
-                        <div class="tab-pane" id="timeline">
-                            <!-- The timeline -->
-                            <div class="timeline timeline-inverse">
-                                <!-- timeline time label -->
-                                <div class="time-label">
-                                    <span class="bg-danger">
-                                        10 Feb. 2014
-                                    </span>
-                                </div>
-                                <!-- /.timeline-label -->
-                                <!-- timeline item -->
-                                <div>
-                                    <i class="fas fa-envelope bg-primary"></i>
+            <!--Row of charts-->
+            <div class="row">
+                <div class="col-md-4">
 
-                                    <div class="timeline-item">
-                                        <span class="time"><i class="far fa-clock"></i> 12:05</span>
+                    <!-- DONUT CHART -->
+                    <div class="card card-danger">
+                        <div class="card-header">
+                            <h3 class="card-title">Ticket Types (NO DATA)</h3>
 
-                                        <h3 class="timeline-header"><a href="#">Support Team</a> sent you an email</h3>
-
-                                        <div class="timeline-body">
-                                            Etsy doostang zoodles disqus groupon greplin oooj voxy zoodles,
-                                            weebly ning heekya handango imeem plugg dopplr jibjab, movity
-                                            jajah plickers sifteo edmodo ifttt zimbra. Babblely odeo kaboodle
-                                            quora plaxo ideeli hulu weebly balihoo...
-                                        </div>
-                                        <div class="timeline-footer">
-                                            <a href="#" class="btn btn-primary btn-sm">Read more</a>
-                                            <a href="#" class="btn btn-danger btn-sm">Delete</a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- END timeline item -->
-                                <!-- timeline item -->
-                                <div>
-                                    <i class="fas fa-user bg-info"></i>
-
-                                    <div class="timeline-item">
-                                        <span class="time"><i class="far fa-clock"></i> 5 mins ago</span>
-
-                                        <h3 class="timeline-header border-0">
-                                            <a href="#">Sarah Young</a> accepted your friend request
-                                        </h3>
-                                    </div>
-                                </div>
-                                <!-- END timeline item -->
-                                <!-- timeline item -->
-                                <div>
-                                    <i class="fas fa-comments bg-warning"></i>
-
-                                    <div class="timeline-item">
-                                        <span class="time"><i class="far fa-clock"></i> 27 mins ago</span>
-
-                                        <h3 class="timeline-header"><a href="#">Jay White</a> commented on your post</h3>
-
-                                        <div class="timeline-body">
-                                            Take me to your leader!
-                                            Switzerland is small and neutral!
-                                            We are more like Germany, ambitious and misunderstood!
-                                        </div>
-                                        <div class="timeline-footer">
-                                            <a href="#" class="btn btn-warning btn-flat btn-sm">View comment</a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- END timeline item -->
-                                <!-- timeline time label -->
-                                <div class="time-label">
-                                    <span class="bg-success">
-                                        3 Jan. 2014
-                                    </span>
-                                </div>
-                                <!-- /.timeline-label -->
-                                <!-- timeline item -->
-                                <div>
-                                    <i class="fas fa-camera bg-purple"></i>
-
-                                    <div class="timeline-item">
-                                        <span class="time"><i class="far fa-clock"></i> 2 days ago</span>
-
-                                        <h3 class="timeline-header"><a href="#">Mina Lee</a> uploaded new photos</h3>
-
-                                        <div class="timeline-body">
-                                            <img src="https://placehold.it/150x100" alt="...">
-                                            <img src="https://placehold.it/150x100" alt="...">
-                                            <img src="https://placehold.it/150x100" alt="...">
-                                            <img src="https://placehold.it/150x100" alt="...">
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- END timeline item -->
-                                <div>
-                                    <i class="far fa-clock bg-gray"></i>
-                                </div>
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                                <button type="button" class="btn btn-tool" data-card-widget="remove">
+                                    <i class="fas fa-times"></i>
+                                </button>
                             </div>
                         </div>
-                        <!-- /.tab-pane -->
-
-                        <div class="tab-pane" id="settings">
-                            <form class="form-horizontal">
-                                <div class="form-group row">
-                                    <label for="inputName" class="col-sm-2 col-form-label">Name</label>
-                                    <div class="col-sm-10">
-                                        <input type="email" class="form-control" id="inputName" placeholder="Name">
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label for="inputEmail" class="col-sm-2 col-form-label">Email</label>
-                                    <div class="col-sm-10">
-                                        <input type="email" class="form-control" id="inputEmail" placeholder="Email">
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label for="inputName2" class="col-sm-2 col-form-label">Name</label>
-                                    <div class="col-sm-10">
-                                        <input type="text" class="form-control" id="inputName2" placeholder="Name">
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label for="inputExperience" class="col-sm-2 col-form-label">Experience</label>
-                                    <div class="col-sm-10">
-                                        <textarea class="form-control" id="inputExperience" placeholder="Experience"></textarea>
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label for="inputSkills" class="col-sm-2 col-form-label">Skills</label>
-                                    <div class="col-sm-10">
-                                        <input type="text" class="form-control" id="inputSkills" placeholder="Skills">
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <div class="offset-sm-2 col-sm-10">
-                                        <div class="checkbox">
-                                            <label>
-                                                <input type="checkbox"> I agree to the <a href="#">terms and conditions</a>
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <div class="offset-sm-2 col-sm-10">
-                                        <button type="submit" class="btn btn-danger">Submit</button>
-                                    </div>
-                                </div>
-                            </form>
+                        <div class="card-body">
+                            <canvas id="typeChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
                         </div>
-                        <!-- /.tab-pane -->
+                        <!-- /.card-body -->
                     </div>
-                    <!-- /.tab-content -->
+                    <!-- /.card -->
+                </div>
+                <!-- DONUT CHART -->
+                <div class="col-md-4">
+
+                    <div class="card card-danger">
+                        <div class="card-header">
+                            <h3 class="card-title">Ticket Status (NO DATA)</h3>
+
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                                <button type="button" class="btn btn-tool" data-card-widget="remove">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <canvas id="statusChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                    <!-- /.card -->
+                </div>
+                <!-- DONUT CHART -->
+                <div class="col-md-4">
+
+                    <div class="card card-danger">
+                        <div class="card-header">
+                            <h3 class="card-title">Ticket Priority (NO DATA)</h3>
+
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                                <button type="button" class="btn btn-tool" data-card-widget="remove">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <canvas id="priorityChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                    <!-- /.card -->
+                </div>
+            </div>
+            <!--Ticket Table-->
+            <div class="card">
+                <div class="card-header p-2">
+                    <h4>Tickets</h4>
+                </div><!-- /.card-header -->
+                <div class="card-body">
+                    <table id="ticketTable" class="table dataTable">
+                        <thead>
+                            <tr>
+                                <th>
+                                    Name
+                                </th>
+                                <th>
+                                    Description
+                                </th>
+                                <th>
+                                    Created
+                                </th>
+                                <th>
+                                    Priority
+                                </th>
+                                <th>
+                                    Status
+                                </th>
+                                <th>
+                                    Type
+                                </th>
+                                <th>
+                                    Submitter
+                                </th>
+                                <th>
+                                    Developer
+                                </th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.Tickets)
+                            {
+                                <tr>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Title)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Description)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Created)
+                                    </td>
+                                    <td>
+                                        @item.TicketPriority.Name
+                                    </td>
+                                    <td>
+                                        @item.TicketStatus.Name
+                                    </td>
+                                    <td>
+                                        @item.TicketType.Name
+                                    </td>
+                                    <td>
+                                        @item.OwnerUser?.FullName
+                                    </td>
+                                    <td>
+                                        @item.DeveloperUser?.FullName
+                                    </td>
+                                    <td>
+                                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                                        <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
                 </div><!-- /.card-body -->
             </div>
             <!-- /.card -->
@@ -302,97 +222,19 @@
     </div>
     <!-- /.row -->
 </div><!-- /.container-fluid -->
-<h1>Details</h1>
-<div>
-    <h4>Project</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Description)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.StartDate)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.StartDate)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.EndDate)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.EndDate)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.ArchiveDate)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.ArchiveDate)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Archived)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Archived)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.ImageFileName)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.ImageFileName)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.ImageFileData)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.ImageFileData)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.ImageFileContentType)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.ImageFileContentType)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.ProjectPriority)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.ProjectPriority.Id)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Company)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Company.Name)
-        </dd>
-        <dt class="col-sm-2">
-            Members:
-        </dt>
-        <dd class="col-sm-10">
-            <ul>
-                @foreach (var user in Model.Members)
-                {
-                    <li>@user.FullName</li>
-                }
-            </ul>
-        </dd>
-    </dl>
-</div>
+
 <div>
     <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
     <a asp-action="Index">Back to List</a>
 </div>
 @section Scripts{
+    <script src="~/plugins/chart.js/Chart.bundle.js"></script>
+
     <script>
-    $(document).ready(function () {
-        $('#ticketTable').DataTable();
-    });</script>
+        $(document).ready(function () {
+            $('#ticketTable').DataTable();
+        });
+    </script>
+
+    <script src="~/js/ProjectDetails.js"></script>
 }

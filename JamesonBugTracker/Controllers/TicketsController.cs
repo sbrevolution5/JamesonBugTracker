@@ -48,6 +48,7 @@ namespace JamesonBugTracker.Controllers
             var allTickets = await _companyInfoService.GetAllTicketsAsync(companyId);
             return View(allTickets);
         }
+        // GET: Tickets/MyTickets
         public async Task<IActionResult> MyTickets()
         {
             var userId = _userManager.GetUserId(User);
