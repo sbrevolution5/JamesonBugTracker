@@ -1,4 +1,9 @@
-﻿using JamesonBugTracker.Models;
+﻿using JamesonBugTracker.Extensions;
+using JamesonBugTracker.Models;
+using JamesonBugTracker.Models.ViewModels;
+using JamesonBugTracker.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -12,15 +17,41 @@ namespace JamesonBugTracker.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly UserManager<BTUser> _userManager;
+        private readonly IBTCompanyInfoService _companyInfoService;
+        private readonly IBTProjectService _projectService;
+        private readonly IBTTicketService _ticketService;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, IBTCompanyInfoService companyInfoService, IBTProjectService projectService, IBTTicketService ticketService, UserManager<BTUser> userManager)
         {
             _logger = logger;
+            _companyInfoService = companyInfoService;
+            _projectService = projectService;
+            _ticketService = ticketService;
+            _userManager = userManager;
         }
 
         public IActionResult Index()
         {
             return View();
+        }
+        [Authorize]
+        //GET: Dashboard
+        public async Task<IActionResult> Dashboard()
+        {
+            string userId = _userManager.GetUserId(User);
+            int companyId = User.Identity.GetCompanyId().Value;
+
+            DashboardViewModel viewModel = new()
+            {
+                Projects = await _projectService.GetAllProjectsByCompanyAsync(companyId),
+                DevelopmentTickets = await _ticketService.GetAllTicketsByRoleAsync("Developer", userId),
+                SubmittedTickets = await _ticketService.GetAllTicketsByRoleAsync("Submitter", userId),
+                Members = await _companyInfoService.GetAllMembersAsync(companyId),
+                CurrentUser = await _userManager.GetUserAsync(User)
+
+            };
+            return View(viewModel);
         }
 
         public IActionResult Privacy()

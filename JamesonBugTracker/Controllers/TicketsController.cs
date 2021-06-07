@@ -51,10 +51,10 @@ namespace JamesonBugTracker.Controllers
         // GET: Tickets/MyTickets
         public async Task<IActionResult> MyTickets()
         {
-            var userId = _userManager.GetUserId(User);
-            var devTickets = await _ticketService.GetAllTicketsByRoleAsync("Developer", userId);
-            var subTickets = await _ticketService.GetAllTicketsByRoleAsync("Submitter", userId);
-            var viewModel = new MyTicketsViewModel()
+            string userId = _userManager.GetUserId(User);
+            List<Ticket> devTickets = await _ticketService.GetAllTicketsByRoleAsync("Developer", userId);
+            List<Ticket> subTickets = await _ticketService.GetAllTicketsByRoleAsync("Submitter", userId);
+            MyTicketsViewModel viewModel = new()
             {
                 DevTickets = devTickets,
                 SubmittedTickets = subTickets
@@ -69,6 +69,7 @@ namespace JamesonBugTracker.Controllers
             {
                 return NotFound();
             }
+            int companyId = User.Identity.GetCompanyId().Value;
 
             var ticket = await _context.Ticket
                 .Include(t => t.DeveloperUser)
@@ -82,6 +83,8 @@ namespace JamesonBugTracker.Controllers
                 .ThenInclude(c => c.User)
                 .Include(t=> t.History)
                 .FirstOrDefaultAsync(m => m.Id == id);
+            ViewData["AssignUsers"] = new SelectList(await _companyInfoService.GetAllMembersAsync(companyId), "Id", "FullName");
+
             if (ticket == null)
             {
                 return NotFound();
@@ -247,7 +250,28 @@ namespace JamesonBugTracker.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
-
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AssignUser(string userId, int ticketId)
+        {
+            try
+            {
+                await _ticketService.AssignTicketAsync(ticketId, userId);
+            }
+            catch { throw; }
+            return RedirectToAction("Details",new { id = ticketId });
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateStatus(int ticketId, string statusName)
+        {
+            try
+            {
+                await _ticketService.SetTicketStatusAsync(ticketId, statusName);
+            }
+            catch { throw; }
+            return RedirectToAction("Details",new { id = ticketId });
+        }
         private bool TicketExists(int id)
         {
             return _context.Ticket.Any(e => e.Id == id);

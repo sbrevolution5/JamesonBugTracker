@@ -48,7 +48,8 @@ namespace JamesonBugTracker.Services
         }
         public async Task<List<Ticket>> GetAllPMTicketsAsync(string userId)
         {
-            try{
+            try
+            {
                 List<Ticket> allTickets = new();
                 BTUser user = await GetUserByIdAsync(userId);
                 foreach (var project in user.Projects)
@@ -58,7 +59,7 @@ namespace JamesonBugTracker.Services
                         allTickets.Add(ticket);
                     }
                 }
-            return allTickets;
+                return allTickets;
             }
             catch
             {
@@ -71,34 +72,35 @@ namespace JamesonBugTracker.Services
             try
             {
 
-            //we don't use the company info service so that we can more easily seperate the service from the project
-            List<Ticket> tickets = await _context.Project
-                                             .Include(p => p.Company)
-                                             .Where(p => p.CompanyId == companyId)
-                                             .SelectMany(p => p.Tickets)
-                                                .Include(t => t.OwnerUser)
-                                                .Include(t => t.DeveloperUser)
-                                                .Include(t => t.TicketPriority)
-                                                .Include(t => t.TicketStatus)
-                                                .Include(t => t.TicketType)
-                                                .Include(t => t.Attachments)
-                                                .Include(t => t.History)
-                                                .Include(t => t.Comments)
-                                             .ToListAsync();
-            return tickets;
+                //we don't use the company info service so that we can more easily seperate the service from the project
+                List<Ticket> tickets = await _context.Project
+                                                 .Include(p => p.Company)
+                                                 .Where(p => p.CompanyId == companyId)
+                                                 .SelectMany(p => p.Tickets)
+                                                    .Include(t => t.OwnerUser)
+                                                    .Include(t => t.DeveloperUser)
+                                                    .Include(t => t.TicketPriority)
+                                                    .Include(t => t.TicketStatus)
+                                                    .Include(t => t.TicketType)
+                                                    .Include(t => t.Attachments)
+                                                    .Include(t => t.History)
+                                                    .Include(t => t.Comments)
+                                                 .ToListAsync();
+                return tickets;
             }
             catch (Exception)
             {
 
                 throw;
             }
-            
+
         }
 
         public async Task<List<Ticket>> GetAllTicketsByPriorityAsync(int companyId, string priorityName)
         {
             try
-            {try
+            {
+                try
                 {
                     var allTickets = await GetAllTicketsByCompanyAsync(companyId);
                     List<Ticket> ticketsWithPriority = new();
@@ -134,7 +136,8 @@ namespace JamesonBugTracker.Services
                                                 .Include(t => t.TicketType)
                                                 .Include(t => t.Attachments)
                                                 .Include(t => t.History)
-                                                .Include(t => t.Comments).Where(t => t.DeveloperUserId == userId).ToListAsync();
+                                                .Include(t => t.Comments).Where(t => t.DeveloperUserId == userId)
+                                                .OrderBy(t => t.Created).ToListAsync();
                 }
                 else if (role == "ProjectManager")
                 {
@@ -145,7 +148,7 @@ namespace JamesonBugTracker.Services
                     BTUser admin = await GetUserByIdAsync(userId);
                     tickets = await GetAllTicketsByCompanyAsync(admin.CompanyId.Value);
                 }
-                else//submitter
+                else if (role == "Submitter")//submitter
                 {
                     tickets = await _context.Ticket.Include(t => t.OwnerUser)
                                                 .Include(t => t.DeveloperUser)
@@ -154,9 +157,10 @@ namespace JamesonBugTracker.Services
                                                 .Include(t => t.TicketType)
                                                 .Include(t => t.Attachments)
                                                 .Include(t => t.History)
-                                                .Include(t => t.Comments).Where(t => t.OwnerUserId == userId).ToListAsync();
-
+                                                .Include(t => t.Comments).Where(t => t.OwnerUserId == userId)
+                                                .OrderBy(t => t.Created).ToListAsync();
                 }
+
                 return tickets;
             }
             catch
@@ -203,12 +207,13 @@ namespace JamesonBugTracker.Services
             tickets = (await GetAllTicketsByTypeAsync(companyId, typeName)).Where(t => t.ProjectId == projectId).ToList();
             return tickets;
         }
-            
+
 
         public async Task<List<Ticket>> GetAllTicketsByTypeAsync(int companyId, string typeName)
         {
             try
-            {try
+            {
+                try
                 {
                     var allTickets = await GetAllTicketsByCompanyAsync(companyId);
                     List<Ticket> ticketsOfType = new();
@@ -258,7 +263,22 @@ namespace JamesonBugTracker.Services
             }
             return developer;
         }
-
+        public async Task SetTicketStatusAsync(int ticketId, string StatusName)
+        {
+            var ticket = await _context.Ticket.Where(t => t.Id == ticketId).FirstOrDefaultAsync();
+            var status = await LookupTicketStatusIdAsync(StatusName);
+            if (status is not null)
+            {
+                try
+                {
+                    ticket.TicketStatusId = (int)status;
+                    await _context.SaveChangesAsync();
+                }
+                catch { throw; }
+            }
+            return;
+        }
+       
         public async Task<int?> LookupTicketPriorityIdAsync(string priorityName)
         {
             TicketPriority ticketPriority = await _context.TicketPriority.FirstOrDefaultAsync(t => t.Name == priorityName);
