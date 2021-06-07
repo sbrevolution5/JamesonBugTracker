@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace JamesonBugTracker.Controllers
 {
-    //[Authorize(Roles="Admin")]
+    [Authorize(Roles="Admin")]
     public class UserRolesController : Controller
     {
         private readonly IBTRolesService _rolesService;

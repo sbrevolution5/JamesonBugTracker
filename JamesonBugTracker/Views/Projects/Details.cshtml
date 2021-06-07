@@ -23,14 +23,14 @@
 
                     <h3 class="profile-username text-center">@Model.Name</h3>
 
-                    <p class="text-muted text-center">Software Engineer</p>
+                    <p class="text-muted ">@Model.Description</p>
 
                     <ul class="list-group list-group-unbordered mb-3">
                         <li class="list-group-item">
                             <b>Start Date</b> <a class="float-right">@string.Format("{0:MMM dd yyyy}", Model.StartDate)</a>
                         </li>
                         <li class="list-group-item">
-                            <b>EndDate</b> <a class="float-right">@string.Format("{0:MMM dd yyyy}", Model.EndDate)</a>
+                            <b>End Date</b> <a class="float-right">@string.Format("{0:MMM dd yyyy}", Model.EndDate)</a>
                         </li>
                         <li class="list-group-item">
                             <b>Priority</b> <a class="float-right">@Model.ProjectPriority.Name</a>

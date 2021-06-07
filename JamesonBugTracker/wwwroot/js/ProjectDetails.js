@@ -48,8 +48,8 @@ function charts() {//Priority Chart JS
     var donutData = {
         labels: [
             'New Development',
-            'Runtime',
             'UI',
+            'Runtime',
             'Maintenance'
         ],
         datasets: [
