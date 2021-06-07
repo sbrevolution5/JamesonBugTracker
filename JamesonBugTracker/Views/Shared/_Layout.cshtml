@@ -252,6 +252,9 @@
     <script src="~/plugins/datatables/jquery.dataTables.js"></script>
     <script src="~/plugins/datatables-bs4/js/dataTables.bootstrap4.js"></script>
     <script src="~/dist/js/adminlte.min.js"></script>
+    <script>
+        let page = ""
+    </script>
     @await RenderSectionAsync("Scripts", required: false)
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script>

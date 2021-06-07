@@ -73,7 +73,18 @@
                             </td>
                             <td class="project_progress">
                                 <div class="progress progress-sm">
-                                    <div class="progress-bar bg-green" role="progressbar" aria-valuenow="57" aria-valuemin="0" aria-valuemax="100" style="width: 57%">
+                                    <script> 
+
+                                        //TODO Get date from c#
+                                        var start = new Date(2012, 6, 2); // Jul 02 2012
+                                        var end = new Date(2012, 8, 2); // Sep 02 2012
+                                        var today = new Date();
+
+                                        var total = end - start;
+                                        var progress = today - start;
+                                        var percent = Math.round(progress/total * 100)
+                                    </script>
+                                    <div class="progress-bar bg-green" role="progressbar" aria-valuenow="@DateTime.Now" aria-valuemin="@project.StartDate" aria-valuemax="@project.EndDate" style="width: 50%">
                                     </div>
                                 </div>
                                 <small>

@@ -1,5 +1,7 @@
-﻿var backgroundColor = ['#f56954', '#00a65a', '#f39c12', '#00c0ef', '#3c8dbc', '#d2d6de']
+﻿var backgroundColor = ['#f56954', '#00a65a', '#f39c12', '#00c0ef', '#3c8dbc', '#d2d6de']// defaults
 var textColor
+//used to tell dark mode to use darkswap
+page = "ProjectDetails"
 function darkSwap() {
     var isDark = document.getElementById("layoutBody").classList.contains("dark-mode")
     if (isDark) {
