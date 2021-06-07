@@ -211,6 +211,7 @@ namespace JamesonBugTracker.Services
         {
             var projectList = (await _context.Users.Include(u => u.Projects)
                 .ThenInclude(p => p.ProjectPriority)
+                                    .Include(u=>u.Projects).ThenInclude(p=> p.Members)
                                     .Include(u=>u.Projects)
                                     .ThenInclude(p => p.Tickets)
                                                 .ThenInclude(t => t.DeveloperUser)

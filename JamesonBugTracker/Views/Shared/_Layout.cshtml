@@ -259,6 +259,9 @@
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script>
         $(window).on("load", loadDark());
+        $(function () {
+            $('[data-toggle="popover"]').popover()
+        })
     </script>
 </body>
 </html>
