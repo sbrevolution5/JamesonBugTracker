@@ -26,20 +26,20 @@
             <tbody>
                 @foreach (var ticket in Model.DevTickets)
                 {
-                    <tr>
-                        <td>@ticket.Title</td>
-                        <td>@ticket.Created</td>
-                        <td>@ticket.DeveloperUser?.FullName</td>
-                        <td>@ticket.OwnerUser?.FullName</td>
-                        <td>@ticket.Description</td>
-                        <td>@ticket.TicketType.Name</td>
-                        <td>@ticket.TicketPriority.Name</td>
-                        <td>
-                            <a asp-action="Edit" asp-route-id="@ticket.Id">Edit</a> |
-                            <a asp-action="Details" asp-route-id="@ticket.Id">Details</a> |
-                            <a asp-action="Delete" asp-route-id="@ticket.Id">Delete</a>
-                        </td>
-                    </tr>
+                <tr>
+                    <td>@ticket.Title</td>
+                    <td>@string.Format("{0:MMM dd yyyy}", ticket.Created)</td>
+                    <td>@ticket.DeveloperUser?.FullName</td>
+                    <td>@ticket.OwnerUser?.FullName</td>
+                    <td>@ticket.Description</td>
+                    <td>@ticket.TicketType.Name</td>
+                    <td><span class="badge priorityBadge">@ticket.TicketPriority.Name</span></td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@ticket.Id">Edit</a> |
+                        <a asp-action="Details" asp-route-id="@ticket.Id">Details</a> |
+                        <a asp-action="Delete" asp-route-id="@ticket.Id">Delete</a>
+                    </td>
+                </tr>
                 }
             </tbody>
         </table>
@@ -63,20 +63,20 @@
             <tbody>
                 @foreach (var ticket in Model.SubmittedTickets)
                 {
-                    <tr>
-                        <td>@ticket.Title</td>
-                        <td>@ticket.Created</td>
-                        <td>@ticket.DeveloperUser?.FullName</td>
-                        <td>@ticket.OwnerUser?.FullName</td>
-                        <td>@ticket.Description</td>
-                        <td>@ticket.TicketType.Name</td>
-                        <td>@ticket.TicketPriority.Name</td>
-                        <td>
-                            <a asp-action="Edit" asp-route-id="@ticket.Id">Edit</a> |
-                            <a asp-action="Details" asp-route-id="@ticket.Id">Details</a> |
-                            <a asp-action="Delete" asp-route-id="@ticket.Id">Delete</a>
-                        </td>
-                    </tr>
+                <tr>
+                    <td>@ticket.Title</td>
+                    <td>@string.Format("{0:MMM dd yyyy}", ticket.Created)</td>
+                    <td>@ticket.DeveloperUser?.FullName</td>
+                    <td>@ticket.OwnerUser?.FullName</td>
+                    <td>@ticket.Description</td>
+                    <td>@ticket.TicketType.Name</td>
+                    <td><span class="badge priorityBadge">@ticket.TicketPriority.Name</span></td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@ticket.Id">Edit</a> |
+                        <a asp-action="Details" asp-route-id="@ticket.Id">Details</a> |
+                        <a asp-action="Delete" asp-route-id="@ticket.Id">Delete</a>
+                    </td>
+                </tr>
                 }
             </tbody>
         </table>
@@ -84,6 +84,7 @@
 </div>
 
 @section Scripts{
+    <script src="~/js/PriorityBadge.js"></script>
     <script>
         $(document).ready(function () {
             $('#ticketTable').DataTable();
