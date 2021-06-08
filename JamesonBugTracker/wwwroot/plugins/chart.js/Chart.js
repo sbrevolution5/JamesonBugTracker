@@ -2993,10 +2993,10 @@ var defaults = {
 // there's inconsistency around which options are under 'global'
 defaults._set('global', {
 	defaultColor: 'rgba(0,0,0,0.1)',
-	defaultFontColor: '#666',
+	defaultFontColor: '#f00',
 	defaultFontFamily: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
 	defaultFontSize: 12,
-	defaultFontStyle: 'normal',
+	defaultFontStyle: 'bold',
 	defaultLineHeight: 1.2,
 	showLines: true
 });

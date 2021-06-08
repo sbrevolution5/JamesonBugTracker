@@ -29,7 +29,15 @@ function newDoughnutChart(id, labels, data) {
     }
     var donutOptions = {
         maintainAspectRatio: false,
-        responsive: true
+        responsive: true,
+        options: {
+            legend: {
+                labels: {
+                    usePointStyle: true,
+                    fontColor: "#fff",
+                }
+            }
+        }
     }
     new Chart(donutChartCanvas, {
         type: 'doughnut',

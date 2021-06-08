@@ -52,11 +52,13 @@ namespace JamesonBugTracker.Controllers
         public async Task<IActionResult> MyTickets()
         {
             string userId = _userManager.GetUserId(User);
-            List<Ticket> devTickets = await _ticketService.GetAllTicketsByRoleAsync("Developer", userId);
+            List<Ticket> devTicketsResolved = await _ticketService.GetAllDeveloperTicketsByResolvedAsync(userId, true);
+            List<Ticket> devTicketsUnresolved = await _ticketService.GetAllDeveloperTicketsByResolvedAsync(userId, false);
             List<Ticket> subTickets = await _ticketService.GetAllTicketsByRoleAsync("Submitter", userId);
             MyTicketsViewModel viewModel = new()
             {
-                DevTickets = devTickets,
+                DevTicketsResolved = devTicketsResolved,
+                DevTicketsUnresolved = devTicketsUnresolved,
                 SubmittedTickets = subTickets
             }; 
             return View(viewModel);

@@ -7,7 +7,8 @@ namespace JamesonBugTracker.Models.ViewModels
 {
     public class MyTicketsViewModel
     {
-        public IEnumerable<Ticket> DevTickets { get; set; }
+        public IEnumerable<Ticket> DevTicketsResolved { get; set; }
+        public IEnumerable<Ticket> DevTicketsUnresolved { get; set; }
         public IEnumerable<Ticket> SubmittedTickets { get; set; }
     }
 }

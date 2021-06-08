@@ -25,6 +25,7 @@ namespace JamesonBugTracker.Services.Interfaces
         Task<List<Ticket>> GetAllPMTicketsAsync(string userId);
 
         Task<List<Ticket>> GetAllTicketsByRoleAsync(string role, string userId);
+        Task<List<Ticket>> GetAllDeveloperTicketsByResolvedAsync(string userId, bool isResolvedOrNot);
 
         Task<List<Ticket>> GetProjectTicketsByRoleAsync(string role, string userId, int projectId);
 

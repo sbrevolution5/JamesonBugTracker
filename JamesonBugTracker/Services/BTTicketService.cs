@@ -300,5 +300,12 @@ namespace JamesonBugTracker.Services
             TicketType ticketType = await _context.TicketType.FirstOrDefaultAsync(t => t.Name == typeName);
             return ticketType.Id;
         }
+
+        public async Task<List<Ticket>> GetAllDeveloperTicketsByResolvedAsync(string userId, bool isResolvedOrNot)
+        {
+            var userTickets = await GetAllTicketsByRoleAsync("Developer", userId);
+            var filteredTickets = userTickets.Where(t => (t.TicketStatus.Name == "Resolved") == isResolvedOrNot).ToList();
+            return filteredTickets;
+        }
     }
 }
