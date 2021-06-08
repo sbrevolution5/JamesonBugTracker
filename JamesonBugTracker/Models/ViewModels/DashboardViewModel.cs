@@ -12,5 +12,6 @@ namespace JamesonBugTracker.Models.ViewModels
         public List<Ticket> SubmittedTickets { get; set; }
         public List<BTUser> Members { get; set; }
         public BTUser CurrentUser { get; set; }
+        public List<Ticket> UnassignedTickets { get; set; }
     }
 }

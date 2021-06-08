@@ -528,7 +528,7 @@
                                                 <img src="~/img/Sethimg.jpg" class="member-img" alt="User Image">
                                                 <a class="users-list-name" href="#">@member.FullName</a>
                                                 <span class="users-list-date">@((await _ticketService.GetAllTicketsByRoleAsync("Submitter", member.Id)).Count) Submitted</span>
-                                                <span class="users-list-date">@((await _ticketService.GetAllTicketsByRoleAsync("Developer", member.Id)).Count) Assigned</span>
+                                                <span class="users-list-date">@((await _ticketService.GetAllDeveloperTicketsByResolvedAsync(member.Id, false)).Count) Open Tickets</span>
                                             </li>
                                         }
                                     </ul>
@@ -549,49 +549,40 @@
 
                 </div>
                 <!-- /.col -->
-
                 <div class="col-md-4">
-                    <!-- Info Boxes Style 2 -->
-                    <div class="info-box mb-3 bg-warning">
-                        <span class="info-box-icon"><i class="fas fa-tag"></i></span>
+                    <div class="card">
 
-                        <div class="info-box-content">
-                            <span class="info-box-text">Inventory</span>
-                            <span class="info-box-number">5,200</span>
-                        </div>
-                        <!-- /.info-box-content -->
-                    </div>
-                    <!-- /.info-box -->
-                    <div class="info-box mb-3 bg-success">
-                        <span class="info-box-icon"><i class="far fa-heart"></i></span>
+                        @if (User.IsInRole("ProjectManager") || User.IsInRole("Admin"))
+                        {
+                            @foreach (var unassignedTicket in Model.UnassignedTickets)
+                            {
+                                <!-- Info Boxes Style 2 -->
+                                <div class="info-box mb-3 bg-warning">
+                                    <span class="info-box-icon"><i class="fas fa-tag"></i></span>
 
-                        <div class="info-box-content">
-                            <span class="info-box-text">Mentions</span>
-                            <span class="info-box-number">92,050</span>
-                        </div>
-                        <!-- /.info-box-content -->
-                    </div>
-                    <!-- /.info-box -->
-                    <div class="info-box mb-3 bg-danger">
-                        <span class="info-box-icon"><i class="fas fa-cloud-download-alt"></i></span>
+                                    <div class="info-box-content">
+                                        <span class="info-box-text">@unassignedTicket.Title</span>
+                                        <span class="info-box-number">Created on: @string.Format("{0:MMM dd yyyy}", unassignedTicket.Created) by: @unassignedTicket.OwnerUser?.FullName</span>
+                                        <span class="info-box-more">
+                                            <form asp-controller="Tickets" asp-action="AssignUser" asp-route-db="true">
+                                                <input hidden name="ticketId" value="@unassignedTicket.Id" />
+                                                <div class="form-group">
+                                                    <label for=""></label>
+                                                    <select required class="form-control"  name="userId" id="" asp-items="ViewBag.AssignUsers">
+                                                        <option value="" hidden>Choose a User</option>
 
-                        <div class="info-box-content">
-                            <span class="info-box-text">Downloads</span>
-                            <span class="info-box-number">114,381</span>
-                        </div>
-                        <!-- /.info-box-content -->
-                    </div>
-                    <!-- /.info-box -->
-                    <div class="info-box mb-3 bg-info">
-                        <span class="info-box-icon"><i class="far fa-comment"></i></span>
+                                                    </select>
+                                                </div>
+                                                <button type="submit" class="btn btn-danger">Assign User</button>
+                                            </form><a asp-action="details" asp-controller="Tickets" asp-route-id="@unassignedTicket.Id">See Details <i class="fas fa-arrow-alt-circle-right"></i></a>
+                                        </span>
+                                    </div>
+                                    <!-- /.info-box-content -->
+                                </div>
+                            }
 
-                        <div class="info-box-content">
-                            <span class="info-box-text">Direct Messages</span>
-                            <span class="info-box-number">163,921</span>
-                        </div>
-                        <!-- /.info-box-content -->
+                        }
                     </div>
-                    <!-- /.info-box -->
                     <!-- PRODUCT LIST -->
                     <div class="card">
                         <div class="card-header">

@@ -5,6 +5,7 @@ using JamesonBugTracker.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -45,12 +46,13 @@ namespace JamesonBugTracker.Controllers
             DashboardViewModel viewModel = new()
             {
                 Projects = await _projectService.GetAllProjectsByCompanyAsync(companyId),
-                DevelopmentTickets = await _ticketService.GetAllTicketsByRoleAsync("Developer", userId),
+                DevelopmentTickets = await _ticketService.GetAllDeveloperTicketsByResolvedAsync(userId, false),
                 SubmittedTickets = await _ticketService.GetAllTicketsByRoleAsync("Submitter", userId),
                 Members = await _companyInfoService.GetAllMembersAsync(companyId),
-                CurrentUser = await _userManager.GetUserAsync(User)
-
+                CurrentUser = await _userManager.GetUserAsync(User),
+                UnassignedTickets = await _ticketService.GetAllUnassignedTicketsAsync(companyId)
             };
+            ViewData["AssignUsers"] = new SelectList(await _companyInfoService.GetAllMembersAsync(companyId), "Id", "FullName");
             return View(viewModel);
         }
 

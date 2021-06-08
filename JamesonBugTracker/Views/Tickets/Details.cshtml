@@ -76,7 +76,7 @@
                                     @if (User.IsInRole("ProjectManager") || User.IsInRole("Admin"))
                                     {
 
-                                        <button class="btn btn-warning btn-sm" asp-action="Edit" asp-route-id="@Model.Id">Edit To Reassign</button>
+                                        <a class="btn btn-warning btn-sm" asp-action="Edit" asp-route-id="@Model.Id">Edit To Reassign</a>
                                     }
                                 }
                                 else

@@ -307,5 +307,12 @@ namespace JamesonBugTracker.Services
             var filteredTickets = userTickets.Where(t => (t.TicketStatus.Name == "Resolved") == isResolvedOrNot).ToList();
             return filteredTickets;
         }
+
+        public async Task<List<Ticket>> GetAllUnassignedTicketsAsync(int companyId)
+        {
+            var newTickets = await GetAllTicketsByStatusAsync(companyId, "New");
+            var unassignedTickets = await GetAllTicketsByStatusAsync(companyId, "Unassigned");
+            return newTickets.Concat(unassignedTickets).ToList();
+        }
     }
 }

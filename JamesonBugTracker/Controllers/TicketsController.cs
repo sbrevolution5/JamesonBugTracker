@@ -125,7 +125,7 @@ namespace JamesonBugTracker.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,Description,ProjectId,TicketPriorityId,TicketTypeId")] Ticket ticket)
+        public async Task<IActionResult> Create([Bind("Title,Description,ProjectId,TicketPriorityId,TicketTypeId")] Ticket ticket)
         {
             if (ModelState.IsValid)
             {
@@ -261,13 +261,18 @@ namespace JamesonBugTracker.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AssignUser(string userId, int ticketId)
+        public async Task<IActionResult> AssignUser(string userId, int ticketId, bool db=false)
         {
             try
             {
                 await _ticketService.AssignTicketAsync(ticketId, userId);
             }
             catch { throw; }
+            if (db)
+            {
+                return RedirectToAction("Dashboard","Home");
+
+            }
             return RedirectToAction("Details",new { id = ticketId });
         }
         [HttpPost]
