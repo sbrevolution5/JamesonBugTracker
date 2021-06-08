@@ -37,7 +37,7 @@
                         </li>
                     </ul>
 
-                    <a asp-controller="Tickets" asp-action="Create" class="btn btn-primary btn-block"><b>Add Ticket</b></a>
+                    <a asp-controller="Tickets" asp-action="Create" asp-route-id="@Model.Id" class="btn btn-primary btn-block"><b>Add Ticket</b></a>
                 </div>
                 <!-- /.card-body -->
             </div>

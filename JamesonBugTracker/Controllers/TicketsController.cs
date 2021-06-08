@@ -96,10 +96,11 @@ namespace JamesonBugTracker.Controllers
         }
 
         // GET: Tickets/Create
-        public async Task<IActionResult >Create()
+        public async Task<IActionResult >Create(int? id)
         {
             BTUser user = await _userManager.GetUserAsync(User);
             int companyId = User.Identity.GetCompanyId().Value;
+            Ticket ticket = new();
             if (User.IsInRole("Admin"))
             {
                 ViewData["ProjectId"] = new SelectList(await _projectService.GetAllProjectsByCompanyAsync(companyId), "Id", "Name");
@@ -108,9 +109,13 @@ namespace JamesonBugTracker.Controllers
             {
                 ViewData["ProjectId"] = new SelectList(await _projectService.ListUserProjectsAsync(user.Id), "Id", "Name");
             }
+            if(id is not null)
+            {
+                ticket.ProjectId = id.Value;
+            }
             ViewData["TicketPriorityId"] = new SelectList(_context.Set<TicketPriority>(), "Id", "Name");
             ViewData["TicketTypeId"] = new SelectList(_context.Set<TicketType>(), "Id", "Name");
-            return View();
+            return View(ticket);
         }
 
         // POST: Tickets/Create
@@ -170,6 +175,7 @@ namespace JamesonBugTracker.Controllers
             ViewData["TicketPriorityId"] = new SelectList(_context.Set<TicketPriority>(), "Id", "Name");
             ViewData["TicketStatusId"] = new SelectList(_context.Set<TicketStatus>(), "Id", "Name");
             ViewData["TicketTypeId"] = new SelectList(_context.Set<TicketType>(), "Id", "Name");
+            ViewData["DeveloperUserId"] = new SelectList(await _companyInfoService.GetAllMembersAsync(companyId), "Id", "FullName");
             return View(ticket);
         }
 
