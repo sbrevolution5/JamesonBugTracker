@@ -2,7 +2,6 @@
 var textColor
 //used to tell dark mode to use darkswap
 page = "ProjectDetails"
-console.log("BROOOOOOOOO")
 function darkSwap() {
     var isDark = document.getElementById("layoutBody").classList.contains("dark-mode")
     if (isDark) {

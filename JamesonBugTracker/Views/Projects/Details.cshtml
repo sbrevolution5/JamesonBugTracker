@@ -197,7 +197,7 @@
         let priority = [0,0,0,0]
         @foreach (var ticket in Model.Tickets)
         {
-            @:types[@(ticket.TicketTypeId-1)]+=1
+            @:types[@(ticket.TicketTypeId-1)]++
             @:statuses[@(ticket.TicketStatusId-1)]++
             @:priority[@(ticket.TicketPriorityId-1)]++
         }
