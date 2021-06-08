@@ -22,6 +22,7 @@
     <link rel="stylesheet" href="~/css/site.css" />
 </head>
 <body id="layoutBody" class="hold-transition sidebar-mini">
+    <partial name="_LogoutPartial" />
     <div class="wrapper">
         <div class="preloader flex-column justify-content-center align-items-center">
             <img class="animation__wobble" src="~/favicon.ico" alt="AdminLTELogo" height="60" width="60">
@@ -140,7 +141,7 @@
                             <a asp-area="Identity" asp-page="/Account/Manage/Index" class="d-block">@btUser.FullName</a>
                         </div>
                         <div class="info float-right">
-                            <a asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })"><i class="fas fa-sign-out-alt"></i></a>
+                            <a href="javascript:document.getElementById('logoutForm').submit();"><i class="fas fa-sign-out-alt"></i></a>
                         </div>
                     </div>
                 }
