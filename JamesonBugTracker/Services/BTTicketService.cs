@@ -37,6 +37,7 @@ namespace JamesonBugTracker.Services
                     // you must assign the Id property, not the virtual/navigation property.  Otherwise it won't change anything in database (except ticket status)
                     ticket.TicketStatusId = (await LookupTicketStatusIdAsync("Development")).Value;
                     ticket.DeveloperUserId = userId;
+                    ticket.Updated = DateTime.Now;
                     await _context.SaveChangesAsync();
                     return;
                 }
@@ -59,7 +60,7 @@ namespace JamesonBugTracker.Services
                         allTickets.Add(ticket);
                     }
                 }
-                return allTickets;
+                return allTickets.OrderByDescending(t=>t.Updated).ToList();
             }
             catch
             {
@@ -85,6 +86,7 @@ namespace JamesonBugTracker.Services
                                                     .Include(t => t.Attachments)
                                                     .Include(t => t.History)
                                                     .Include(t => t.Comments)
+                                                    .OrderByDescending(t=>t.Updated)
                                                  .ToListAsync();
                 return tickets;
             }
@@ -137,7 +139,7 @@ namespace JamesonBugTracker.Services
                                                 .Include(t => t.Attachments)
                                                 .Include(t => t.History)
                                                 .Include(t => t.Comments).Where(t => t.DeveloperUserId == userId)
-                                                .OrderBy(t => t.Created).ToListAsync();
+                                                .OrderByDescending(t => t.Updated).ToListAsync();
                 }
                 else if (role == "ProjectManager")
                 {
@@ -158,7 +160,7 @@ namespace JamesonBugTracker.Services
                                                 .Include(t => t.Attachments)
                                                 .Include(t => t.History)
                                                 .Include(t => t.Comments).Where(t => t.OwnerUserId == userId)
-                                                .OrderBy(t => t.Created).ToListAsync();
+                                                .OrderByDescending(t => t.Updated).ToListAsync();
                 }
 
                 return tickets;
@@ -272,6 +274,8 @@ namespace JamesonBugTracker.Services
                 try
                 {
                     ticket.TicketStatusId = (int)status;
+                    ticket.Updated = DateTime.Now;
+
                     await _context.SaveChangesAsync();
                 }
                 catch { throw; }

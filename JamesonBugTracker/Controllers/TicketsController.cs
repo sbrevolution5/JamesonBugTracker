@@ -129,6 +129,7 @@ namespace JamesonBugTracker.Controllers
             {
                 ticket.OwnerUserId = _userManager.GetUserId(User);
                 ticket.Created = DateTime.Now;
+                ticket.Updated = DateTime.Now;
                 ticket.TicketStatusId = (await _ticketService.LookupTicketStatusIdAsync("New")).Value;                
                 _context.Add(ticket);
                 await _context.SaveChangesAsync();

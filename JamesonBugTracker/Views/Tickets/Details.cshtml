@@ -15,7 +15,11 @@
     <div class="card-header">
         <h3 class="card-title">@Model.Title</h3>
         <div class="nav-links text-right">
-            <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
+            @if (User.IsInRole("ProjectManager")||User.IsInRole("Admin"))
+            {
+
+             <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> <span>|</span>
+            }
             <a asp-action="Index">Back to List</a>
         </div>
     </div>
@@ -69,6 +73,11 @@
                                 @if (Model.DeveloperUserId is not null)
                                 {
                                     <p>@Model.DeveloperUser?.FullName</p>
+                                    @if (User.IsInRole("ProjectManager") || User.IsInRole("Admin"))
+                                    {
+
+                                        <button class="btn btn-warning btn-sm" asp-action="Edit" asp-route-id="@Model.Id">Edit To Reassign</button>
+                                    }
                                 }
                                 else
                                 {

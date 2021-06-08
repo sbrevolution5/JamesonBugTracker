@@ -82,10 +82,10 @@
                     <div class="info-box-content">
                         <span class="info-box-text">Projects</span>
                         @if (hasProjects)
-	{
-		 
-                        <span class="info-box-number">@Model.Projects.Count</span>
-	}
+                        {
+
+                            <span class="info-box-number">@Model.Projects.Count</span>
+                        }
                     </div>
                     <!-- /.info-box-content -->
                 </div>
@@ -148,7 +148,11 @@
                                                             <td>@ticket.TicketStatus.Name</td>
                                                             <td><span class="badge priorityBadge">@ticket.TicketPriority.Name</span></td>
                                                             <td>
-                                                                <a asp-controller="Tickets" asp-action="Edit" asp-route-id="@ticket.Id">Edit</a> |
+                                                                @if (User.IsInRole("ProjectManager") || User.IsInRole("Admin"))
+                                                                {
+
+                                                                    <a asp-controller="Tickets" asp-action="Edit" asp-route-id="@ticket.Id">Edit</a> <span>|</span>
+                                                                }
                                                                 <a asp-controller="Tickets" asp-action="Details" asp-route-id="@ticket.Id">Details</a> |
                                                                 <a asp-controller="Tickets" asp-action="Delete" asp-route-id="@ticket.Id">Delete</a>
                                                             </td>
@@ -261,7 +265,11 @@
                                                             <td>@ticket.TicketStatus.Name</td>
                                                             <td><span class="badge priorityBadge">@ticket.TicketPriority.Name</span></td>
                                                             <td>
-                                                                <a asp-controller="Tickets" asp-action="Edit" asp-route-id="@ticket.Id">Edit</a> |
+                                                                @if (User.IsInRole("ProjectManager") || User.IsInRole("Admin"))
+                                                                {
+
+                                                                    <a asp-controller="Tickets" asp-action="Edit" asp-route-id="@ticket.Id">Edit</a> <span>|</span>
+                                                                }
                                                                 <a asp-controller="Tickets" asp-action="Details" asp-route-id="@ticket.Id">Details</a> |
                                                                 <a asp-controller="Tickets" asp-action="Delete" asp-route-id="@ticket.Id">Delete</a>
                                                             </td>
@@ -325,168 +333,168 @@
                 @if (hasProjects)
                 {
 
-                <div class="card card-primary card-tabs">
-                    <div class="card-header p-0 pt-1">
-                        <ul class="nav nav-tabs" id="project-tabs" role="tablist">
-                            <li class="pt-2 px-3"><h3 class="card-title">Projects</h3></li>
-                            @{ var i = 0;}
-                            @foreach (var project in Model.Projects)
-                            {
-                                @if (i == 0)
+                    <div class="card card-primary card-tabs">
+                        <div class="card-header p-0 pt-1">
+                            <ul class="nav nav-tabs" id="project-tabs" role="tablist">
+                                <li class="pt-2 px-3"><h3 class="card-title">Projects</h3></li>
+                                @{ var i = 0;}
+                                @foreach (var project in Model.Projects)
                                 {
+                                    @if (i == 0)
+                                    {
 
 
-                                    <li class="nav-item">
-                                        <a class="nav-link active" id="custom-tabs-two-@project.Id-tab" data-toggle="pill" href="#custom-tabs-two-@project.Id" role="tab" aria-controls="custom-tabs-two-@project." aria-selected="true">@project.Name</a>
-                                    </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link active" id="custom-tabs-two-@project.Id-tab" data-toggle="pill" href="#custom-tabs-two-@project.Id" role="tab" aria-controls="custom-tabs-two-@project." aria-selected="true">@project.Name</a>
+                                        </li>
+                                    }
+                                    else
+                                    {
+                                        <li class="nav-item">
+                                            <a class="nav-link" id="custom-tabs-two-@project.Id-tab" data-toggle="pill" href="#custom-tabs-two-@project.Id" role="tab" aria-controls="custom-tabs-two-@project.Id" aria-selected="false">@project.Name</a>
+                                        </li>
+                                    }
+                                    i++;
                                 }
-                                else
-                                {
-                                    <li class="nav-item">
-                                        <a class="nav-link" id="custom-tabs-two-@project.Id-tab" data-toggle="pill" href="#custom-tabs-two-@project.Id" role="tab" aria-controls="custom-tabs-two-@project.Id" aria-selected="false">@project.Name</a>
-                                    </li>
-                                }
-                                i++;
-                            }
-                        </ul>
-                    </div>
-                    <div class="card-body">
-                        <div class="tab-content" id="custom-tabs-two-tabContent">
-                            @{ i = 0;}
-                            @foreach (var project in Model.Projects)
-                            {
-                                if (i == 0)
-                                {
-                                    <div class="tab-pane fade" id="custom-tabs-two-@project.Id" role="tabpanel" aria-labelledby="custom-tabs-two-@project.Id-tab">
-                                        <div class="row" id="@project.Id-chart">
-
-                                            <div class="col-md-8">
-                                                <p class="text-center">
-                                                    <strong>@project.Name</strong>
-                                                </p>
-
-                                                <div class="chart">
-                                                    <!-- Sales Chart Canvas -->
-                                                    <canvas id="salesChart" height="180" style="height: 180px;"></canvas>
-                                                </div>
-                                                <!-- /.chart-responsive -->
-                                                <a class="btn btn-primary" asp-controller="Projects" asp-action="Details" asp-route-id="@project.Id">See More Details</a>
-                                            </div>
-                                            <!-- /.col -->
-                                            <div class="col-md-4">
-                                                <p class="text-center">
-                                                    <strong>Goal Completion</strong>
-                                                </p>
-
-                                                <div class="progress-group">
-                                                    Add Products to Cart
-                                                    <span class="float-right"><b>160</b>/200</span>
-                                                    <div class="progress progress-sm">
-                                                        <div class="progress-bar bg-primary" style="width: 80%"></div>
-                                                    </div>
-                                                </div>
-                                                <!-- /.progress-group -->
-
-                                                <div class="progress-group">
-                                                    Complete Purchase
-                                                    <span class="float-right"><b>310</b>/400</span>
-                                                    <div class="progress progress-sm">
-                                                        <div class="progress-bar bg-danger" style="width: 75%"></div>
-                                                    </div>
-                                                </div>
-
-                                                <!-- /.progress-group -->
-                                                <div class="progress-group">
-                                                    <span class="progress-text">Visit Premium Page</span>
-                                                    <span class="float-right"><b>480</b>/800</span>
-                                                    <div class="progress progress-sm">
-                                                        <div class="progress-bar bg-success" style="width: 60%"></div>
-                                                    </div>
-                                                </div>
-
-                                                <!-- /.progress-group -->
-                                                <div class="progress-group">
-                                                    Send Inquiries
-                                                    <span class="float-right"><b>250</b>/500</span>
-                                                    <div class="progress progress-sm">
-                                                        <div class="progress-bar bg-warning" style="width: 50%"></div>
-                                                    </div>
-                                                </div>
-                                                <!-- /.progress-group -->
-                                            </div>
-                                            <!-- /.col -->
-                                        </div>
-                                        <!-- /.row -->
-                                    </div>
-                                }
-                                else
-                                {
-
-                                    <div class="tab-pane fade" id="custom-tabs-two-@project.Id" role="tabpanel" aria-labelledby="custom-tabs-two-@project.Id-tab">
-                                        <div class="row" id="@project.Id-chart">
-                                            <div class="col-md-8">
-                                                <p class="text-center">
-                                                    <strong>@project.Name</strong>
-                                                </p>
-                                                <div class="chart">
-                                                    <!-- Sales Chart Canvas -->
-                                                    <canvas id="salesChart" height="180" style="height: 180px;"></canvas>
-                                                </div>
-                                                <!-- /.chart-responsive -->
-                                                <a class="btn btn-primary" asp-controller="Projects" asp-action="Details" asp-route-id="@project.Id">See More Details</a>
-                                            </div>
-                                            <!-- /.col -->
-                                            <div class="col-md-4">
-                                                <p class="text-center">
-                                                    <strong>Goal Completion</strong>
-                                                </p>
-                                                <div class="progress-group">
-                                                    Add Products to Cart
-                                                    <span class="float-right"><b>160</b>/200</span>
-                                                    <div class="progress progress-sm">
-                                                        <div class="progress-bar bg-primary" style="width: 80%"></div>
-                                                    </div>
-                                                </div>
-                                                <!-- /.progress-group -->
-
-                                                <div class="progress-group">
-                                                    Complete Purchase
-                                                    <span class="float-right"><b>310</b>/400</span>
-                                                    <div class="progress progress-sm">
-                                                        <div class="progress-bar bg-danger" style="width: 75%"></div>
-                                                    </div>
-                                                </div>
-
-                                                <!-- /.progress-group -->
-                                                <div class="progress-group">
-                                                    <span class="progress-text">Visit Premium Page</span>
-                                                    <span class="float-right"><b>480</b>/800</span>
-                                                    <div class="progress progress-sm">
-                                                        <div class="progress-bar bg-success" style="width: 60%"></div>
-                                                    </div>
-                                                </div>
-
-                                                <!-- /.progress-group -->
-                                                <div class="progress-group">
-                                                    Send Inquiries
-                                                    <span class="float-right"><b>250</b>/500</span>
-                                                    <div class="progress progress-sm">
-                                                        <div class="progress-bar bg-warning" style="width: 50%"></div>
-                                                    </div>
-                                                </div>
-                                                <!-- /.progress-group -->
-                                            </div>
-                                            <!-- /.col -->
-                                        </div>
-                                        <!-- /.row -->
-                                    </div>
-                                }
-                            }
+                            </ul>
                         </div>
+                        <div class="card-body">
+                            <div class="tab-content" id="custom-tabs-two-tabContent">
+                                @{ i = 0;}
+                                @foreach (var project in Model.Projects)
+                                {
+                                    if (i == 0)
+                                    {
+                                        <div class="tab-pane fade" id="custom-tabs-two-@project.Id" role="tabpanel" aria-labelledby="custom-tabs-two-@project.Id-tab">
+                                            <div class="row" id="@project.Id-chart">
+
+                                                <div class="col-md-8">
+                                                    <p class="text-center">
+                                                        <strong>@project.Name</strong>
+                                                    </p>
+
+                                                    <div class="chart">
+                                                        <!-- Sales Chart Canvas -->
+                                                        <canvas id="salesChart" height="180" style="height: 180px;"></canvas>
+                                                    </div>
+                                                    <!-- /.chart-responsive -->
+                                                    <a class="btn btn-primary" asp-controller="Projects" asp-action="Details" asp-route-id="@project.Id">See More Details</a>
+                                                </div>
+                                                <!-- /.col -->
+                                                <div class="col-md-4">
+                                                    <p class="text-center">
+                                                        <strong>Goal Completion</strong>
+                                                    </p>
+
+                                                    <div class="progress-group">
+                                                        Add Products to Cart
+                                                        <span class="float-right"><b>160</b>/200</span>
+                                                        <div class="progress progress-sm">
+                                                            <div class="progress-bar bg-primary" style="width: 80%"></div>
+                                                        </div>
+                                                    </div>
+                                                    <!-- /.progress-group -->
+
+                                                    <div class="progress-group">
+                                                        Complete Purchase
+                                                        <span class="float-right"><b>310</b>/400</span>
+                                                        <div class="progress progress-sm">
+                                                            <div class="progress-bar bg-danger" style="width: 75%"></div>
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- /.progress-group -->
+                                                    <div class="progress-group">
+                                                        <span class="progress-text">Visit Premium Page</span>
+                                                        <span class="float-right"><b>480</b>/800</span>
+                                                        <div class="progress progress-sm">
+                                                            <div class="progress-bar bg-success" style="width: 60%"></div>
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- /.progress-group -->
+                                                    <div class="progress-group">
+                                                        Send Inquiries
+                                                        <span class="float-right"><b>250</b>/500</span>
+                                                        <div class="progress progress-sm">
+                                                            <div class="progress-bar bg-warning" style="width: 50%"></div>
+                                                        </div>
+                                                    </div>
+                                                    <!-- /.progress-group -->
+                                                </div>
+                                                <!-- /.col -->
+                                            </div>
+                                            <!-- /.row -->
+                                        </div>
+                                    }
+                                    else
+                                    {
+
+                                        <div class="tab-pane fade" id="custom-tabs-two-@project.Id" role="tabpanel" aria-labelledby="custom-tabs-two-@project.Id-tab">
+                                            <div class="row" id="@project.Id-chart">
+                                                <div class="col-md-8">
+                                                    <p class="text-center">
+                                                        <strong>@project.Name</strong>
+                                                    </p>
+                                                    <div class="chart">
+                                                        <!-- Sales Chart Canvas -->
+                                                        <canvas id="salesChart" height="180" style="height: 180px;"></canvas>
+                                                    </div>
+                                                    <!-- /.chart-responsive -->
+                                                    <a class="btn btn-primary" asp-controller="Projects" asp-action="Details" asp-route-id="@project.Id">See More Details</a>
+                                                </div>
+                                                <!-- /.col -->
+                                                <div class="col-md-4">
+                                                    <p class="text-center">
+                                                        <strong>Goal Completion</strong>
+                                                    </p>
+                                                    <div class="progress-group">
+                                                        Add Products to Cart
+                                                        <span class="float-right"><b>160</b>/200</span>
+                                                        <div class="progress progress-sm">
+                                                            <div class="progress-bar bg-primary" style="width: 80%"></div>
+                                                        </div>
+                                                    </div>
+                                                    <!-- /.progress-group -->
+
+                                                    <div class="progress-group">
+                                                        Complete Purchase
+                                                        <span class="float-right"><b>310</b>/400</span>
+                                                        <div class="progress progress-sm">
+                                                            <div class="progress-bar bg-danger" style="width: 75%"></div>
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- /.progress-group -->
+                                                    <div class="progress-group">
+                                                        <span class="progress-text">Visit Premium Page</span>
+                                                        <span class="float-right"><b>480</b>/800</span>
+                                                        <div class="progress progress-sm">
+                                                            <div class="progress-bar bg-success" style="width: 60%"></div>
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- /.progress-group -->
+                                                    <div class="progress-group">
+                                                        Send Inquiries
+                                                        <span class="float-right"><b>250</b>/500</span>
+                                                        <div class="progress progress-sm">
+                                                            <div class="progress-bar bg-warning" style="width: 50%"></div>
+                                                        </div>
+                                                    </div>
+                                                    <!-- /.progress-group -->
+                                                </div>
+                                                <!-- /.col -->
+                                            </div>
+                                            <!-- /.row -->
+                                        </div>
+                                    }
+                                }
+                            </div>
+                        </div>
+                        <!-- /.card -->
+
                     </div>
-                    <!-- /.card -->
-                    
-                </div>
                 }
                 <!-- /.col -->
             </div>
@@ -674,7 +682,7 @@
             </div>
             <!-- /.row -->
         </div>
-        </div><!--/. container-fluid -->
+    </div><!--/. container-fluid -->
 </section>
 <!-- /.content -->
 
@@ -699,18 +707,18 @@
         let devPriority = [0, 0, 0, 0]
         @foreach (var ticket in Model.DevelopmentTickets)
         {
-            @:devTypes[@(ticket.TicketTypeId-1)] += 1
-            @:devStatuses[@(ticket.TicketStatusId-1)]++
-            @:devPriority[@(ticket.TicketPriorityId-1)]++
+            @:devTypes[0+@(ticket.TicketTypeId-1)] += 1
+            @:devStatuses[0+@(ticket.TicketStatusId-1)]++
+            @:devPriority[0+@(ticket.TicketPriorityId-1)]++
         }
         let subTypes = [0, 0, 0, 0]
         let subStatuses = [0,0,0,0,0,0]
         let subPriority = [0, 0, 0, 0]
         @foreach (var ticket in Model.SubmittedTickets)
         {
-            @:subTypes[@(ticket.TicketTypeId-1)] += 1
-            @:subStatuses[@(ticket.TicketStatusId-1)]++
-            @:subPriority[@(ticket.TicketPriorityId-1)]++
+            @:subTypes[0+@(ticket.TicketTypeId-1)] += 1
+            @:subStatuses[0+@(ticket.TicketStatusId-1)]++
+            @:subPriority[0+@(ticket.TicketPriorityId-1)]++
         }
     </script>
     <script>
