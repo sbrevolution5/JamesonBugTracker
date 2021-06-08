@@ -167,9 +167,9 @@
                                     <td>@ticket.TicketType.Name</td>
                                     <td><span class="badge priorityBadge">@ticket.TicketPriority.Name</span></td>
                                     <td>
-                                        <a asp-action="Edit" asp-route-id="@ticket.Id">Edit</a> |
-                                        <a asp-action="Details" asp-route-id="@ticket.Id">Details</a> |
-                                        <a asp-action="Delete" asp-route-id="@ticket.Id">Delete</a>
+                                        <a asp-controller="Tickets" asp-action="Edit" asp-route-id="@ticket.Id">Edit</a> |
+                                        <a asp-controller="Tickets" asp-action="Details" asp-route-id="@ticket.Id">Details</a> |
+                                        <a asp-controller="Tickets" asp-action="Delete" asp-route-id="@ticket.Id">Delete</a>
                                     </td>
                                 </tr>
                             }
