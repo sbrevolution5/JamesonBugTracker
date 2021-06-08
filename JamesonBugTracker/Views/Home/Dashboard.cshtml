@@ -1,9 +1,16 @@
 ﻿@model JamesonBugTracker.Models.ViewModels.DashboardViewModel
+@using JamesonBugTracker.Extensions
 @{
     ViewData["Title"] = "Dashboard";
+    bool hasProjects = true;
+    if (Model.Projects.Count < 1)
+    {
+        hasProjects = false;
+    }
 }
 @using JamesonBugTracker.Services.Interfaces
 @inject IBTTicketService _ticketService
+@inject IBTCompanyInfoService _companyInfoService
 <!-- Content Header (Page header) -->
 <div class="content-header">
     <div class="container-fluid">
@@ -13,7 +20,7 @@
 
             </div><!-- /.col -->
             <div class="col-6 text-right">
-                <h2 class="m-0 text-muted">@Model.Projects.First().Company.Name</h2>
+                <h2 class="m-0 text-muted">@((await _companyInfoService.GetCompanyInfoByIdAsync(User.Identity.GetCompanyId().Value)).Name)</h2>
             </div>
         </div><!-- /.row -->
     </div><!-- /.container-fluid -->
@@ -74,7 +81,11 @@
 
                     <div class="info-box-content">
                         <span class="info-box-text">Projects</span>
+                        @if (hasProjects)
+	{
+		 
                         <span class="info-box-number">@Model.Projects.Count</span>
+	}
                     </div>
                     <!-- /.info-box-content -->
                 </div>
@@ -311,6 +322,9 @@
                         </div>
                     </div>
                 </div>
+                @if (hasProjects)
+                {
+
                 <div class="card card-primary card-tabs">
                     <div class="card-header p-0 pt-1">
                         <ul class="nav nav-tabs" id="project-tabs" role="tablist">
@@ -473,6 +487,7 @@
                     <!-- /.card -->
                     
                 </div>
+                }
                 <!-- /.col -->
             </div>
             <!-- /.row -->
@@ -701,7 +716,11 @@
     <script>
         $(document).ready(function () {
             $('#ticketTable').DataTable();
-            $('#custom-tabs-two-@Model.Projects.FirstOrDefault().Id').tab('show')
+            @if (hasProjects)
+            {
+
+            @:$('#custom-tabs-two-@Model.Projects.First().Id').tab('show')
+            }
         });
     </script>
     <script src="~/js/chartBasics.js"></script>
