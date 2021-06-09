@@ -88,7 +88,7 @@ namespace JamesonBugTracker.Controllers
                 .ThenInclude(c => c.User)
                 .Include(t=> t.History)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            ViewData["AssignUsers"] = new SelectList(await _projectService.GetMembersWithoutPMAsync(ticket.ProjectId), "Id", "FullName",ticket.DeveloperUserId);
+            ViewData["AssignUsers"] = new SelectList(await _companyInfoService.GetAllMembersAsync(companyId), "Id", "FullName",ticket.DeveloperUserId);
 
             if (ticket == null)
             {
@@ -264,23 +264,11 @@ namespace JamesonBugTracker.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ArchiveConfirmed(int id)
         {
-            BTUser currentUser = await _userManager.GetUserAsync(User);
-            Ticket oldTicket = await _ticketService.GetOneTicketNotTrackedAsync(id);
             var ticket = await _context.Ticket.FindAsync(id);
-            try{
-                ticket.ArchiveDate = DateTime.Now;
-                ticket.Archived = true;
-                await _context.SaveChangesAsync();
-                await _ticketService.SetTicketStatusAsync(id, "Archived");
-            }
-            catch
-            {
-                throw;
-            }
-            Ticket newTicket = await _ticketService.GetOneTicketNotTrackedAsync(id);
-            await _historyService.AddHistoryAsync(oldTicket, newTicket, currentUser.Id);
-
-            return RedirectToAction("Dashboard", "Home");
+            ticket.ArchiveDate = DateTime.Now;
+            await _context.SaveChangesAsync();
+            await _ticketService.SetTicketStatusAsync(id, "Archived");
+            return RedirectToAction("Dashboard","Home");
         }
         [HttpPost]
         [ValidateAntiForgeryToken]

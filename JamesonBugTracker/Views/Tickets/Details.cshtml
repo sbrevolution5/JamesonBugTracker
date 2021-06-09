@@ -323,7 +323,7 @@
         <!-- The time line -->
         <div class="timeline">
             @{
-                DateTime? today = Model.History.OrderByDescending(h => h.Created).FirstOrDefault()?.Created.Date;
+                DateTime today = Model.History.OrderByDescending(h => h.Created).FirstOrDefault().Created.Date;
                 var labelNum = 0;
                 List<string> colorList = new();
                 colorList.Add("bg-danger");
