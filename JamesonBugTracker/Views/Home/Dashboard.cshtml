@@ -178,10 +178,10 @@
                                         <div class="card-tools">
                                             <ul class="nav nav-pills ml-auto">
                                                 <li class="nav-item">
-                                                    <a class="nav-link active" href="#dev-status-chart" data-toggle="tab">Status</a>
+                                                    <a class="nav-link active" href="#dev-type-chart" data-toggle="tab">Type</a>
                                                 </li>
                                                 <li class="nav-item">
-                                                    <a class="nav-link" href="#dev-type-chart" data-toggle="tab">Type</a>
+                                                    <a class="nav-link" href="#dev-status-chart" data-toggle="tab">Status</a>
                                                 </li>
                                                 <li class="nav-item">
                                                     <a class="nav-link" href="#dev-priority-chart" data-toggle="tab">Priority</a>
@@ -192,12 +192,12 @@
                                     <div class="card-body">
                                         <div class="tab-content p-0">
                                             <!-- DEV CHARTS -->
-                                            <div class="chart tab-pane active" id="dev-status-chart"
+                                            <div class="chart tab-pane active" id="dev-type-chart"
                                                  style="position: relative; height: 300px;">
-                                                <canvas id="devStatusChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
-                                            </div>
-                                            <div class="chart tab-pane" id="dev-type-chart" style="position: relative; height: 300px;">
                                                 <canvas id="devTypeChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                                            </div>
+                                            <div class="chart tab-pane" id="dev-status-chart" style="position: relative; height: 300px;">
+                                                <canvas id="devStatusChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
 
                                             </div>
                                             <div class="chart tab-pane" id="dev-priority-chart" style="position: relative; height: 300px;">
@@ -588,7 +588,7 @@
                                                                             <input hidden name="ticketId" value="@unassignedTicket.Id" />
                                                                             <div class="form-group">
                                                                                 <label for=""></label>
-                                                                                <select required class="form-control" name="userId" id="" asp-items="ViewBag.AssignUsers">
+                                                                                <select required class="form-control" name="userId" id="@unassignedTicket.Id-userSelect" asp-items="ViewBag.AssignUsers">
                                                                                     <option value="" hidden>Choose a User</option>
 
                                                                                 </select>

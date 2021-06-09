@@ -21,14 +21,16 @@ namespace JamesonBugTracker.Controllers
         private readonly UserManager<BTUser> _userManager;
         private readonly IBTProjectService _projectService;
         private readonly IBTCompanyInfoService _companyInfoService;
+        private readonly IBTHistoryService _historyService;
 
-        public TicketsController(ApplicationDbContext context, IBTTicketService ticketService, UserManager<BTUser> userManager, IBTProjectService projectService, IBTCompanyInfoService companyInfoService)
+        public TicketsController(ApplicationDbContext context, IBTTicketService ticketService, UserManager<BTUser> userManager, IBTProjectService projectService, IBTCompanyInfoService companyInfoService, IBTHistoryService historyService)
         {
             _context = context;
             _ticketService = ticketService;
             _userManager = userManager;
             _projectService = projectService;
             _companyInfoService = companyInfoService;
+            _historyService = historyService;
         }
 
         // GET: Tickets
@@ -196,6 +198,12 @@ namespace JamesonBugTracker.Controllers
 
             if (ModelState.IsValid)
             {
+                //get companyid, currentuser, project manager OLD
+                int companyId = User.Identity.GetCompanyId().Value;
+                BTUser projectManager = await _projectService.GetProjectManagerAsync(ticket.ProjectId);
+                BTUser currentUser = await _userManager.GetUserAsync(User);
+
+                Ticket oldTicket = await _ticketService.GetOneTicketNotTrackedAsync(ticket.Id);
                 try
                 {
                     ticket.OwnerUserId = _userManager.GetUserId(User);
@@ -215,6 +223,8 @@ namespace JamesonBugTracker.Controllers
                         throw;
                     }
                 }
+                Ticket newTicket = await _ticketService.GetOneTicketNotTrackedAsync(ticket.Id);
+                await _historyService.AddHistoryAsync(oldTicket, newTicket, currentUser.Id);
                 return RedirectToAction("Details", "Projects", new { id = ticket.ProjectId});
                 
             }
@@ -281,7 +291,12 @@ namespace JamesonBugTracker.Controllers
         {
             try
             {
+                BTUser currentUser = await _userManager.GetUserAsync(User);
+                Ticket oldTicket = await _ticketService.GetOneTicketNotTrackedAsync(ticketId);
                 await _ticketService.SetTicketStatusAsync(ticketId, statusName);
+                Ticket newTicket = await _ticketService.GetOneTicketNotTrackedAsync(ticketId);
+                await _historyService.AddHistoryAsync(oldTicket, newTicket, currentUser.Id);
+
             }
             catch { throw; }
             return RedirectToAction("Details",new { id = ticketId });

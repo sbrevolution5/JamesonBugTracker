@@ -118,13 +118,21 @@
                     <form asp-action="UpdateStatus">
                         <input hidden name="ticketId" value="@Model.Id" />
                         <input hidden name="statusName" value="Development" />
-                        <button class="btn btn-block btn-info" type="submit">Return to Development</button>
+                        <button class="btn btn-block btn-danger" type="submit">Testing Failed: Return to Development</button>
                     </form>
                     <hr />
                     <form asp-action="UpdateStatus">
                         <input hidden name="ticketId" value="@Model.Id" />
                         <input hidden name="statusName" value="Resolved" />
                         <button class="btn btn-block btn-success" type="submit">Close Ticket</button>
+                    </form>
+                }
+                else if (Model.TicketStatus.Name == "Resolved" && (User.IsInRole("ProjectManager") || User.IsInRole("Admin")))
+                {
+                    <form asp-action="UpdateStatus">
+                        <input hidden name="ticketId" value="@Model.Id" />
+                        <input hidden name="statusName" value="Development" />
+                        <button class="btn btn-block btn-success" type="submit">Reopen Ticket to Development status</button>
                     </form>
                 }
                 <hr />

@@ -314,5 +314,18 @@ namespace JamesonBugTracker.Services
             var unassignedTickets = await GetAllTicketsByStatusAsync(companyId, "Unassigned");
             return newTickets.Concat(unassignedTickets).ToList();
         }
+
+        public async Task<Ticket> GetOneTicketNotTrackedAsync(int ticketId)
+        {
+            Ticket oldTicket = await _context.Ticket
+                                                    .Include(t => t.TicketPriority)
+                                                    .Include(t => t.TicketStatus)
+                                                    .Include(t => t.TicketType)
+                                                    .Include(t => t.Project)
+                                                    .Include(t => t.DeveloperUser)
+                                                    .AsNoTracking()
+                                                    .FirstOrDefaultAsync(t => t.Id == ticketId);
+            return oldTicket;
+        }
     }
 }
