@@ -20,7 +20,7 @@
     @await RenderSectionAsync("Header", required: false)
     <link rel="stylesheet" href="~/css/site.css" />
 </head>
-<body id="layoutBody" class="hold-transition sidebar-mini">
+<body id="layoutBody" class="hold-transition sidebar-mini dark-mode">
     <partial name="_LogoutPartial" />
     <div class="wrapper">
         <div class="preloader flex-column justify-content-center align-items-center">
@@ -73,7 +73,7 @@
                 <!--Dark Mode toggler-->
                 <li class="nav-item">
                     <button onclick="toggleDark()" class="btn btn-sm btn-primary">
-                        <i id="darkIcon" class="far fa-moon"></i>
+                        <i id="darkIcon" class="fas fa-sun"></i>
                     </button>
                 </li>
                 

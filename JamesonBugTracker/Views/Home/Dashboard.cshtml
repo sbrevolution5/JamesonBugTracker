@@ -36,9 +36,9 @@
                     <span class="info-box-icon bg-info elevation-1"><i class="fas fa-cog"></i></span>
 
                     <div class="info-box-content">
-                        <span class="info-box-text">Open Development Tickets</span>
+                        <span class="info-box-text">Development Tickets</span>
                         <span class="info-box-number">
-                            @Model.DevelopmentTickets.Count
+                            @Model.UnresolvedDevelopmentTickets.Count Open | <span class="text-muted">@Model.DevelopmentTickets.Count Assigned</span>
                         </span>
                     </div>
                     <!-- /.info-box-content -->
@@ -136,7 +136,7 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    @foreach (var ticket in Model.DevelopmentTickets)
+                                                    @foreach (var ticket in Model.UnresolvedDevelopmentTickets)
                                                     {
                                                         <tr>
                                                             <td>@ticket.Title</td>
@@ -206,7 +206,12 @@
                                             </div>
                                         </div>
                                     </div><!-- /.card-body -->
-                                </div>
+                                    </div>
+                                    <a class="my-2 btn btn-block btn-primary" asp-controller="Tickets" asp-action="MyTickets"> View My Tickets</a>
+                                    @if (User.IsInRole("ProjectManager") || User.IsInRole("Admin"))
+                                    {
+                                        <a class="my-2 btn btn-block btn-success"asp-controller="Tickets" asp-action="AllTickets"> View All Tickets</a>
+                                    }
 
                             </div>
                         </div>
@@ -324,8 +329,13 @@
                                             </div>
                                         </div>
                                     </div><!-- /.card-body -->
-
                                 </div>
+                                    <a class="my-2 btn btn-block btn-primary" asp-controller="Tickets" asp-action="MyTickets"> View My Tickets</a>
+                                    @if (User.IsInRole("ProjectManager") || User.IsInRole("Admin"))
+                                    {
+                                        <a class="my-2 btn btn-block btn-success" asp-controller="Tickets" asp-action="AllTickets"> View All Tickets</a>
+                                    }
+
                             </div>
                         </div>
                     </div>
@@ -550,19 +560,25 @@
                 </div>
                 <!-- /.col -->
                 <div class="col-md-8">
-                    <div class="card">
-                        <div class="card-header">
-                            <h5>Unassigned Tickets</h5>
-                        </div>
-                        <div class="card-body">
 
-                            <div class="row">
-                                <div class="col">
-                                    <div class="card card-warning">
-                                        <div class="card-body">
+                    @if (User.IsInRole("ProjectManager") || User.IsInRole("Admin"))
+                    {
+                        <div class="card">
+                            <div class="card-header">
+                                <h5>Unassigned Tickets</h5>
+                                <div class="card-tools">
+                                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                        <i class="fas fa-minus"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="card-body">
 
-                                            @if (User.IsInRole("ProjectManager") || User.IsInRole("Admin"))
-                                            {<div class="table-responsive">
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="card card-warning">
+                                            <div class="card-body">
+                                                <div class="table-responsive">
                                                     <table id="unassignedTable" class="table dataTable striped">
                                                         <thead>
                                                             <tr>
@@ -584,7 +600,7 @@
                                                                     <td>@unassignedTicket.OwnerUser?.FullName</td>
                                                                     <td>@unassignedTicket.Description</td>
                                                                     <td>
-                                                                        <form asp-controller="Tickets" asp-action="AssignUser" asp-route-db="true">
+                                                                        <form asp-controller="Tickets" asp-action="AssignUser" asp-route-db="true" class="assignForm">
                                                                             <input hidden name="ticketId" value="@unassignedTicket.Id" />
                                                                             <div class="form-group">
                                                                                 <label for=""></label>
@@ -604,98 +620,13 @@
                                                 <!-- /.table-responsive -->
 
 
-                                            }
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <!-- PRODUCT LIST -->
-                    <div class="card">
-                        <div class="card-header">
-                            <h3 class="card-title">Recently Added Products</h3>
-
-                            <div class="card-tools">
-                                <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                                    <i class="fas fa-minus"></i>
-                                </button>
-
-                            </div>
-                        </div>
-                        <!-- /.card-header -->
-                        <div class="card-body p-0">
-                            <ul class="products-list product-list-in-card pl-2 pr-2">
-                                <li class="item">
-                                    <div class="product-img">
-                                        <img src="dist/img/default-150x150.png" alt="Product Image" class="img-size-50">
-                                    </div>
-                                    <div class="product-info">
-                                        <a href="javascript:void(0)" class="product-title">
-                                            Samsung TV
-                                            <span class="badge badge-warning float-right">$1800</span>
-                                        </a>
-                                        <span class="product-description">
-                                            Samsung 32" 1080p 60Hz LED Smart HDTV.
-                                        </span>
-                                    </div>
-                                </li>
-                                <!-- /.item -->
-                                <li class="item">
-                                    <div class="product-img">
-                                        <img src="dist/img/default-150x150.png" alt="Product Image" class="img-size-50">
-                                    </div>
-                                    <div class="product-info">
-                                        <a href="javascript:void(0)" class="product-title">
-                                            Bicycle
-                                            <span class="badge badge-info float-right">$700</span>
-                                        </a>
-                                        <span class="product-description">
-                                            26" Mongoose Dolomite Men's 7-speed, Navy Blue.
-                                        </span>
-                                    </div>
-                                </li>
-                                <!-- /.item -->
-                                <li class="item">
-                                    <div class="product-img">
-                                        <img src="dist/img/default-150x150.png" alt="Product Image" class="img-size-50">
-                                    </div>
-                                    <div class="product-info">
-                                        <a href="javascript:void(0)" class="product-title">
-                                            Xbox One <span class="badge badge-danger float-right">
-                                                $350
-                                            </span>
-                                        </a>
-                                        <span class="product-description">
-                                            Xbox One Console Bundle with Halo Master Chief Collection.
-                                        </span>
-                                    </div>
-                                </li>
-                                <!-- /.item -->
-                                <li class="item">
-                                    <div class="product-img">
-                                        <img src="dist/img/default-150x150.png" alt="Product Image" class="img-size-50">
-                                    </div>
-                                    <div class="product-info">
-                                        <a href="javascript:void(0)" class="product-title">
-                                            PlayStation 4
-                                            <span class="badge badge-success float-right">$399</span>
-                                        </a>
-                                        <span class="product-description">
-                                            PlayStation 4 500GB Console (PS4)
-                                        </span>
-                                    </div>
-                                </li>
-                                <!-- /.item -->
-                            </ul>
-                        </div>
-                        <!-- /.card-body -->
-                        <div class="card-footer text-center">
-                            <a href="javascript:void(0)" class="uppercase">View All Products</a>
-                        </div>
-                        <!-- /.card-footer -->
-                    </div>
-                    <!-- /.card -->
+                    }
                 </div>
                 <!-- /.col -->
             </div>
@@ -725,7 +656,7 @@
         let devTypes = [0,0,0,0]
         let devStatuses = [0,0,0,0,0,0]
         let devPriority = [0, 0, 0, 0]
-        @foreach (var ticket in Model.DevelopmentTickets)
+        @foreach (var ticket in Model.UnresolvedDevelopmentTickets)
         {
             @:devTypes[0+@(ticket.TicketTypeId-1)] += 1
             @:devStatuses[0+@(ticket.TicketStatusId-1)]++
@@ -752,6 +683,36 @@
         });
     </script>
     <script src="~/js/chartBasics.js"></script>
+    <script>
 
+        //Used to Submit assignment form without a refresh
+
+        $(".assignForm").on("submit", function (e) {
+
+            var dataString = $(this).serialize();
+            // get the element Id of the form
+            // alert(dataString); return false;
+
+            $.ajax({
+                type: "POST",
+                url: "/Ticket/AssignUser?db=true",
+                data: dataString,
+                success: function () {
+                    $("").html("<div id='message'></div>");
+                    $("#message")
+                        .html("<h2>Contact Form Submitted!</h2>")
+                        .append("<p>We will be in touch soon.</p>")
+                        .hide()
+                        .fadeIn(1500, function () {
+                            $("#message").append(
+                                "<img id='checkmark' src='images/check.png' />"
+                            );
+                        });
+                }
+            });
+
+            e.preventDefault();
+        });
+    </script>
     <script src="~/js/Dashboard.js"></script>
 }

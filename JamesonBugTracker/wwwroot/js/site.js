@@ -25,10 +25,10 @@ function loadDark() {
     //default is light mode
     let dark = JSON.parse(localStorage.getItem("jamesonDarkMode"))
     if (dark === null) {
-        localStorage.setItem("jamesonDarkMode", JSON.stringify(false))
+        localStorage.setItem("jamesonDarkMode", JSON.stringify(true))
     }
-    else if (dark === true) {
-        document.getElementById("layoutBody").classList.add("dark-mode")
+    else if (dark === false) {
+        document.getElementById("layoutBody").classList.toggle("dark-mode")
     }
     if (page == "ProjectDetails") {
 
