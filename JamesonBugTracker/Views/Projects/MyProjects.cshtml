@@ -9,10 +9,13 @@
 
 }
 <h1>My Projects</h1>
+@if (User.IsInRole("Admin") || User.IsInRole("ProjectManager"))
+{
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create" class="btn btn-success">Create New</a>
 </p>
+}
 <section class="content">
 
     <!-- Default box -->

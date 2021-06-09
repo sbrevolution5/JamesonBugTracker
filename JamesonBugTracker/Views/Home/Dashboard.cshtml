@@ -502,7 +502,7 @@
             <!-- Main row -->
             <div class="row">
                 <!-- Left col -->
-                <div class="col-md-8">
+                <div class="col-md-4">
 
                     <div class="row">
 
@@ -549,39 +549,67 @@
 
                 </div>
                 <!-- /.col -->
-                <div class="col-md-4">
+                <div class="col-md-8">
                     <div class="card">
+                        <div class="card-header">
+                            <h5>Unassigned Tickets</h5>
+                        </div>
+                        <div class="card-body">
 
-                        @if (User.IsInRole("ProjectManager") || User.IsInRole("Admin"))
-                        {
-                            @foreach (var unassignedTicket in Model.UnassignedTickets)
-                            {
-                                <!-- Info Boxes Style 2 -->
-                                <div class="info-box mb-3 bg-warning">
-                                    <span class="info-box-icon"><i class="fas fa-tag"></i></span>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="card card-warning">
+                                        <div class="card-body">
 
-                                    <div class="info-box-content">
-                                        <span class="info-box-text">@unassignedTicket.Title</span>
-                                        <span class="info-box-number">Created on: @string.Format("{0:MMM dd yyyy}", unassignedTicket.Created) by: @unassignedTicket.OwnerUser?.FullName</span>
-                                        <span class="info-box-more">
-                                            <form asp-controller="Tickets" asp-action="AssignUser" asp-route-db="true">
-                                                <input hidden name="ticketId" value="@unassignedTicket.Id" />
-                                                <div class="form-group">
-                                                    <label for=""></label>
-                                                    <select required class="form-control"  name="userId" id="" asp-items="ViewBag.AssignUsers">
-                                                        <option value="" hidden>Choose a User</option>
+                                            @if (User.IsInRole("ProjectManager") || User.IsInRole("Admin"))
+                                            {<div class="table-responsive">
+                                                    <table id="unassignedTable" class="table dataTable striped">
+                                                        <thead>
+                                                            <tr>
 
-                                                    </select>
+                                                                <th style="width:25%;">Name</th>
+                                                                <th style="width:10%;">Created</th>
+                                                                <th style="width:5%;">Submitter</th>
+                                                                <th style="width:25%;">Description</th>
+                                                                <th></th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            @foreach (var unassignedTicket in Model.UnassignedTickets)
+                                                            {
+                                                                <tr>
+                                                                    <td>@unassignedTicket.Title</td>
+                                                                    <td>@string.Format("{0:MMM dd yyyy}", unassignedTicket.Created)</td>
+
+                                                                    <td>@unassignedTicket.OwnerUser?.FullName</td>
+                                                                    <td>@unassignedTicket.Description</td>
+                                                                    <td>
+                                                                        <form asp-controller="Tickets" asp-action="AssignUser" asp-route-db="true">
+                                                                            <input hidden name="ticketId" value="@unassignedTicket.Id" />
+                                                                            <div class="form-group">
+                                                                                <label for=""></label>
+                                                                                <select required class="form-control" name="userId" id="" asp-items="ViewBag.AssignUsers">
+                                                                                    <option value="" hidden>Choose a User</option>
+
+                                                                                </select>
+                                                                            </div>
+                                                                            <button type="submit" class="btn btn-warning btn-block">Assign User</button>
+                                                                        </form>
+                                                                    </td>
+                                                                </tr>
+                                                            }
+                                                        </tbody>
+                                                    </table>
                                                 </div>
-                                                <button type="submit" class="btn btn-danger">Assign User</button>
-                                            </form><a asp-action="details" asp-controller="Tickets" asp-route-id="@unassignedTicket.Id">See Details <i class="fas fa-arrow-alt-circle-right"></i></a>
-                                        </span>
-                                    </div>
-                                    <!-- /.info-box-content -->
-                                </div>
-                            }
+                                                <!-- /.table-responsive -->
 
-                        }
+
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <!-- PRODUCT LIST -->
                     <div class="card">
@@ -689,6 +717,7 @@
         $(document).ready(function () {
             $('#developmentTable').DataTable();
             $('#submittedTable').DataTable();
+            $('#unassignedTable').DataTable();
         });</script>
     <script src="~/js/PriorityBadge.js"></script>
     <script src="~/plugins/chart.js/Chart.bundle.js"></script>
