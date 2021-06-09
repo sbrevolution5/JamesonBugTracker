@@ -15,9 +15,12 @@ function toggleDark() {
         localStorage.setItem("jamesonDarkMode", JSON.stringify(true))
     }
     //Only needs to be used with graphs
-    if (page == "ProjectDetails") {
+    if (page) {
 
-        darkSwap() // changes color of graph
+        if (page == "ProjectDetails") {
+
+            darkSwap() // changes color of graph
+        }
     }
 }
 //Checks localstorage for dark mode toggler obj, and creates one if it isn't there

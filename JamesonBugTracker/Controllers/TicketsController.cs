@@ -268,7 +268,7 @@ namespace JamesonBugTracker.Controllers
             ticket.ArchiveDate = DateTime.Now;
             await _context.SaveChangesAsync();
             await _ticketService.SetTicketStatusAsync(id, "Archived");
-            return RedirectToAction("Home", "Dashboard");
+            return RedirectToAction("Dashboard","Home");
         }
         [HttpPost]
         [ValidateAntiForgeryToken]

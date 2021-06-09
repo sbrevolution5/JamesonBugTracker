@@ -20,13 +20,18 @@
     <!-- Theme style -->
     <link rel="stylesheet" href="~/css/adminlte.min.css">
 </head>
-<body id="layoutBody" class="hold-transition login-page">
+<body id="layoutBody" class="dark-mode hold-transition login-page">
     <div class="login-box">
         <!-- /.login-logo -->
         <div class="card card-outline card-primary">
             <div class="card-header text-center">
                 <img src="~/img/JamesonSmall.png" class="img-fluid"/>
                 <a href="../../index2.html" class="h3"><b>Jameson</b> Bug Tracker</a>
+            <div class="card-tools">
+    <button onclick="toggleDark()" class="btn btn-sm btn-primary">
+        <i id="darkIcon" class="fas fa-sun"></i>
+    </button>
+</div>
             </div>
             <div class="card-body">
 
