@@ -11,6 +11,7 @@ using JamesonBugTracker.Extensions;
 using JamesonBugTracker.Models.ViewModels;
 using JamesonBugTracker.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 
 namespace JamesonBugTracker.Controllers
 {
@@ -87,15 +88,12 @@ namespace JamesonBugTracker.Controllers
                 .ThenInclude(c => c.User)
                 .Include(t=> t.History)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            ViewData["AssignUsers"] = new SelectList(await _companyInfoService.GetAllMembersAsync(companyId), "Id", "FullName");
+            ViewData["AssignUsers"] = new SelectList(await _companyInfoService.GetAllMembersAsync(companyId), "Id", "FullName",ticket.DeveloperUserId);
 
             if (ticket == null)
             {
                 return NotFound();
             }
-            //conditional formatting for ticket priority
-            //TODO refactor into service OR do it with jquery.  
-            
             return View(ticket);
         }
 
@@ -236,7 +234,8 @@ namespace JamesonBugTracker.Controllers
         }
 
         // GET: Tickets/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        [Authorize(Roles = "Admin,ProjectManager")]
+        public async Task<IActionResult> Archive(int? id)
         {
             if (id == null)
             {
@@ -260,26 +259,30 @@ namespace JamesonBugTracker.Controllers
         }
 
         // POST: Tickets/Delete/5
-        [HttpPost, ActionName("Delete")]
+        [HttpPost, ActionName("Archive")]
+        [Authorize(Roles = "Admin,ProjectManager")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> ArchiveConfirmed(int id)
         {
             var ticket = await _context.Ticket.FindAsync(id);
-            _context.Ticket.Remove(ticket);
+            ticket.ArchiveDate = DateTime.Now;
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            await _ticketService.SetTicketStatusAsync(id, "Archived");
+            return RedirectToAction("Home", "Dashboard");
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AssignUser(string userId, int? ticketId, bool db=false)
+        public async Task<IActionResult> AssignUser(string userId, int ticketId, bool db=false)
         {
-            if (!ticketId.HasValue)
-            {
-
-            }
+            
             try
             {
-                await _ticketService.AssignTicketAsync(ticketId.Value, userId);
+                BTUser currentUser = await _userManager.GetUserAsync(User);
+                Ticket oldTicket = await _ticketService.GetOneTicketNotTrackedAsync(ticketId);
+                await _ticketService.AssignTicketAsync(ticketId, userId);
+                Ticket newTicket = await _ticketService.GetOneTicketNotTrackedAsync(ticketId);
+                await _historyService.AddHistoryAsync(oldTicket, newTicket, currentUser.Id);
+
             }
             catch { throw; }
             if (db)

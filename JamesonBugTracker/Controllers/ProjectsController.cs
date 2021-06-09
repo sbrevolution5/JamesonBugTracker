@@ -174,7 +174,7 @@ namespace JamesonBugTracker.Controllers
             var project = (await _projectService.GetAllProjectsByCompanyAsync(companyId))
                                                .FirstOrDefault(p => p.Id == id);
             model.Project = project;
-            List<BTUser> users = await _projectService.UsersNotOnProjectAsync(id, companyId);
+            List<BTUser> users = await _companyInfoService.GetAllMembersAsync(companyId);
             List<string> members = project.Members.Select(m=>m.Id).ToList();  // we can do this because our project eagerly loaded its members
             model.Users = new MultiSelectList(users, "Id", "FullName", members);
             return View(model);

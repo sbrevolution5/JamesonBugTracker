@@ -15,10 +15,10 @@
     <div class="card-header">
         <h3 class="card-title">@Model.Title</h3>
         <div class="nav-links text-right">
-            @if (User.IsInRole("ProjectManager")||User.IsInRole("Admin"))
+            @if (User.IsInRole("ProjectManager") || User.IsInRole("Admin"))
             {
 
-             <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> <span>|</span>
+                <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> <span>|</span>
             }
             <a asp-action="Index">Back to List</a>
         </div>
@@ -73,30 +73,12 @@
                                 @if (Model.DeveloperUserId is not null)
                                 {
                                     <p>@Model.DeveloperUser?.FullName</p>
-                                    @if (User.IsInRole("ProjectManager") || User.IsInRole("Admin"))
-                                    {
 
-                                        <a class="btn btn-warning btn-sm" asp-action="Edit" asp-route-id="@Model.Id">Edit To Reassign</a>
-                                    }
                                 }
                                 else
                                 {
                                     <p>Unassigned</p>
-                                    @if (User.IsInRole("ProjectManager") || User.IsInRole("Admin"))
-                                    {
 
-                                        <form asp-action="AssignUser">
-                                            <input hidden name="ticketId" value="@Model.Id" />
-                                            <div class="form-group">
-                                                <label for=""></label>
-                                                <select required class="form-control" asp-for="DeveloperUserId" name="userId" id="" asp-items="ViewBag.AssignUsers">
-                                                    <option value="" hidden>Choose a User</option>
-
-                                                </select>
-                                            </div>
-                                            <button type="submit" class="btn btn-danger">Assign User</button>
-                                        </form>
-                                    }
                                 }
                             </div>
                             <div class="icon">
@@ -168,8 +150,8 @@
                                                 {
                                                     <span class="text-success">Assigned developer</span>
                                                 }@*else if ((await _projectService.GetProjectManagerAsync(Model.ProjectId)).Id == comment.UserId) {
-                                            <span class="text-primary">Project Manager</span>
-                                        }*@else if (Model.OwnerUserId == comment.UserId)
+                                                        <span class="text-primary">Project Manager</span>
+                                                    }*@else if (Model.OwnerUserId == comment.UserId)
                                                 {
                                                     <span class="text-danger">Submitter</span>
                                                 }
@@ -182,49 +164,49 @@
                                         </p>
                                         @*Potential comment edit*@
                                         @*@if (_userManager.GetUserId(User) == comment.UserId)
-                                                  {
+                                                              {
 
 
-                                                      <p>
-                                                          <button type="button" data-toggle="modal" data-target="#modal-@comment.Id" class="btn btn-warning"><i class="far fa-pencil mr-1"></i> Edit comment</button>
-                                                      </p>
-                                                      <div class="modal fade" id="modal-@comment.Id" tabindex="-1" role="dialog"
-                                                           aria-labelledby="modelTitleId" aria-hidden="true">
-                                                          <div class="modal-dialog" role="document">
-                                                              <div class="modal-content">
-                                                                  <div class="modal-header">
-                                                                      <h5 class="modal-title">Edit your comment</h5>
-                                                                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                                          <span aria-hidden="true">&times;</span>
-                                                                      </button>
-                                                                  </div>
-                                                                  <div class="modal-body">
-                                                                      <form asp-controller="TicketComments" asp-action="Edit">
-                                                                          <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                                                                          <div class="form-group">
-                                                                          <input type="hidden" value="@comment.Id" name="id" />
-                                                                          <input type="hidden" asp-for="@comment.Id" />
-                                                                          <input type="hidden" asp-for="@comment.TicketId" />
-                                                                          <input type="hidden" asp-for="@comment.UserId" />
-                                                                          <input type="hidden" asp-for="@comment.Created" />
+                                                                  <p>
+                                                                      <button type="button" data-toggle="modal" data-target="#modal-@comment.Id" class="btn btn-warning"><i class="far fa-pencil mr-1"></i> Edit comment</button>
+                                                                  </p>
+                                                                  <div class="modal fade" id="modal-@comment.Id" tabindex="-1" role="dialog"
+                                                                       aria-labelledby="modelTitleId" aria-hidden="true">
+                                                                      <div class="modal-dialog" role="document">
+                                                                          <div class="modal-content">
+                                                                              <div class="modal-header">
+                                                                                  <h5 class="modal-title">Edit your comment</h5>
+                                                                                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                                      <span aria-hidden="true">&times;</span>
+                                                                                  </button>
+                                                                              </div>
+                                                                              <div class="modal-body">
+                                                                                  <form asp-controller="TicketComments" asp-action="Edit">
+                                                                                      <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                                                                      <div class="form-group">
+                                                                                      <input type="hidden" value="@comment.Id" name="id" />
+                                                                                      <input type="hidden" asp-for="@comment.Id" />
+                                                                                      <input type="hidden" asp-for="@comment.TicketId" />
+                                                                                      <input type="hidden" asp-for="@comment.UserId" />
+                                                                                      <input type="hidden" asp-for="@comment.Created" />
 
 
-                                                                              <label asp-for="@comment.Comment" class="control-label"></label>
-                                                                              <textarea id="summernote" class="summernoteEditComment" name="Comment" required placeholder="Type your comment here">
-                                </textarea>
-                                                                              <span asp-validation-for="@comment.Comment" class="text-danger"></span>
+                                                                                          <label asp-for="@comment.Comment" class="control-label"></label>
+                                                                                          <textarea id="summernote" class="summernoteEditComment" name="Comment" required placeholder="Type your comment here">
+                                            </textarea>
+                                                                                          <span asp-validation-for="@comment.Comment" class="text-danger"></span>
+                                                                                      </div>
+                                                                                      <div class="form-group">
+                                                                                          <input type="submit" value="Save" class="btn btn-primary" />
+                                                                                      </div>
+                                                                                  </form>
+
+                                                                              </div>
                                                                           </div>
-                                                                          <div class="form-group">
-                                                                              <input type="submit" value="Save" class="btn btn-primary" />
-                                                                          </div>
-                                                                      </form>
-
+                                                                      </div>
                                                                   </div>
-                                                              </div>
-                                                          </div>
-                                                      </div>
 
-                                                  }*@
+                                                              }*@
                                     </div>
                                 </div>
                             </div>
@@ -246,49 +228,88 @@
                     </div>
                 </div>
                 @* Javascript needed, check contents of one of the spans, then toggle class of this element based on that*@
-            <div class="small-box" id="ticketPriorityBox">
-                <div class="inner">
+                <div class="small-box" id="ticketPriorityBox">
+                    <div class="inner">
 
-                    <h3>Priority:</h3>
-                    <p id="ticketPriorityText">@Model.TicketPriority.Name</p>
+                        <h3>Priority:</h3>
+                        <p id="ticketPriorityText">@Model.TicketPriority.Name</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-exclamation"></i>
+                    </div>
                 </div>
-                <div class="icon">
-                    <i class="fas fa-exclamation"></i>
-                </div>
-            </div>
-                @* TODO: icon based on ticket type? *@
-                <h3 class="text-primary"><i class="fas fa-bug"></i>@Model.Title</h3>
-                <p class="text-muted">@Model.Description</p>
-                <br>
-                <div class="text-muted">
-                    <p class="text-sm">
-                        Company
-                        <b class="d-block">@Model.Project.Company.Name</b>
-                    </p>
-                    <p class="text-sm">
-                        Project
-                        <b class="d-block">@Model.Project.Name</b>
-                    </p>
-                    <p class="text-sm">
-                        Project Description
-                        <b class="d-block">@Model.Project.Description</b>
-                    </p>
+                <div class="card">
+                    <div class="card-header">
+
+                        @* TODO: icon based on ticket type? *@
+                        <h3 class="text-primary"><i class="fas fa-bug"></i>@Model.Title</h3>
+                        <p class="text-muted">@Model.Description</p>
+                    </div>
+                    <div class="card-body">
+
+                        <div class="text-muted">
+                            <p class="text-sm">
+                                Company
+                                <b class="d-block">@Model.Project.Company.Name</b>
+                            </p>
+                            <p class="text-sm">
+                                Project
+
+                                <a asp-controller="Projects" asp-action="Details" asp-route-id="@Model.ProjectId"><b class="d-block">@Model.Project.Name</b></a>
+                            </p>
+                            <p class="text-sm">
+                                Project Description
+                                <b class="d-block">@Model.Project.Description</b>
+                            </p>
+                        </div>
+
+                        @if (Model.DeveloperUserId is not null && (User.IsInRole("ProjectManager") || User.IsInRole("Admin")))
+                        {
+                            <form asp-action="AssignUser">
+                                <input hidden name="ticketId" value="@Model.Id" />
+                                <div class="form-group pt-0">
+                                    <label for=""></label>
+                                    <select required class="form-control" asp-for="DeveloperUserId" name="userId" id="" asp-items="ViewBag.AssignUsers">
+                                        <option value="" hidden>Choose a new User</option>
+
+                                    </select>
+                                </div>
+                                <button type="submit" class="btn btn-danger btn-block">Reassign User</button>
+                            </form>
+
+                        }
+                        else if (User.IsInRole("ProjectManager") || User.IsInRole("Admin"))
+                        {
+
+                            <form asp-action="AssignUser">
+                                <input hidden name="ticketId" value="@Model.Id" />
+                                <div class="form-group">
+                                    <label for=""></label>
+                                    <select required class="form-control" asp-for="DeveloperUserId" name="userId" id="" asp-items="ViewBag.AssignUsers">
+                                        <option value="" hidden>Choose a User</option>
+
+                                    </select>
+                                </div>
+                                <button type="submit" class="btn btn-danger">Assign User</button>
+                            </form>
+                        }
+                        <h5 class="mt-5 text-muted">Ticket Attachments</h5>
+                        <ul class="list-unstyled">
+                            @foreach (var attachment in Model.Attachments)
+                            {
+
+                                <li>
+                                    <a href="" class="btn-link text-secondary"><i class="far fa-fw fa-file"></i> @attachment.FileName</a>
+                                </li>
+                            }
+                        </ul>
+                        <div class="text-center mt-5 mb-3">
+                            <a href="#" class="btn btn-sm btn-primary">Add files</a>
+                            <a href="#" class="btn btn-sm btn-warning">Report contact</a>
+                        </div>
+                    </div>
                 </div>
 
-                <h5 class="mt-5 text-muted">Ticket Attachments</h5>
-                <ul class="list-unstyled">
-                    @foreach (var attachment in Model.Attachments)
-                    {
-
-                        <li>
-                            <a href="" class="btn-link text-secondary"><i class="far fa-fw fa-file"></i> @attachment.FileName</a>
-                        </li>
-                    }
-                </ul>
-                <div class="text-center mt-5 mb-3">
-                    <a href="#" class="btn btn-sm btn-primary">Add files</a>
-                    <a href="#" class="btn btn-sm btn-warning">Report contact</a>
-                </div>
             </div>
         </div>
     </div>
@@ -301,98 +322,72 @@
         <h3>Ticket History</h3>
         <!-- The time line -->
         <div class="timeline">
-            <!-- timeline time label -->
-            <div class="time-label">
-                <span class="bg-red">10 Feb. 2014</span>
-            </div>
-            <!-- /.timeline-label -->
-            <!-- timeline item -->
-            <div>
-                <i class="fas fa-envelope bg-blue"></i>
-                <div class="timeline-item">
-                    <span class="time"><i class="fas fa-clock"></i> 12:05</span>
-                    <h3 class="timeline-header"><a href="#">Support Team</a> sent you an email</h3>
+            @{
+                DateTime today = Model.History.OrderByDescending(h => h.Created).FirstOrDefault().Created.Date;
+                var labelNum = 0;
+                List<string> colorList = new();
+                colorList.Add("bg-danger");
+                colorList.Add("bg-success");
+                colorList.Add("bg-primary");
+                colorList.Add("bg-orange");
+                colorList.Add("bg-olive");
+                colorList.Add("bg-warning");
+            }
+            @foreach (var historyItem in Model.History.OrderByDescending(h => h.Created))
+            {
+                //this creates a new time label for each day
+                if (today != historyItem.Created.Date || historyItem.Id == Model.History.OrderByDescending(h=> h.Created).FirstOrDefault().Id)
+                {
+                    today = historyItem.Created.Date;
+                    var timeclass = colorList[labelNum % 6];
+                    <div class="time-label">
+                        <span class="@timeclass">@string.Format("{0:MMM dd yyyy}",historyItem.Created.Date)</span>
+                    </div>
+                    labelNum++;
+                }
+                <!-- timeline time label -->
+                <!-- /.timeline-label -->
+                <!-- timeline item -->
+                <div>
+                    @if (historyItem.Property == "Title")
+                    {
+                        <i class="fas fa-ticket-alt bg-lightblue"></i>
+                    }
+                    else if (historyItem.Property == "Description")
+                    {
+                        <i class="far fa-file-alt bg-info"></i>
+                    }
+                    else if (historyItem.Property == "Developer User")
+                    {
+                        <i class="fas fa-user bg-warning"></i>
+                    }
+                    else if (historyItem.Property == "Ticket Type")
+                    {
+                        <i class="fas fa-align-justify bg-teal"></i>
+                    }
+                    else if (historyItem.Property == "Ticket Status")
+                    {
+                        <i class="fas fa-tasks bg-olive"></i>
+                    }
+                    else if (historyItem.Property == "Ticket Priority")
+                    {
+                        <i class="fas fa-exclamation-triangle bg-purple"></i>
+                    }
+                    else if (historyItem.Property == "")
+                    {
+                        <i class="far fa-file bg-success"></i>
+                    }
 
-                    <div class="timeline-body">
-                        Etsy doostang zoodles disqus groupon greplin oooj voxy zoodles,
-                        weebly ning heekya handango imeem plugg dopplr jibjab, movity
-                        jajah plickers sifteo edmodo ifttt zimbra. Babblely odeo kaboodle
-                        quora plaxo ideeli hulu weebly balihoo...
-                    </div>
-                    <div class="timeline-footer">
-                        <a class="btn btn-primary btn-sm">Read more</a>
-                        <a class="btn btn-danger btn-sm">Delete</a>
-                    </div>
-                </div>
-            </div>
-            <!-- END timeline item -->
-            <!-- timeline item -->
-            <div>
-                <i class="fas fa-user bg-green"></i>
-                <div class="timeline-item">
-                    <span class="time"><i class="fas fa-clock"></i> 5 mins ago</span>
-                    <h3 class="timeline-header no-border"><a href="#">Sarah Young</a> accepted your friend request</h3>
-                </div>
-            </div>
-            <!-- END timeline item -->
-            <!-- timeline item -->
-            <div>
-                <i class="fas fa-comments bg-yellow"></i>
-                <div class="timeline-item">
-                    <span class="time"><i class="fas fa-clock"></i> 27 mins ago</span>
-                    <h3 class="timeline-header"><a href="#">Jay White</a> commented on your post</h3>
-                    <div class="timeline-body">
-                        Take me to your leader!
-                        Switzerland is small and neutral!
-                        We are more like Germany, ambitious and misunderstood!
-                    </div>
-                    <div class="timeline-footer">
-                        <a class="btn btn-warning btn-sm">View comment</a>
-                    </div>
-                </div>
-            </div>
-            <!-- END timeline item -->
-            <!-- timeline time label -->
-            <div class="time-label">
-                <span class="bg-green">3 Jan. 2014</span>
-            </div>
-            <!-- /.timeline-label -->
-            <!-- timeline item -->
-            <div>
-                <i class="fa fa-camera bg-purple"></i>
-                <div class="timeline-item">
-                    <span class="time"><i class="fas fa-clock"></i> 2 days ago</span>
-                    <h3 class="timeline-header"><a href="#">Mina Lee</a> uploaded new photos</h3>
-                    <div class="timeline-body">
-                        <img src="https://placehold.it/150x100" alt="...">
-                        <img src="https://placehold.it/150x100" alt="...">
-                        <img src="https://placehold.it/150x100" alt="...">
-                        <img src="https://placehold.it/150x100" alt="...">
-                        <img src="https://placehold.it/150x100" alt="...">
-                    </div>
-                </div>
-            </div>
-            <!-- END timeline item -->
-            <!-- timeline item -->
-            <div>
-                <i class="fas fa-video bg-maroon"></i>
+                    <div class="timeline-item">
+                        <span class="time"><i class="fas fa-clock"></i> @string.Format("{0:hh:mm tt}", historyItem.Created)</span>
+                        <h3 class="timeline-header">@historyItem.User.FullName</h3>
 
-                <div class="timeline-item">
-                    <span class="time"><i class="fas fa-clock"></i> 5 days ago</span>
-
-                    <h3 class="timeline-header"><a href="#">Mr. Doe</a> shared a video</h3>
-
-                    <div class="timeline-body">
-                        <div class="embed-responsive embed-responsive-16by9">
-                            <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/tMWkeBIohBs" allowfullscreen></iframe>
+                        <div class="timeline-body">
+                            @historyItem.Description
                         </div>
                     </div>
-                    <div class="timeline-footer">
-                        <a href="#" class="btn btn-sm bg-maroon">See comments</a>
-                    </div>
                 </div>
-            </div>
-            <!-- END timeline item -->
+            }
             <div>
                 <i class="fas fa-clock bg-gray"></i>
             </div>

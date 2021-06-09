@@ -74,7 +74,7 @@ namespace JamesonBugTracker.Services
                         NewValue = newTicket.DeveloperUser?.FullName,
                         Created = DateTime.Now,
                         UserId = userId,
-                        Description = $"Developer User updated from {oldTicket.DeveloperUser?.FullName ?? "Unassigned"} to {oldTicket.DeveloperUser.FullName}"
+                        Description = $"Developer User updated from {oldTicket.DeveloperUser?.FullName ?? "Unassigned"} to {newTicket.DeveloperUser?.FullName}"
                     };
                     await _context.TicketHistory.AddAsync(history);
                 }
@@ -83,7 +83,7 @@ namespace JamesonBugTracker.Services
                     TicketHistory history = new()
                     {
                         TicketId = newTicket.Id,
-                        Property = "TicketTypeId",
+                        Property = "Ticket Type",
                         OldValue = oldTicket.TicketType.Name,
                         NewValue = newTicket.TicketType.Name,
                         Created = DateTime.Now,
@@ -98,7 +98,7 @@ namespace JamesonBugTracker.Services
                     TicketHistory history = new()
                     {
                         TicketId = newTicket.Id,
-                        Property = "TicketPriorityId",
+                        Property = "Ticket Priority",
                         OldValue = oldTicket.TicketPriority.Name,
                         NewValue = newTicket.TicketPriority.Name,
                         Created = DateTime.Now,
@@ -113,7 +113,7 @@ namespace JamesonBugTracker.Services
                     TicketHistory history = new()
                     {
                         TicketId = newTicket.Id,
-                        Property = "TicketStatusId",
+                        Property = "Ticket Status",
                         OldValue = oldTicket.TicketStatus.Name,
                         NewValue = newTicket.TicketStatus.Name,
                         Created = DateTime.Now,

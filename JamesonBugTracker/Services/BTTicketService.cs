@@ -138,7 +138,8 @@ namespace JamesonBugTracker.Services
                                                 .Include(t => t.TicketType)
                                                 .Include(t => t.Attachments)
                                                 .Include(t => t.History)
-                                                .Include(t => t.Comments).Where(t => t.DeveloperUserId == userId)
+                                                .Include(t => t.Comments)
+                                                .Where(t => t.DeveloperUserId == userId)
                                                 .OrderByDescending(t => t.Updated).ToListAsync();
                 }
                 else if (role == "ProjectManager")
@@ -304,7 +305,7 @@ namespace JamesonBugTracker.Services
         public async Task<List<Ticket>> GetAllDeveloperTicketsByResolvedAsync(string userId, bool isResolvedOrNot)
         {
             var userTickets = await GetAllTicketsByRoleAsync("Developer", userId);
-            var filteredTickets = userTickets.Where(t => (t.TicketStatus.Name == "Resolved") == isResolvedOrNot).ToList();
+            var filteredTickets = userTickets.Where(t => ((t.TicketStatus.Name == "Resolved") == isResolvedOrNot)&& t.TicketStatus.Name !="Archived").ToList();
             return filteredTickets;
         }
 
