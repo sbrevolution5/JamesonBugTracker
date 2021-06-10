@@ -43,5 +43,7 @@ namespace JamesonBugTracker.Services.Interfaces
 
         Task<int?> LookupTicketTypeIdAsync(string typeName);
 
+        Task<List<Ticket>> GetProjectTicketsNotResolvedOrArchivedAsync(int companyId, int projectId);
+
     }
 }

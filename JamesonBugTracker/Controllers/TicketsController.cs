@@ -98,7 +98,7 @@ namespace JamesonBugTracker.Controllers
         }
 
         // GET: Tickets/Create
-        public async Task<IActionResult >Create(int? id)
+        public async Task<IActionResult >Create(int? id,bool db = false)
         {
             BTUser user = await _userManager.GetUserAsync(User);
             int companyId = User.Identity.GetCompanyId().Value;
@@ -117,6 +117,7 @@ namespace JamesonBugTracker.Controllers
             }
             ViewData["TicketPriorityId"] = new SelectList(_context.Set<TicketPriority>(), "Id", "Name");
             ViewData["TicketTypeId"] = new SelectList(_context.Set<TicketType>(), "Id", "Name");
+            ViewData["ReturnDb"] = db;
             return View(ticket);
         }
 
@@ -125,7 +126,7 @@ namespace JamesonBugTracker.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Title,Description,ProjectId,TicketPriorityId,TicketTypeId")] Ticket ticket)
+        public async Task<IActionResult> Create([Bind("Title,Description,ProjectId,TicketPriorityId,TicketTypeId")] Ticket ticket,bool db)
         {
             if (ModelState.IsValid)
             {
@@ -135,7 +136,15 @@ namespace JamesonBugTracker.Controllers
                 ticket.TicketStatusId = (await _ticketService.LookupTicketStatusIdAsync("New")).Value;                
                 _context.Add(ticket);
                 await _context.SaveChangesAsync();
-                return RedirectToAction("Details", "Projects", new { id = ticket.ProjectId});
+                await _historyService.AddHistoryAsync(null, ticket, ticket.OwnerUserId);
+                if (db==true)
+                {
+                    return RedirectToAction("Details", "Projects", new { id = ticket.ProjectId});
+                }
+                else
+                {
+                    return RedirectToAction("Details", new { id = ticket.Id });
+                }
             }
             BTUser user = await _userManager.GetUserAsync(User);
             int companyId = User.Identity.GetCompanyId().Value;
@@ -271,7 +280,7 @@ namespace JamesonBugTracker.Controllers
             return RedirectToAction("Dashboard","Home");
         }
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        //[ValidateAntiForgeryToken]
         public async Task<IActionResult> AssignUser(string userId, int ticketId, bool db=false)
         {
             

@@ -18,7 +18,8 @@
                 </div>
             </div>
             <div class="card-body">
-                <form asp-action="Create">
+                    @*<input hidden name="db" value="@ViewData["ReturnDb"]"/>*@
+                <form asp-action="Create" asp-route-db="@ViewData["ReturnDb"]">
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <div class="form-group">
                         <label asp-for="Title" class="control-label"></label>

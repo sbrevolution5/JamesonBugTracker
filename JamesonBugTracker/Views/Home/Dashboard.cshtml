@@ -97,249 +97,6 @@
 
         <div class="row">
             <div class="col-md-12">
-                <!-- TABLE: Development Tickets -->
-                <div class="card">
-                    <div class="card-header border-transparent">
-                        <h3 class="card-title">Development Tickets</h3>
-
-                        <div class="card-tools">
-                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                                <i class="fas fa-minus"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <!-- /.card-header -->
-
-                    <div class="card-body">
-
-                        <div class="row">
-                            <div class="col-8">
-                                <div class="card">
-                                    <div class="card-header">
-                                        <small class="text-muted"><i class="fas fa-list"></i> Tickets where you are a developer</small>
-                                    </div>
-                                    <div class="card-body p-2">
-                                        <div class="table-responsive">
-                                            <table id="developmentTable" class="table dataTable striped">
-                                                <thead>
-                                                    <tr>
-
-                                                        <th>Name</th>
-                                                        <th>Created</th>
-                                                        <th>Developer</th>
-                                                        <th>Submitter</th>
-                                                        <th>Description</th>
-                                                        <th>Type</th>
-                                                        <th>Status</th>
-                                                        <th>Priority</th>
-                                                        <th></th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    @foreach (var ticket in Model.UnresolvedDevelopmentTickets)
-                                                    {
-                                                        <tr>
-                                                            <td>@ticket.Title</td>
-                                                            <td>@string.Format("{0:MMM dd yyyy}", ticket.Created)</td>
-                                                            <td>@ticket.DeveloperUser?.FullName</td>
-                                                            <td>@ticket.OwnerUser?.FullName</td>
-                                                            <td>@ticket.Description</td>
-                                                            <td>@ticket.TicketType.Name</td>
-                                                            <td>@ticket.TicketStatus.Name</td>
-                                                            <td><span class="badge priorityBadge">@ticket.TicketPriority.Name</span></td>
-                                                            <td>
-                                                                @if (User.IsInRole("ProjectManager") || User.IsInRole("Admin"))
-                                                                {
-
-                                                                    <a asp-controller="Tickets" asp-action="Edit" asp-route-id="@ticket.Id">Edit</a> <span>|</span>
-                                                                }
-                                                                <a asp-controller="Tickets" asp-action="Details" asp-route-id="@ticket.Id">Details</a> |
-                                                                <a asp-controller="Tickets" asp-action="Delete" asp-route-id="@ticket.Id">Delete</a>
-                                                            </td>
-                                                        </tr>
-                                                    }
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                        <!-- /.table-responsive -->
-                                    </div>
-                                    <!-- /.card-body -->
-                                </div>
-                            </div>
-                            <div class="col-4">
-                                <!--Development Charts-->
-
-                                <div class="card">
-                                    <div class="card-header">
-                                        <h3 class="card-title">
-                                            <i class="fas fa-chart-pie mr-1"></i>
-                                            Development tickets
-                                        </h3>
-                                        <div class="card-tools">
-                                            <ul class="nav nav-pills ml-auto">
-                                                <li class="nav-item">
-                                                    <a class="nav-link active" href="#dev-type-chart" data-toggle="tab">Type</a>
-                                                </li>
-                                                <li class="nav-item">
-                                                    <a class="nav-link" href="#dev-status-chart" data-toggle="tab">Status</a>
-                                                </li>
-                                                <li class="nav-item">
-                                                    <a class="nav-link" href="#dev-priority-chart" data-toggle="tab">Priority</a>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </div><!-- /.card-header -->
-                                    <div class="card-body">
-                                        <div class="tab-content p-0">
-                                            <!-- DEV CHARTS -->
-                                            <div class="chart tab-pane active" id="dev-type-chart"
-                                                 style="position: relative; height: 300px;">
-                                                <canvas id="devTypeChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
-                                            </div>
-                                            <div class="chart tab-pane" id="dev-status-chart" style="position: relative; height: 300px;">
-                                                <canvas id="devStatusChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
-
-                                            </div>
-                                            <div class="chart tab-pane" id="dev-priority-chart" style="position: relative; height: 300px;">
-                                                <canvas id="devPriorityChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
-
-                                            </div>
-                                        </div>
-                                    </div><!-- /.card-body -->
-                                    </div>
-                                    <a class="my-2 btn btn-block btn-primary" asp-controller="Tickets" asp-action="MyTickets"> View My Tickets</a>
-                                    @if (User.IsInRole("ProjectManager") || User.IsInRole("Admin"))
-                                    {
-                                        <a class="my-2 btn btn-block btn-success"asp-controller="Tickets" asp-action="AllTickets"> View All Tickets</a>
-                                    }
-
-                            </div>
-                        </div>
-                    </div>
-
-
-
-                </div>
-                <!-- /.card -->
-                <!-- CARD: Submitted Tickets -->
-                <div class="card">
-                    <div class="card-header border-transparent">
-                        <h3 class="card-title">Submitted Tickets</h3>
-
-                        <div class="card-tools">
-                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                                <i class="fas fa-minus"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <!-- /.card-header -->
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-8">
-                                <div class="card">
-                                    <div class="card-header">
-                                        <small class="text-muted"><i class="fas fa-list"></i> Tickets you submitted</small>
-                                    </div>
-                                    <div class="card-body p-2">
-                                        <div class="table-responsive">
-                                            <table id="submittedTable" class="table dataTable striped">
-                                                <thead>
-                                                    <tr>
-
-                                                        <th>Name</th>
-                                                        <th>Created</th>
-                                                        <th>Developer</th>
-                                                        <th>Submitter</th>
-                                                        <th>Description</th>
-                                                        <th>Type</th>
-                                                        <th>Status</th>
-                                                        <th>Priority</th>
-                                                        <th></th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    @foreach (var ticket in Model.SubmittedTickets)
-                                                    {
-                                                        <tr>
-                                                            <td>@ticket.Title</td>
-                                                            <td>@string.Format("{0:MMM dd yyyy}", ticket.Created)</td>
-                                                            <td>@ticket.DeveloperUser?.FullName</td>
-                                                            <td>@ticket.OwnerUser?.FullName</td>
-                                                            <td>@ticket.Description</td>
-                                                            <td>@ticket.TicketType.Name</td>
-                                                            <td>@ticket.TicketStatus.Name</td>
-                                                            <td><span class="badge priorityBadge">@ticket.TicketPriority.Name</span></td>
-                                                            <td>
-                                                                @if (User.IsInRole("ProjectManager") || User.IsInRole("Admin"))
-                                                                {
-
-                                                                    <a asp-controller="Tickets" asp-action="Edit" asp-route-id="@ticket.Id">Edit</a> <span>|</span>
-                                                                }
-                                                                <a asp-controller="Tickets" asp-action="Details" asp-route-id="@ticket.Id">Details</a> |
-                                                                <a asp-controller="Tickets" asp-action="Delete" asp-route-id="@ticket.Id">Delete</a>
-                                                            </td>
-                                                        </tr>
-                                                    }
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                        <!-- /.table-responsive -->
-                                    </div>
-                                    <!-- /.card-body -->
-                                </div>
-                                <!-- /.card -->
-
-                            </div>
-                            <div class="col-4">
-                                <div class="card">
-                                    <!--Submitted Charts-->
-                                    <div class="card-header">
-                                        <h3 class="card-title">
-                                            <i class="fas fa-chart-pie mr-1"></i>
-                                            Submitted tickets
-                                        </h3>
-                                        <div class="card-tools">
-                                            <ul class="nav nav-pills ml-auto">
-                                                <li class="nav-item">
-                                                    <a class="nav-link active" href="#sub-status-chart" data-toggle="tab">Status</a>
-                                                </li>
-                                                <li class="nav-item">
-                                                    <a class="nav-link" href="#sub-type-chart" data-toggle="tab">Type</a>
-                                                </li>
-                                                <li class="nav-item">
-                                                    <a class="nav-link" href="#sub-priority-chart" data-toggle="tab">Priority</a>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </div><!-- /.card-header -->
-                                    <div class="card-body">
-                                        <div class="tab-content p-0">
-
-                                            <div class="chart tab-pane active" id="sub-status-chart"
-                                                 style="position: relative; height: 300px;">
-                                                <canvas id="subStatusChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
-                                            </div>
-                                            <div class="chart tab-pane" id="sub-type-chart" style="position: relative; height: 300px;">
-                                                <canvas id="subTypeChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
-
-                                            </div>
-                                            <div class="chart tab-pane" id="sub-priority-chart" style="position: relative; height: 300px;">
-                                                <canvas id="subPriorityChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
-
-                                            </div>
-                                        </div>
-                                    </div><!-- /.card-body -->
-                                </div>
-                                    <a class="my-2 btn btn-block btn-primary" asp-controller="Tickets" asp-action="MyTickets"> View My Tickets</a>
-                                    @if (User.IsInRole("ProjectManager") || User.IsInRole("Admin"))
-                                    {
-                                        <a class="my-2 btn btn-block btn-success" asp-controller="Tickets" asp-action="AllTickets"> View All Tickets</a>
-                                    }
-
-                            </div>
-                        </div>
-                    </div>
-                </div>
                 @if (hasProjects)
                 {
 
@@ -348,7 +105,7 @@
                             <ul class="nav nav-tabs" id="project-tabs" role="tablist">
                                 <li class="pt-2 px-3"><h3 class="card-title">Projects</h3></li>
                                 @{ var i = 0;}
-                                @foreach (var project in Model.Projects)
+                                @foreach (var project in Model.Projects.OrderByDescending(p =>p.Tickets.Count))
                                 {
                                     @if (i == 0)
                                     {
@@ -507,8 +264,246 @@
                     </div>
                 }
                 <!-- /.col -->
-            </div>
             <!-- /.row -->
+                <!-- TABLE: Development Tickets -->
+                <div class="card">
+                    <div class="card-header border-transparent">
+                        <h3 class="card-title">Development Tickets</h3>
+
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <!-- /.card-header -->
+
+                    <div class="card-body">
+
+                        <div class="row">
+                            <div class="col-8">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <small class="text-muted"><i class="fas fa-list"></i> Tickets assigned to you</small>
+                                    </div>
+                                    <div class="card-body p-2">
+                                        <div class="table-responsive">
+                                            <table id="developmentTable" class="table dataTable table-striped">
+                                                <thead>
+                                                    <tr>
+
+                                                        <th>Name</th>
+                                                        <th>Created</th>
+                                                        <th>Developer</th>
+                                                        <th>Submitter</th>
+                                                        <th>Type</th>
+                                                        <th>Status</th>
+                                                        <th>Priority</th>
+                                                        <th></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach (var ticket in Model.UnresolvedDevelopmentTickets)
+                                                    {
+                                                        <tr>
+                                                            <td><a asp-action="Details" asp-controller="Tickets" asp-route-id="@ticket.Id">@ticket.Title</a></td>
+                                                            <td>@string.Format("{0:MMM dd yyyy}", ticket.Created)</td>
+                                                            <td>@ticket.DeveloperUser?.FullName</td>
+                                                            <td>@ticket.OwnerUser?.FullName</td>
+                                                            <td>@ticket.TicketType.Name</td>
+                                                            <td>@ticket.TicketStatus.Name</td>
+                                                            <td><span class="badge priorityBadge">@ticket.TicketPriority.Name</span></td>
+                                                            <td>
+                                                                @if (User.IsInRole("ProjectManager") || User.IsInRole("Admin"))
+                                                                {
+
+                                                                    <a asp-controller="Tickets" asp-action="Edit" asp-route-id="@ticket.Id">Edit</a> <span>|</span>
+                                                                }
+                                                                <a asp-controller="Tickets" asp-action="Details" asp-route-id="@ticket.Id">Details</a> |
+                                                                <a asp-controller="Tickets" asp-action="Delete" asp-route-id="@ticket.Id">Delete</a>
+                                                            </td>
+                                                        </tr>
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <!-- /.table-responsive -->
+                                    </div>
+                                    <!-- /.card-body -->
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <!--Development Charts-->
+
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h3 class="card-title">
+                                            <i class="fas fa-chart-pie mr-1"></i>
+                                            Development tickets
+                                        </h3>
+                                        <div class="card-tools">
+                                            <ul class="nav nav-pills ml-auto">
+                                                <li class="nav-item">
+                                                    <a class="nav-link active" href="#dev-type-chart" data-toggle="tab">Type</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link" href="#dev-status-chart" data-toggle="tab">Status</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link" href="#dev-priority-chart" data-toggle="tab">Priority</a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div><!-- /.card-header -->
+                                    <div class="card-body">
+                                        <div class="tab-content p-0">
+                                            <!-- DEV CHARTS -->
+                                            <div class="chart tab-pane active" id="dev-type-chart"
+                                                 style="position: relative; height: 300px;">
+                                                <canvas id="devTypeChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                                            </div>
+                                            <div class="chart tab-pane" id="dev-status-chart" style="position: relative; height: 300px;">
+                                                <canvas id="devStatusChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+
+                                            </div>
+                                            <div class="chart tab-pane" id="dev-priority-chart" style="position: relative; height: 300px;">
+                                                <canvas id="devPriorityChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+
+                                            </div>
+                                        </div>
+                                    </div><!-- /.card-body -->
+                                    </div>
+                                    <a class="my-2 btn btn-block btn-primary" asp-controller="Tickets" asp-action="MyTickets"> View My Tickets</a>
+                                    @if (User.IsInRole("ProjectManager") || User.IsInRole("Admin"))
+                                    {
+                                        <a class="my-2 btn btn-block btn-success"asp-controller="Tickets" asp-action="AllTickets"> View All Tickets</a>
+                                    }
+
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                </div>
+                <!-- /.card -->
+                <!-- CARD: Submitted Tickets -->
+                <div class="card">
+                    <div class="card-header border-transparent">
+                        <h3 class="card-title">Submitted Tickets</h3>
+
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <!-- /.card-header -->
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-8">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <small class="text-muted"><i class="fas fa-list"></i> Tickets you submitted</small>
+                                    </div>
+                                    <div class="card-body p-2">
+                                        <div class="table-responsive">
+                                            <table id="submittedTable" class="table dataTable table-striped">
+                                                <thead>
+                                                    <tr>
+
+                                                        <th>Name</th>
+                                                        <th>Created</th>
+                                                        <th>Developer</th>
+                                                        <th>Submitter</th>
+                                                        <th>Type</th>
+                                                        <th>Status</th>
+                                                        <th>Priority</th>
+                                                        <th></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach (var ticket in Model.SubmittedTickets)
+                                                    {
+                                                        <tr>
+                                                            <td><a asp-action="Details" asp-controller="Tickets" asp-route-id="@ticket.Id">@ticket.Title</a></td>
+                                                            <td>@string.Format("{0:MMM dd yyyy}", ticket.Created)</td>
+                                                            <td>@ticket.DeveloperUser?.FullName</td>
+                                                            <td>@ticket.OwnerUser?.FullName</td>
+                                                            <td>@ticket.TicketType.Name</td>
+                                                            <td>@ticket.TicketStatus.Name</td>
+                                                            <td><span class="badge priorityBadge">@ticket.TicketPriority.Name</span></td>
+                                                            <td>
+                                                                @if (User.IsInRole("ProjectManager") || User.IsInRole("Admin"))
+                                                                {
+
+                                                                    <a asp-controller="Tickets" asp-action="Edit" asp-route-id="@ticket.Id">Edit</a> <span>|</span>
+                                                                }
+                                                                <a asp-controller="Tickets" asp-action="Details" asp-route-id="@ticket.Id">Details</a> |
+                                                                <a asp-controller="Tickets" asp-action="Delete" asp-route-id="@ticket.Id">Delete</a>
+                                                            </td>
+                                                        </tr>
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <!-- /.table-responsive -->
+                                    </div>
+                                    <!-- /.card-body -->
+                                </div>
+                                <!-- /.card -->
+
+                            </div>
+                            <div class="col-4">
+                                <div class="card">
+                                    <!--Submitted Charts-->
+                                    <div class="card-header">
+                                        <h3 class="card-title">
+                                            <i class="fas fa-chart-pie mr-1"></i>
+                                            Submitted tickets
+                                        </h3>
+                                        <div class="card-tools">
+                                            <ul class="nav nav-pills ml-auto">
+                                                <li class="nav-item">
+                                                    <a class="nav-link active" href="#sub-status-chart" data-toggle="tab">Status</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link" href="#sub-type-chart" data-toggle="tab">Type</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link" href="#sub-priority-chart" data-toggle="tab">Priority</a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div><!-- /.card-header -->
+                                    <div class="card-body">
+                                        <div class="tab-content p-0">
+
+                                            <div class="chart tab-pane active" id="sub-status-chart"
+                                                 style="position: relative; height: 300px;">
+                                                <canvas id="subStatusChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                                            </div>
+                                            <div class="chart tab-pane" id="sub-type-chart" style="position: relative; height: 300px;">
+                                                <canvas id="subTypeChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+
+                                            </div>
+                                            <div class="chart tab-pane" id="sub-priority-chart" style="position: relative; height: 300px;">
+                                                <canvas id="subPriorityChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+
+                                            </div>
+                                        </div>
+                                    </div><!-- /.card-body -->
+                                </div>
+                                    <a class="my-2 btn btn-block btn-primary" asp-controller="Tickets" asp-action="MyTickets"> View My Tickets</a>
+                                    @if (User.IsInRole("ProjectManager") || User.IsInRole("Admin"))
+                                    {
+                                        <a class="my-2 btn btn-block btn-success" asp-controller="Tickets" asp-action="AllTickets"> View All Tickets</a>
+                                    }
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
             <!-- Main row -->
             <div class="row">
                 <!-- Left col -->
@@ -565,7 +560,7 @@
                     {
                         <div class="card">
                             <div class="card-header">
-                                <h5>Unassigned Tickets</h5>
+                                <h5 class="card-title">Unassigned Tickets</h5>
                                 <div class="card-tools">
                                     <button type="button" class="btn btn-tool" data-card-widget="collapse">
                                         <i class="fas fa-minus"></i>
@@ -579,7 +574,7 @@
                                         <div class="card card-warning">
                                             <div class="card-body">
                                                 <div class="table-responsive">
-                                                    <table id="unassignedTable" class="table dataTable striped">
+                                                    <table id="unassignedTable" class="table dataTable table-striped">
                                                         <thead>
                                                             <tr>
 
@@ -593,18 +588,18 @@
                                                         <tbody>
                                                             @foreach (var unassignedTicket in Model.UnassignedTickets)
                                                             {
-                                                                <tr>
-                                                                    <td>@unassignedTicket.Title</td>
+                                                                <tr id="row-@unassignedTicket.Id">
+                                                                    <td><a asp-action="Details" asp-controller="Tickets" asp-route-id="@unassignedTicket.Id">@unassignedTicket.Title</a></td>
                                                                     <td>@string.Format("{0:MMM dd yyyy}", unassignedTicket.Created)</td>
 
                                                                     <td>@unassignedTicket.OwnerUser?.FullName</td>
                                                                     <td>@unassignedTicket.Description</td>
                                                                     <td>
                                                                         <form asp-controller="Tickets" asp-action="AssignUser" asp-route-db="true" class="assignForm">
-                                                                            <input hidden name="ticketId" value="@unassignedTicket.Id" />
+                                                                            <input hidden name="ticketId" value="@unassignedTicket.Id" class="unassignedId"/>
                                                                             <div class="form-group">
                                                                                 <label for=""></label>
-                                                                                <select required class="form-control" name="userId" id="@unassignedTicket.Id-userSelect" asp-items="ViewBag.AssignUsers">
+                                                                                <select required class="form-control" name="userId" id="userSelect-@unassignedTicket.Id" asp-items="ViewBag.AssignUsers">
                                                                                     <option value="" hidden>Choose a User</option>
 
                                                                                 </select>
@@ -629,6 +624,7 @@
                     }
                 </div>
                 <!-- /.col -->
+            </div>
             </div>
             <!-- /.row -->
         </div>
@@ -692,22 +688,16 @@
             var dataString = $(this).serialize();
             // get the element Id of the form
             // alert(dataString); return false;
-
+            var unassignedId = $(this).children("input").val()
             $.ajax({
                 type: "POST",
-                url: "/Ticket/AssignUser?db=true",
+                url: "/Tickets/AssignUser",
                 data: dataString,
                 success: function () {
-                    $("").html("<div id='message'></div>");
-                    $("#message")
-                        .html("<h2>Contact Form Submitted!</h2>")
-                        .append("<p>We will be in touch soon.</p>")
-                        .hide()
-                        .fadeIn(1500, function () {
-                            $("#message").append(
-                                "<img id='checkmark' src='images/check.png' />"
-                            );
-                        });
+                    //TODO This function needs to remove the row, I have the rowID correct but nothing is happening to the actual element I Think its some sort of selector issue
+                    var rowId = (`#row-${unassignedId}`)
+                    $(rowId)
+                        .addClass("d-none")
                 }
             });
 

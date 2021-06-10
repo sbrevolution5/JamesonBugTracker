@@ -60,7 +60,7 @@ namespace JamesonBugTracker.Services
                         allTickets.Add(ticket);
                     }
                 }
-                return allTickets.OrderByDescending(t=>t.Updated).ToList();
+                return allTickets.OrderByDescending(t => t.Updated).ToList();
             }
             catch
             {
@@ -86,7 +86,7 @@ namespace JamesonBugTracker.Services
                                                     .Include(t => t.Attachments)
                                                     .Include(t => t.History)
                                                     .Include(t => t.Comments)
-                                                    .OrderByDescending(t=>t.Updated)
+                                                    .OrderByDescending(t => t.Updated)
                                                  .ToListAsync();
                 return tickets;
             }
@@ -100,27 +100,22 @@ namespace JamesonBugTracker.Services
 
         public async Task<List<Ticket>> GetAllTicketsByPriorityAsync(int companyId, string priorityName)
         {
+
             try
             {
-                try
+                var allTickets = await GetAllTicketsByCompanyAsync(companyId);
+                List<Ticket> ticketsWithPriority = new();
+                foreach (var ticket in allTickets)
                 {
-                    var allTickets = await GetAllTicketsByCompanyAsync(companyId);
-                    List<Ticket> ticketsWithPriority = new();
-                    foreach (var ticket in allTickets)
+                    if (ticket.TicketPriority.Name == priorityName)
                     {
-                        if (ticket.TicketPriority.Name == priorityName)
-                        {
-                            ticketsWithPriority.Add(ticket);
-                        }
+                        ticketsWithPriority.Add(ticket);
                     }
-                    return ticketsWithPriority;
                 }
-                catch { throw; }
+                return ticketsWithPriority;
             }
-            catch
-            {
-                throw;
-            }
+            catch { throw; }
+
         }
 
         public async Task<List<Ticket>> GetAllTicketsByRoleAsync(string role, string userId)
@@ -188,6 +183,13 @@ namespace JamesonBugTracker.Services
                 return ticketsWithStatus;
             }
             catch { throw; }
+        }
+        public async Task<List<Ticket>> GetProjectTicketsNotResolvedOrArchivedAsync(int companyId, int projectId)
+        {
+            List<Ticket> tickets = new();
+            tickets = (await GetAllTicketsByCompanyAsync(companyId)).Where(t => (t.ProjectId == projectId && (t.Archived == false&&t.TicketStatus.Name != "Resolved"))).ToList();
+            return tickets;
+            
         }
         public async Task<List<Ticket>> GetProjectTicketsByPriorityAsync(string priorityName, int companyId, int projectId)
         {
@@ -283,7 +285,7 @@ namespace JamesonBugTracker.Services
             }
             return;
         }
-       
+
         public async Task<int?> LookupTicketPriorityIdAsync(string priorityName)
         {
             TicketPriority ticketPriority = await _context.TicketPriority.FirstOrDefaultAsync(t => t.Name == priorityName);
@@ -305,7 +307,7 @@ namespace JamesonBugTracker.Services
         public async Task<List<Ticket>> GetAllDeveloperTicketsByResolvedAsync(string userId, bool isResolvedOrNot)
         {
             var userTickets = await GetAllTicketsByRoleAsync("Developer", userId);
-            var filteredTickets = userTickets.Where(t => ((t.TicketStatus.Name == "Resolved") == isResolvedOrNot)&& t.TicketStatus.Name !="Archived").ToList();
+            var filteredTickets = userTickets.Where(t => ((t.TicketStatus.Name == "Resolved") == isResolvedOrNot) && t.TicketStatus.Name != "Archived").ToList();
             return filteredTickets;
         }
 

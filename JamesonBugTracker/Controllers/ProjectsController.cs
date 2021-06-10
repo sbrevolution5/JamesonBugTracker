@@ -20,14 +20,16 @@ namespace JamesonBugTracker.Controllers
         private readonly IBTProjectService _projectService;
         private readonly UserManager<BTUser> _userManager;
         private readonly IBTCompanyInfoService _companyInfoService;
+        private readonly IBTTicketService _ticketService;
 
 
-        public ProjectsController(ApplicationDbContext context, IBTProjectService projectService, UserManager<BTUser> userManager, IBTCompanyInfoService companyInfoService)
+        public ProjectsController(ApplicationDbContext context, IBTProjectService projectService, UserManager<BTUser> userManager, IBTCompanyInfoService companyInfoService, IBTTicketService ticketService)
         {
             _context = context;
             _projectService = projectService;
             _userManager = userManager;
             _companyInfoService = companyInfoService;
+            _ticketService = ticketService;
         }
 
         // GET: Projects
@@ -58,6 +60,7 @@ namespace JamesonBugTracker.Controllers
         // GET: Projects/Details/5
         public async Task<IActionResult> Details(int? id)
         {
+
             if (id == null)
             {
                 return NotFound();
@@ -78,8 +81,13 @@ namespace JamesonBugTracker.Controllers
             {
                 return NotFound();
             }
-
-            return View(project);
+            ProjectDetailsViewModel viewModel = new()
+            {
+                Project = project,
+                OpenTickets = await _ticketService.GetProjectTicketsNotResolvedOrArchivedAsync(project.CompanyId, project.Id),
+                ResolvedTickets = await _ticketService.GetProjectTicketsByStatusAsync("Resolved", project.CompanyId, project.Id)
+            };
+            return View(viewModel);
         }
 
         // GET: Projects/Create
