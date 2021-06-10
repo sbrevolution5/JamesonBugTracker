@@ -2,7 +2,7 @@
 @using JamesonBugTracker.Services.Interfaces
 @inject IBTProjectService _projectService
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = $"{Model.Project.Name} - Details";
     var projectManager = await _projectService.GetProjectManagerAsync(Model.Project.Id);
 }
 @section Header{

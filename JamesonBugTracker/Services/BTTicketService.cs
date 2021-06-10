@@ -166,7 +166,12 @@ namespace JamesonBugTracker.Services
                 throw;
             }
         }
-
+        public async Task<List<Ticket>> GetArchivedUserTicketsAsync(string userId,string roleSubOrDev)
+        {
+            var userTickets = await GetAllTicketsByRoleAsync(roleSubOrDev, userId);
+            List<Ticket> filteredTickets = userTickets.Where(t => t.Archived == true).ToList();
+            return filteredTickets;
+        }
         public async Task<List<Ticket>> GetAllTicketsByStatusAsync(int companyId, string statusName)
         {
             try

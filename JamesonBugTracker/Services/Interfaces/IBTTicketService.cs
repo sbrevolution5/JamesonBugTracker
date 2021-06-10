@@ -37,7 +37,7 @@ namespace JamesonBugTracker.Services.Interfaces
 
         Task SetTicketStatusAsync(int ticketId, string StatusName);
         Task<Ticket> GetOneTicketNotTrackedAsync(int ticketId);
-
+        Task<List<Ticket>> GetArchivedUserTicketsAsync(string userId, string roleSubOrDev);
 
         Task<int?> LookupTicketPriorityIdAsync(string priorityName);
 

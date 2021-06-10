@@ -1,7 +1,7 @@
 ﻿@model JamesonBugTracker.Models.Ticket
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = $"{Model.Title} - Details";
 }
 @using Microsoft.AspNetCore.Identity;
 @using JamesonBugTracker.Services.Interfaces;
@@ -20,7 +20,8 @@
 
                 <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> <span>|</span>
             }
-            <a asp-action="Index">Back to List</a>
+            <a asp-action="MyTickets">My Tickets</a> |
+            <a asp-action="AllTickets">All Tickets</a>
         </div>
     </div>
     <div class="card-body">
@@ -145,15 +146,17 @@
                                         <div class="user-block">
                                             <img class="img-circle img-bordered-sm" src="../../dist/img/user1-128x128.jpg" alt="user image">
                                             <span class="username">
-                                                <a href="#">@comment.User.FullName</a>
+                                                <a href="#">@comment.User.FullName</a> |
                                                 @if (Model.DeveloperUserId == comment.UserId)
                                                 {
-                                                    <span class="text-success">Assigned developer</span>
-                                                }@*else if ((await _projectService.GetProjectManagerAsync(Model.ProjectId)).Id == comment.UserId) {
-                                                        <span class="text-primary">Project Manager</span>
-                                                    }*@else if (Model.OwnerUserId == comment.UserId)
+                                                    <span class="text-success">Assigned developer</span> <span>|</span>
+                                                }
+                                                @if ((await _projectService.GetProjectManagerAsync(Model.ProjectId)).Id == comment.UserId) {
+                                                        <span class="text-primary">Project Manager</span> <span>|</span>
+                                                    }
+                                                @if (Model.OwnerUserId == comment.UserId)
                                                 {
-                                                    <span class="text-danger">Submitter</span>
+                                                    <span class="text-danger">Submitter</span> <span>|</span>
                                                 }
                                             </span>
                                             <span class="description">@string.Format("{0:MMM dd yyyy}", comment.Created)</span>
@@ -162,51 +165,6 @@
                                         <p>
                                             @Html.Raw(comment.Comment)
                                         </p>
-                                        @*Potential comment edit*@
-                                        @*@if (_userManager.GetUserId(User) == comment.UserId)
-                                                              {
-
-
-                                                                  <p>
-                                                                      <button type="button" data-toggle="modal" data-target="#modal-@comment.Id" class="btn btn-warning"><i class="far fa-pencil mr-1"></i> Edit comment</button>
-                                                                  </p>
-                                                                  <div class="modal fade" id="modal-@comment.Id" tabindex="-1" role="dialog"
-                                                                       aria-labelledby="modelTitleId" aria-hidden="true">
-                                                                      <div class="modal-dialog" role="document">
-                                                                          <div class="modal-content">
-                                                                              <div class="modal-header">
-                                                                                  <h5 class="modal-title">Edit your comment</h5>
-                                                                                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                                                      <span aria-hidden="true">&times;</span>
-                                                                                  </button>
-                                                                              </div>
-                                                                              <div class="modal-body">
-                                                                                  <form asp-controller="TicketComments" asp-action="Edit">
-                                                                                      <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                                                                                      <div class="form-group">
-                                                                                      <input type="hidden" value="@comment.Id" name="id" />
-                                                                                      <input type="hidden" asp-for="@comment.Id" />
-                                                                                      <input type="hidden" asp-for="@comment.TicketId" />
-                                                                                      <input type="hidden" asp-for="@comment.UserId" />
-                                                                                      <input type="hidden" asp-for="@comment.Created" />
-
-
-                                                                                          <label asp-for="@comment.Comment" class="control-label"></label>
-                                                                                          <textarea id="summernote" class="summernoteEditComment" name="Comment" required placeholder="Type your comment here">
-                                            </textarea>
-                                                                                          <span asp-validation-for="@comment.Comment" class="text-danger"></span>
-                                                                                      </div>
-                                                                                      <div class="form-group">
-                                                                                          <input type="submit" value="Save" class="btn btn-primary" />
-                                                                                      </div>
-                                                                                  </form>
-
-                                                                              </div>
-                                                                          </div>
-                                                                      </div>
-                                                                  </div>
-
-                                                              }*@
                                     </div>
                                 </div>
                             </div>

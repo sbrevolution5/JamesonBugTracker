@@ -62,7 +62,18 @@ namespace JamesonBugTracker.Controllers
             {
                 DevTicketsResolved = devTicketsResolved,
                 DevTicketsUnresolved = devTicketsUnresolved,
-                SubmittedTickets = subTickets
+                SubmittedTickets = subTickets,
+            };
+            return View(viewModel);
+        }public async Task<IActionResult> MyArchivedTickets()
+        {
+            string userId = _userManager.GetUserId(User);
+            List<Ticket> subTicketsArchived = await _ticketService.GetArchivedUserTicketsAsync(userId, "Submitter");
+            List<Ticket> devTicketsArchived = await _ticketService.GetArchivedUserTicketsAsync(userId, "Developer");
+            MyArchivedTicketsViewModel viewModel = new()
+            {
+                DevTicketsArchived = devTicketsArchived,
+                SubTicketsArchived = subTicketsArchived
             };
             return View(viewModel);
         }
@@ -240,7 +251,19 @@ namespace JamesonBugTracker.Controllers
             ViewData["TicketTypeId"] = new SelectList(_context.Set<TicketType>(), "Id", "Id", ticket.TicketTypeId);
             return View(ticket);
         }
+        [Authorize(Roles = "Admin,ProjectManager")]
+        public async Task<IActionResult> UnassignedTickets()
+        {
+            int companyId = User.Identity.GetCompanyId().Value;
+            UnassignedTicketsViewModel viewModel = new()
+            {
+                Projects = await _projectService.GetProjectsWithUnassignedTicketsAsync(companyId),
+                UserSelectLists = new(),
+                UnassignedTickets = await _ticketService.GetAllUnassignedTicketsAsync(companyId)
+            };
 
+            return View(viewModel);
+        }
         // GET: Tickets/Delete/5
         [Authorize(Roles = "Admin,ProjectManager")]
         public async Task<IActionResult> Archive(int? id)
@@ -265,19 +288,7 @@ namespace JamesonBugTracker.Controllers
 
             return View(ticket);
         }
-        [Authorize(Roles = "Admin,ProjectManager")]
-        public async Task<IActionResult> UnassignedTickets()
-        {
-            int companyId = User.Identity.GetCompanyId().Value;
-            UnassignedTicketsViewModel viewModel = new()
-            {
-                Projects = await _projectService.GetProjectsWithUnassignedTicketsAsync(companyId),
-                UserSelectLists = new(),
-                UnassignedTickets = await _ticketService.GetAllUnassignedTicketsAsync(companyId)
-            };
-
-            return View(viewModel);
-        }
+        
 
         // POST: Tickets/Delete/5
         [HttpPost, ActionName("Archive")]
@@ -287,6 +298,7 @@ namespace JamesonBugTracker.Controllers
         {
             var ticket = await _context.Ticket.FindAsync(id);
             ticket.ArchiveDate = DateTime.Now;
+            ticket.Archived = true;
             await _context.SaveChangesAsync();
             await _ticketService.SetTicketStatusAsync(id, "Archived");
             return RedirectToAction("Dashboard","Home");
@@ -327,6 +339,10 @@ namespace JamesonBugTracker.Controllers
 
             }
             catch { throw; }
+            if (statusName=="Resolved")
+            {
+                return RedirectToAction("MyTickets");
+            }
             return RedirectToAction("Details",new { id = ticketId });
         }
         private bool TicketExists(int id)

@@ -6,7 +6,7 @@
 <link href="~/plugins/datatables-rowreorder/css/rowReorder.bootstrap4.css" rel="stylesheet" />}
 <div class="container-fluid">
     <p>
-        <a asp-action="Create" class="btn btn-success">Create New Ticket</a>
+        <a asp-action="Create" class="btn btn-success btn-block">Create New Ticket</a>
     </p>
     <h1> My Active Development Tickets</h1>
     <div class="card p-2">
@@ -126,6 +126,7 @@
             </tbody>
         </table>
     </div>
+    <a class="btn btn-block btn-secondary" asp-action="MyArchivedTickets">View My Archived Tickets</a>
 </div>
 @section Scripts{
     <script src="~/js/PriorityBadge.js"></script>
