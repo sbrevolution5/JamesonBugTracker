@@ -23,8 +23,9 @@ namespace JamesonBugTracker.Controllers
         private readonly IBTProjectService _projectService;
         private readonly IBTCompanyInfoService _companyInfoService;
         private readonly IBTHistoryService _historyService;
+        private readonly IBTNotificationService _notificationService;
 
-        public TicketsController(ApplicationDbContext context, IBTTicketService ticketService, UserManager<BTUser> userManager, IBTProjectService projectService, IBTCompanyInfoService companyInfoService, IBTHistoryService historyService)
+        public TicketsController(ApplicationDbContext context, IBTTicketService ticketService, UserManager<BTUser> userManager, IBTProjectService projectService, IBTCompanyInfoService companyInfoService, IBTHistoryService historyService, IBTNotificationService notificationService)
         {
             _context = context;
             _ticketService = ticketService;
@@ -32,6 +33,7 @@ namespace JamesonBugTracker.Controllers
             _projectService = projectService;
             _companyInfoService = companyInfoService;
             _historyService = historyService;
+            _notificationService = notificationService;
         }
 
         // GET: Tickets
@@ -65,7 +67,8 @@ namespace JamesonBugTracker.Controllers
                 SubmittedTickets = subTickets,
             };
             return View(viewModel);
-        }public async Task<IActionResult> MyArchivedTickets()
+        }
+        public async Task<IActionResult> MyArchivedTickets()
         {
             string userId = _userManager.GetUserId(User);
             List<Ticket> subTicketsArchived = await _ticketService.GetArchivedUserTicketsAsync(userId, "Submitter");
@@ -139,15 +142,50 @@ namespace JamesonBugTracker.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Title,Description,ProjectId,TicketPriorityId,TicketTypeId")] Ticket ticket, bool db)
         {
+            int companyId = User.Identity.GetCompanyId().Value;
             if (ModelState.IsValid)
             {
-                ticket.OwnerUserId = _userManager.GetUserId(User);
+                BTUser btUser = await _userManager.GetUserAsync(User);
+                ticket.OwnerUserId = btUser.Id;
                 ticket.Created = DateTime.Now;
                 ticket.Updated = DateTime.Now;
                 ticket.TicketStatusId = (await _ticketService.LookupTicketStatusIdAsync("New")).Value;
-                _context.Add(ticket);
+                await _context.AddAsync(ticket);
                 await _context.SaveChangesAsync();
-                await _historyService.AddHistoryAsync(null, ticket, ticket.OwnerUserId);
+                #region Add History
+                await _historyService.AddHistoryAsync(null, await _ticketService.GetOneTicketNotTrackedAsync(ticket.Id), ticket.OwnerUserId);
+                #endregion
+                #region Notification
+                BTUser projectManager = await _projectService.GetProjectManagerAsync(ticket.ProjectId);
+                Notification notification = new()
+                {
+                    TicketId = ticket.Id,
+                    SenderId = btUser.Id,
+                    Created = DateTime.Now,
+                    Message = $"New Ticket: {ticket.Title}, was created by {btUser?.FullName}",
+                    Title = "New Ticket"
+                };
+                if (projectManager is not null)
+                {
+
+                    try
+                    {
+                        notification.RecipientId = projectManager.Id;
+                        await _notificationService.SaveNotificationAsync(notification);
+
+                    }
+                    catch (Exception)
+                    {
+
+                        throw;
+                    }
+                    //await _notificationService.MembersNotificationAsync(notification, projectManager);
+                }
+                else
+                {
+                    await _notificationService.AdminsNotificationAsync(notification, companyId);
+                }
+                #endregion
                 if (db == true)
                 {
                     return RedirectToAction("Details", "Projects", new { id = ticket.ProjectId });
@@ -158,7 +196,6 @@ namespace JamesonBugTracker.Controllers
                 }
             }
             BTUser user = await _userManager.GetUserAsync(User);
-            int companyId = User.Identity.GetCompanyId().Value;
             if (User.IsInRole("Admin"))
             {
                 ViewData["ProjectId"] = new SelectList(await _projectService.GetAllProjectsByCompanyAsync(companyId), "Id", "Name");
@@ -179,7 +216,6 @@ namespace JamesonBugTracker.Controllers
             {
                 return NotFound();
             }
-
             var ticket = await _context.Ticket.FindAsync(id);
             if (ticket == null)
             {
@@ -213,6 +249,7 @@ namespace JamesonBugTracker.Controllers
                 return NotFound();
             }
 
+            Notification notification;
             if (ModelState.IsValid)
             {
                 //get companyid, currentuser, project manager OLD
@@ -223,11 +260,53 @@ namespace JamesonBugTracker.Controllers
                 Ticket oldTicket = await _ticketService.GetOneTicketNotTrackedAsync(ticket.Id);
                 try
                 {
-                    ticket.OwnerUserId = _userManager.GetUserId(User);
                     ticket.Updated = DateTime.Now;
                     ticket.TicketStatusId = (await _ticketService.LookupTicketStatusIdAsync("New")).Value;
                     _context.Update(ticket);
                     await _context.SaveChangesAsync();
+                    notification = new()
+                    {
+                        TicketId = ticket.Id,
+                        Title = $"Ticket modified on project - {oldTicket.Project.Name}",
+                        Message = $"Ticket: [{ticket.Id}]:{ticket.Title} updated by {currentUser?.FullName}",
+                        Created = DateTime.Now,
+                        SenderId = currentUser?.Id,
+                        RecipientId = projectManager?.Id
+                    }; 
+                    if (projectManager is not null)
+                    {
+
+                        try
+                        {
+                            notification.RecipientId = projectManager.Id;
+                            await _notificationService.SaveNotificationAsync(notification);
+
+                        }
+                        catch (Exception)
+                        {
+
+                            throw;
+                        }
+                        //await _notificationService.MembersNotificationAsync(notification, projectManager);
+                    }
+                    else
+                    {
+                        await _notificationService.AdminsNotificationAsync(notification, companyId);
+                    }
+                    if (ticket.DeveloperUserId != null)
+                    {
+                        notification = new()
+                        {
+                            TicketId = ticket.Id,
+                            Title = "A Ticket assigned to you was updated",
+                            Message = $"Ticket: [{ticket.Id}]:{ticket.Title} updated by {currentUser?.FullName}",
+                            Created = DateTimeOffset.Now,
+                            SenderId = currentUser?.Id,
+                            RecipientId = ticket.DeveloperUserId
+                        };
+                        await _notificationService.SaveNotificationAsync(notification);
+                        await _notificationService.EmailNotificationAsync(notification, notification.Title);
+                    }
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -288,7 +367,7 @@ namespace JamesonBugTracker.Controllers
 
             return View(ticket);
         }
-        
+
 
         // POST: Tickets/Delete/5
         [HttpPost, ActionName("Archive")]
@@ -301,13 +380,13 @@ namespace JamesonBugTracker.Controllers
             ticket.Archived = true;
             await _context.SaveChangesAsync();
             await _ticketService.SetTicketStatusAsync(id, "Archived");
-            return RedirectToAction("Dashboard","Home");
+            return RedirectToAction("Dashboard", "Home");
         }
         [HttpPost]
         //[ValidateAntiForgeryToken]
-        public async Task<IActionResult> AssignUser(string userId, int ticketId, bool db=false)
+        public async Task<IActionResult> AssignUser(string userId, int ticketId, bool db = false)
         {
-            
+
             try
             {
                 BTUser currentUser = await _userManager.GetUserAsync(User);
@@ -315,15 +394,51 @@ namespace JamesonBugTracker.Controllers
                 await _ticketService.AssignTicketAsync(ticketId, userId);
                 Ticket newTicket = await _ticketService.GetOneTicketNotTrackedAsync(ticketId);
                 await _historyService.AddHistoryAsync(oldTicket, newTicket, currentUser.Id);
+                #region Alert New and old user that ticket was changed 
+                if (oldTicket.DeveloperUserId != newTicket.DeveloperUserId)
+                {
+                    Notification notification = new()
+                    {
+                        TicketId = newTicket.Id,
+                        Title = "You were assigned a New Ticket",
+                        Message = $"{currentUser.FullName} just assigned you to {newTicket.Id}:{newTicket.Title}",
+                        SenderId = currentUser.Id,
+                        RecipientId = newTicket.DeveloperUserId,
+                        Created = DateTimeOffset.Now,
+                    };
+                    await _notificationService.SaveNotificationAsync(notification);
+                    //If user assigns themselves, they won't get an email.
+                    if (newTicket.DeveloperUserId != currentUser.Id)
+                    {
 
+                        await _notificationService.EmailNotificationAsync(notification, notification.Title);
+                    }
+                    notification = new()
+                    {
+                        TicketId = newTicket.Id,
+                        Title = "You were unassigned from a ticket",
+                        Message = $"{currentUser.FullName} just assigned {newTicket.Id}:{newTicket.Title} to {newTicket.DeveloperUser.FullName} instead of you.",
+                        SenderId = currentUser.Id,
+                        RecipientId = oldTicket.DeveloperUserId,
+                        Created = DateTimeOffset.Now,
+                    };
+                    await _notificationService.SaveNotificationAsync(notification);
+                    //if user unassigns themselves they won't get an email
+                    if (oldTicket.DeveloperUserId != currentUser.Id)
+                    {
+
+                        await _notificationService.EmailNotificationAsync(notification, notification.Title);
+                    }
+                }
+                #endregion
             }
             catch { throw; }
             if (db)
             {
-                return RedirectToAction("Dashboard","Home");
+                return RedirectToAction("Dashboard", "Home");
 
             }
-            return RedirectToAction("Details",new { id = ticketId });
+            return RedirectToAction("Details", new { id = ticketId });
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -339,11 +454,11 @@ namespace JamesonBugTracker.Controllers
 
             }
             catch { throw; }
-            if (statusName=="Resolved")
+            if (statusName == "Resolved")
             {
                 return RedirectToAction("MyTickets");
             }
-            return RedirectToAction("Details",new { id = ticketId });
+            return RedirectToAction("Details", new { id = ticketId });
         }
         private bool TicketExists(int id)
         {

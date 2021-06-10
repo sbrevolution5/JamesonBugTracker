@@ -26,11 +26,12 @@ namespace JamesonBugTracker.Models
         public string RecipientId { get; set; }
         
         [DisplayName("Sender")]
-        public int SenderId { get; set; }
+        public string SenderId { get; set; }
         
         public bool Viewed { get; set; }
         public virtual Ticket Ticket { get; set; }
         public virtual BTUser Recipient { get; set; }
         public virtual BTUser Sender { get; set; }
+        public string Title { get; set; }
     }
 }
