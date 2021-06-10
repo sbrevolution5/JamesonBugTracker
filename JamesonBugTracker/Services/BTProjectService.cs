@@ -1,6 +1,7 @@
 ﻿using JamesonBugTracker.Data;
 using JamesonBugTracker.Models;
 using JamesonBugTracker.Services.Interfaces;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -207,13 +208,13 @@ namespace JamesonBugTracker.Services
             return false;
         }
 
-        
+
         public async Task<List<Project>> ListUserProjectsAsync(string userId)
         {
             var projectList = (await _context.Users.Include(u => u.Projects)
                 .ThenInclude(p => p.ProjectPriority)
-                                    .Include(u=>u.Projects).ThenInclude(p=> p.Members)
-                                    .Include(u=>u.Projects)
+                                    .Include(u => u.Projects).ThenInclude(p => p.Members)
+                                    .Include(u => u.Projects)
                                     .ThenInclude(p => p.Tickets)
                                                 .ThenInclude(t => t.DeveloperUser)
                                     .Include(u => u.Projects)
@@ -250,13 +251,13 @@ namespace JamesonBugTracker.Services
                 await _context.SaveChangesAsync();
                 return;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Debug.WriteLine($"***ERROR*** - Error removing project manager. --> {ex.Message}");
                 throw;
             }
         }
-        
+
         public async Task RemoveUserFromProjectAsync(string userId, int projectId)
         {
             try
@@ -315,6 +316,45 @@ namespace JamesonBugTracker.Services
                 allNonProjectUsers.Remove(user);
             }
             return allNonProjectUsers;
+        }
+
+        public async Task<List<Project>> GetProjectsWithUnassignedTicketsAsync(int companyId)
+        {
+            List<Project> companyProjects = await GetAllProjectsByCompanyAsync(companyId);
+            List<Project> results = new();
+            foreach (var project in companyProjects)
+            {
+
+                var allTickets = project.Tickets.ToList();
+                List<Ticket> newTickets = new();
+                foreach (var ticket in allTickets)
+                {
+                    if (ticket.TicketStatus.Name == "New")
+                    {
+                        newTickets.Add(ticket);
+                    }
+                }
+                List<Ticket> unassignedTickets = new();
+                foreach (var ticket in allTickets)
+                {
+                    if (ticket.TicketStatus.Name == "New")
+                    {
+                        unassignedTickets.Add(ticket);
+                    }
+                }
+                if (newTickets.Concat(unassignedTickets).ToList().Count > 1)
+                {
+                    results.Add(project);
+                }
+            }
+            return results;
+
+        }
+
+        public async Task<SelectList> GetSelectListOfProjectMembersWithoutPM(int projectID)
+        {
+            var result = new SelectList(await GetMembersWithoutPMAsync(projectID), "Id", "FullName");
+            return result;
         }
     }
 }

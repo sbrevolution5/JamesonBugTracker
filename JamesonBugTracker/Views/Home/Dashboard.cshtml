@@ -48,11 +48,20 @@
             <!-- /.col -->
             <div class="col-12 col-sm-6 col-md-3">
                 <div class="info-box mb-3">
-                    <span class="info-box-icon bg-danger elevation-1"><i class="fas fa-users"></i></span>
+                    <span class="info-box-icon bg-danger elevation-1"><i class="fas fa-ticket-alt"></i></span>
 
                     <div class="info-box-content">
-                        <span class="info-box-text">Team Members</span>
-                        <span class="info-box-number">@Model.Members.Count</span>
+                        @if (User.IsInRole("ProjectManager") || User.IsInRole("Admin"))
+                        {
+
+                            <span class="info-box-text">Unassigned Tickets</span>
+                            <span class="info-box-number"><a asp-controller="Tickets" asp-action="UnassignedTickets">@Model.UnassignedTickets.Count</a></span>
+                        }
+                        else
+                        {
+                            <span class="info-box-text">Total Tickets</span>
+                            <span class="info-box-number"><a asp-controller="Tickets" asp-action="UnassignedTickets">@(@Model.DevelopmentTickets.Count+@Model.SubmittedTickets.Count;)</a></span>
+                        }
                     </div>
                     <!-- /.info-box-content -->
                 </div>
@@ -64,11 +73,11 @@
 
             <div class="col-12 col-sm-6 col-md-3">
                 <div class="info-box mb-3">
-                    <span class="info-box-icon bg-success elevation-1"><i class="fas fa-ticket-alt"></i></span>
+                    <span class="info-box-icon bg-success elevation-1"><i class="fas fa-users"></i></span>
 
                     <div class="info-box-content">
-                        <span class="info-box-text">Total Tickets</span>
-                        <span class="info-box-number">@(Model.DevelopmentTickets.Count + Model.SubmittedTickets.Count)</span>
+                        <span class="info-box-text">Team Members</span>
+                        <span class="info-box-number">@Model.Members.Count</span>
                     </div>
                     <!-- /.info-box-content -->
                 </div>
@@ -599,7 +608,7 @@
                                                                             <input hidden name="ticketId" value="@unassignedTicket.Id" class="unassignedId"/>
                                                                             <div class="form-group">
                                                                                 <label for=""></label>
-                                                                                <select required class="form-control" name="userId" id="userSelect-@unassignedTicket.Id" asp-items="ViewBag.AssignUsers">
+                                                                                <select required class="form-control" name="userId" id="userSelect-@unassignedTicket.Id" asp-items="null">
                                                                                     <option value="" hidden>Choose a User</option>
 
                                                                                 </select>
@@ -644,7 +653,6 @@
         $(document).ready(function () {
             $('#developmentTable').DataTable();
             $('#submittedTable').DataTable();
-            $('#unassignedTable').DataTable();
         });</script>
     <script src="~/js/PriorityBadge.js"></script>
     <script src="~/plugins/chart.js/Chart.bundle.js"></script>
@@ -679,30 +687,6 @@
         });
     </script>
     <script src="~/js/chartBasics.js"></script>
-    <script>
-
-        //Used to Submit assignment form without a refresh
-
-        $(".assignForm").on("submit", function (e) {
-
-            var dataString = $(this).serialize();
-            // get the element Id of the form
-            // alert(dataString); return false;
-            var unassignedId = $(this).children("input").val()
-            $.ajax({
-                type: "POST",
-                url: "/Tickets/AssignUser",
-                data: dataString,
-                success: function () {
-                    //TODO This function needs to remove the row, I have the rowID correct but nothing is happening to the actual element I Think its some sort of selector issue
-                    var rowId = (`#row-${unassignedId}`)
-                    $(rowId)
-                        .addClass("d-none")
-                }
-            });
-
-            e.preventDefault();
-        });
-    </script>
+    
     <script src="~/js/Dashboard.js"></script>
 }

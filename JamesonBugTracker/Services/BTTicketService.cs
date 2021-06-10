@@ -311,6 +311,12 @@ namespace JamesonBugTracker.Services
             return filteredTickets;
         }
 
+        public async Task<List<Ticket>> GetAllUnassignedTicketsByProjectAsync(int projectId, int companyId)
+        {
+            var newTickets = await GetProjectTicketsByStatusAsync("New", companyId, projectId);
+            var unassignedTickets = await GetProjectTicketsByStatusAsync( "Unassigned",companyId, projectId);
+            return newTickets.Concat(unassignedTickets).ToList();
+        }
         public async Task<List<Ticket>> GetAllUnassignedTicketsAsync(int companyId)
         {
             var newTickets = await GetAllTicketsByStatusAsync(companyId, "New");

@@ -33,6 +33,8 @@ namespace JamesonBugTracker.Services.Interfaces
         Task<List<Ticket>> GetProjectTicketsByPriorityAsync(string priorityName, int companyId, int projectId);
         Task<List<Ticket>> GetProjectTicketsByStatusAsync(string statusName, int companyId, int projectId);
         Task<List<Ticket>> GetProjectTicketsByTypeAsync(string typeName, int companyId, int projectId);
+        Task<List<Ticket>> GetAllUnassignedTicketsByProjectAsync(int projectId, int companyId);
+
         Task SetTicketStatusAsync(int ticketId, string StatusName);
         Task<Ticket> GetOneTicketNotTrackedAsync(int ticketId);
 

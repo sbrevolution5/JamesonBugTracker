@@ -1,4 +1,5 @@
 ﻿using JamesonBugTracker.Models;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,12 +34,14 @@ namespace JamesonBugTracker.Services.Interfaces
         public Task RemoveProjectManagerAsync(int projectId);
 
         public Task<List<BTUser>> GetMembersWithoutPMAsync(int projectId);
+        public Task<List<Project>> GetProjectsWithUnassignedTicketsAsync(int companyId);
 
         public Task<List<BTUser>> UsersNotOnProjectAsync(int projectId, int companyId);
 
         public Task<List<BTUser>> DevelopersOnProjectAsync(int projectId);
 
         public Task<List<BTUser>> SubmittersOnProjectAsync(int projectId);
+        public Task<SelectList> GetSelectListOfProjectMembersWithoutPM(int projectID);
 
     }
 }

@@ -51,9 +51,8 @@ namespace JamesonBugTracker.Controllers
                 SubmittedTickets = await _ticketService.GetAllTicketsByRoleAsync("Submitter", userId),
                 Members = await _companyInfoService.GetAllMembersAsync(companyId),
                 CurrentUser = await _userManager.GetUserAsync(User),
-                UnassignedTickets = await _ticketService.GetAllUnassignedTicketsAsync(companyId)
+                UnassignedTickets = await _ticketService.GetAllUnassignedTicketsAsync(companyId),
             };
-            ViewData["AssignUsers"] = new SelectList(await _companyInfoService.GetAllMembersAsync(companyId), "Id", "FullName");
             return View(viewModel);
         }
 

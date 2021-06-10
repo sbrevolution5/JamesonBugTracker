@@ -63,7 +63,7 @@ namespace JamesonBugTracker.Controllers
                 DevTicketsResolved = devTicketsResolved,
                 DevTicketsUnresolved = devTicketsUnresolved,
                 SubmittedTickets = subTickets
-            }; 
+            };
             return View(viewModel);
         }
 
@@ -80,15 +80,15 @@ namespace JamesonBugTracker.Controllers
                 .Include(t => t.DeveloperUser)
                 .Include(t => t.OwnerUser)
                 .Include(t => t.Project)
-                .ThenInclude(p=>p.Company)
+                .ThenInclude(p => p.Company)
                 .Include(t => t.TicketPriority)
                 .Include(t => t.TicketStatus)
                 .Include(t => t.TicketType)
                 .Include(t => t.Comments)
                 .ThenInclude(c => c.User)
-                .Include(t=> t.History)
+                .Include(t => t.History)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            ViewData["AssignUsers"] = new SelectList(await _companyInfoService.GetAllMembersAsync(companyId), "Id", "FullName",ticket.DeveloperUserId);
+            ViewData["AssignUsers"] = new SelectList(await _projectService.GetMembersWithoutPMAsync(ticket.ProjectId), "Id", "FullName", ticket.DeveloperUserId);
 
             if (ticket == null)
             {
@@ -98,7 +98,7 @@ namespace JamesonBugTracker.Controllers
         }
 
         // GET: Tickets/Create
-        public async Task<IActionResult >Create(int? id,bool db = false)
+        public async Task<IActionResult> Create(int? id, bool db = false)
         {
             BTUser user = await _userManager.GetUserAsync(User);
             int companyId = User.Identity.GetCompanyId().Value;
@@ -111,7 +111,7 @@ namespace JamesonBugTracker.Controllers
             {
                 ViewData["ProjectId"] = new SelectList(await _projectService.ListUserProjectsAsync(user.Id), "Id", "Name");
             }
-            if(id is not null)
+            if (id is not null)
             {
                 ticket.ProjectId = id.Value;
             }
@@ -126,20 +126,20 @@ namespace JamesonBugTracker.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Title,Description,ProjectId,TicketPriorityId,TicketTypeId")] Ticket ticket,bool db)
+        public async Task<IActionResult> Create([Bind("Title,Description,ProjectId,TicketPriorityId,TicketTypeId")] Ticket ticket, bool db)
         {
             if (ModelState.IsValid)
             {
                 ticket.OwnerUserId = _userManager.GetUserId(User);
                 ticket.Created = DateTime.Now;
                 ticket.Updated = DateTime.Now;
-                ticket.TicketStatusId = (await _ticketService.LookupTicketStatusIdAsync("New")).Value;                
+                ticket.TicketStatusId = (await _ticketService.LookupTicketStatusIdAsync("New")).Value;
                 _context.Add(ticket);
                 await _context.SaveChangesAsync();
                 await _historyService.AddHistoryAsync(null, ticket, ticket.OwnerUserId);
-                if (db==true)
+                if (db == true)
                 {
-                    return RedirectToAction("Details", "Projects", new { id = ticket.ProjectId});
+                    return RedirectToAction("Details", "Projects", new { id = ticket.ProjectId });
                 }
                 else
                 {
@@ -187,7 +187,6 @@ namespace JamesonBugTracker.Controllers
             ViewData["TicketPriorityId"] = new SelectList(_context.Set<TicketPriority>(), "Id", "Name");
             ViewData["TicketStatusId"] = new SelectList(_context.Set<TicketStatus>(), "Id", "Name");
             ViewData["TicketTypeId"] = new SelectList(_context.Set<TicketType>(), "Id", "Name");
-            ViewData["DeveloperUserId"] = new SelectList(await _companyInfoService.GetAllMembersAsync(companyId), "Id", "FullName");
             return View(ticket);
         }
 
@@ -232,8 +231,8 @@ namespace JamesonBugTracker.Controllers
                 }
                 Ticket newTicket = await _ticketService.GetOneTicketNotTrackedAsync(ticket.Id);
                 await _historyService.AddHistoryAsync(oldTicket, newTicket, currentUser.Id);
-                return RedirectToAction("Details", "Projects", new { id = ticket.ProjectId});
-                
+                return RedirectToAction("Details", "Projects", new { id = ticket.ProjectId });
+
             }
             ViewData["ProjectId"] = new SelectList(_context.Project, "Id", "Description", ticket.ProjectId);
             ViewData["TicketPriorityId"] = new SelectList(_context.Set<TicketPriority>(), "Id", "Id", ticket.TicketPriorityId);
@@ -265,6 +264,19 @@ namespace JamesonBugTracker.Controllers
             }
 
             return View(ticket);
+        }
+        [Authorize(Roles = "Admin,ProjectManager")]
+        public async Task<IActionResult> UnassignedTickets()
+        {
+            int companyId = User.Identity.GetCompanyId().Value;
+            UnassignedTicketsViewModel viewModel = new()
+            {
+                Projects = await _projectService.GetProjectsWithUnassignedTicketsAsync(companyId),
+                UserSelectLists = new(),
+                UnassignedTickets = await _ticketService.GetAllUnassignedTicketsAsync(companyId)
+            };
+
+            return View(viewModel);
         }
 
         // POST: Tickets/Delete/5
