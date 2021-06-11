@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-
+using Microsoft.AspNetCore;
 namespace JamesonBugTracker.Services
 {
     public class BTHistoryService : IBTHistoryService
@@ -119,6 +119,24 @@ namespace JamesonBugTracker.Services
                         Created = DateTime.Now,
                         UserId = userId,
                         Description = $"Ticket Status updated from {oldTicket.TicketStatus.Name} to {newTicket.TicketStatus.Name}"
+
+                    };
+                    await _context.TicketHistory.AddAsync(history);
+                }
+                //TODO Do we keep this functionality or not?
+                if (oldTicket.Comments.Count != newTicket.Comments.Count)
+                {
+                    TicketComment latestComment = newTicket.Comments.OrderByDescending(c => c.Created).FirstOrDefault();
+                    TicketHistory history = new()
+                    {
+                        TicketId = newTicket.Id,
+                        Property = "Comment",
+                        OldValue = "",
+                        NewValue = latestComment.Comment,
+                        CommentId = latestComment.Id,
+                        Created = DateTime.Now,
+                        UserId = userId,
+                        Description = $"{latestComment.User.FullName} commented: {latestComment.Comment}"
 
                     };
                     await _context.TicketHistory.AddAsync(history);

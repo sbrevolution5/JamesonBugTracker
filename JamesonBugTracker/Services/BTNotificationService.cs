@@ -17,10 +17,11 @@ namespace JamesonBugTracker.Services
         private readonly IEmailSender _emailSender;
         private readonly UserManager<BTUser> _userManager;
 
-        public BTNotificationService(ApplicationDbContext context, IEmailSender emailSender)
+        public BTNotificationService(ApplicationDbContext context, IEmailSender emailSender, UserManager<BTUser> userManager)
         {
             _context = context;
             _emailSender = emailSender;
+            _userManager = userManager;
         }
 
         public async Task AdminsNotificationAsync(Notification notification, int companyId)
@@ -41,7 +42,7 @@ namespace JamesonBugTracker.Services
         public async Task EmailNotificationAsync(Notification notification, string emailSubject)
         {
             BTUser btUser = await _context.Users.FindAsync(notification.RecipientId);
-            string btUserEmail = btUser.Email;
+            string btUserEmail = btUser?.Email;
             string message = notification.Message;
             try
             {

@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using JamesonBugTracker.Data;
 using JamesonBugTracker.Models;
 using Microsoft.AspNetCore.Identity;
+using JamesonBugTracker.Services.Interfaces;
 
 namespace JamesonBugTracker.Controllers
 {
@@ -15,12 +16,16 @@ namespace JamesonBugTracker.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<BTUser> _userManager;
+        private readonly IBTTicketService _ticketService;
+        private readonly IBTHistoryService _historyService;
 
 
-        public TicketCommentsController(ApplicationDbContext context, UserManager<BTUser> userManager)
+        public TicketCommentsController(ApplicationDbContext context, UserManager<BTUser> userManager, IBTTicketService ticketService, IBTHistoryService historyService)
         {
             _context = context;
             _userManager = userManager;
+            _ticketService = ticketService;
+            _historyService = historyService;
         }
 
         // GET: TicketComments
@@ -67,10 +72,14 @@ namespace JamesonBugTracker.Controllers
         {
             if (ModelState.IsValid)
             {
-                ticketComment.UserId= _userManager.GetUserId(User);
+                var userId = _userManager.GetUserId(User);
+                var oldTicket = await _ticketService.GetOneTicketNotTrackedAsync(ticketComment.TicketId);
+                ticketComment.UserId = userId;
                 ticketComment.Created = DateTime.Now;
                 _context.Add(ticketComment);
                 await _context.SaveChangesAsync();
+                var newTicket = await _ticketService.GetOneTicketNotTrackedAsync(ticketComment.TicketId);
+                await _historyService.AddHistoryAsync(oldTicket, newTicket, userId);
                 return RedirectToAction("Details", "Tickets", new { id = ticketComment.TicketId });
             }
             return RedirectToAction("Details", "Tickets", new { id = ticketComment.TicketId });

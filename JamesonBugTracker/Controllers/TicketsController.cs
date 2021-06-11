@@ -424,7 +424,7 @@ namespace JamesonBugTracker.Controllers
                     };
                     await _notificationService.SaveNotificationAsync(notification);
                     //if user unassigns themselves they won't get an email
-                    if (oldTicket.DeveloperUserId != currentUser.Id)
+                    if (oldTicket.DeveloperUserId != currentUser.Id && oldTicket.DeveloperUserId is not null)
                     {
 
                         await _notificationService.EmailNotificationAsync(notification, notification.Title);

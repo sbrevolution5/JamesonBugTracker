@@ -19,7 +19,8 @@ namespace JamesonBugTracker.Models
         public string OldValue { get; set; }
         [DisplayName("New Value")]
         public string NewValue { get; set; }
-        
+        public int CommentId { get; set; }
+
         [DataType(DataType.Date)]
         public DateTimeOffset Created { get; set; }
         public string Description { get; set; }

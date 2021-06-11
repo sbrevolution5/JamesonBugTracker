@@ -333,6 +333,7 @@ namespace JamesonBugTracker.Services
         {
             Ticket oldTicket = await _context.Ticket
                                                     .Include(t => t.TicketPriority)
+                                                    .Include(t=> t.Comments).ThenInclude(c=>c.User)
                                                     .Include(t => t.TicketStatus)
                                                     .Include(t => t.TicketType)
                                                     .Include(t => t.Project)
