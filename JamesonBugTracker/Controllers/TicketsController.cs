@@ -12,6 +12,7 @@ using JamesonBugTracker.Models.ViewModels;
 using JamesonBugTracker.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
+using System.IO;
 
 namespace JamesonBugTracker.Controllers
 {
@@ -98,6 +99,7 @@ namespace JamesonBugTracker.Controllers
                 .Include(t => t.TicketPriority)
                 .Include(t => t.TicketStatus)
                 .Include(t => t.TicketType)
+                .Include(t => t.Attachments)
                 .Include(t => t.Comments)
                 .ThenInclude(c => c.User)
                 .Include(t => t.History)
@@ -463,6 +465,16 @@ namespace JamesonBugTracker.Controllers
         private bool TicketExists(int id)
         {
             return _context.Ticket.Any(e => e.Id == id);
+        }
+        public IActionResult ShowFile(int id)
+        {
+            TicketAttachment ticketAttachment = _context.TicketAttachment.Find(id);
+            string fileName = ticketAttachment.FileName;
+            byte[] fileData = ticketAttachment.FileData;
+            string ext = Path.GetExtension(fileName).Replace(".", "");
+
+            Response.Headers.Add("Content-Disposition", $"inline; filename={fileName}");
+            return File(fileData, $"application/{ext}");
         }
     }
 }
