@@ -1,5 +1,8 @@
 ﻿@page
+@using JamesonBugTracker.Services.Interfaces
 @model IndexModel
+@inject IBTFileService _fileService
+
 @{
     ViewData["Title"] = "Profile";
     ViewData["ActivePage"] = ManageNavPages.Index;
@@ -9,7 +12,7 @@
 <partial name="_StatusMessage" model="Model.StatusMessage" />
 <div class="row">
     <div class="col-md-6">
-        <form id="profile-form" method="post">
+        <form id="profile-form" method="post" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Username"></label>
@@ -20,6 +23,19 @@
                 <input asp-for="Input.PhoneNumber" class="form-control" />
                 <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
             </div>
+            @if (Model.ImageData is not null)
+            {
+            <div class="form-group">
+                <img src="@_fileService.ConvertByteArrayToFile(Model.ImageData, Model.ImageContentType)" class="img-fluid comment-img" />
+            </div>}
+
+            <div class="form-group">
+                <label asp-for="Input.ImageFile"></label>
+                <div class="custom-file">
+                    <input asp-for="Input.ImageFile" type="file" class="form-control-file custom-file-input" id="customFile" accept="image/*" />
+                    <label class="control-label custom-file-label" for="customFile">Choose</label>
+                </div>
+            </div>
             <button id="update-profile-button" type="submit" class="btn btn-primary">Save</button>
         </form>
     </div>
@@ -27,4 +43,11 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script>
+
+        $(".custom-file-input").on("change", function () {
+            var fileName = $(this).val().split("\\").pop();
+            $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+        });
+    </script>
 }

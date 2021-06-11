@@ -15,6 +15,10 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using System.ComponentModel;
+using Microsoft.AspNetCore.Http;
+using static JamesonBugTracker.Extensions.CustomAttributes;
+using JamesonBugTracker.Services.Interfaces;
+using Microsoft.Extensions.Configuration;
 
 namespace JamesonBugTracker.Areas.Identity.Pages.Account
 {
@@ -25,17 +29,21 @@ namespace JamesonBugTracker.Areas.Identity.Pages.Account
         private readonly UserManager<BTUser> _userManager;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
+        private readonly IBTFileService _fileService;
+        private readonly IConfiguration _configuration;
 
         public RegisterModel(
             UserManager<BTUser> userManager,
             SignInManager<BTUser> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender, IBTFileService fileService, IConfiguration configuration)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
+            _fileService = fileService;
+            _configuration = configuration;
         }
 
         [BindProperty]
@@ -47,6 +55,10 @@ namespace JamesonBugTracker.Areas.Identity.Pages.Account
 
         public class InputModel
         {
+            [Display(Name = "Profile Picture")]
+            [MaxFileSize(2 * 1024 * 1024)]
+            [AllowedExtensions(new string[] { ".jpg", ".png" })]
+            public IFormFile ImageFile { get; set; }
             [Required]
             [EmailAddress]
             [Display(Name = "Email")]
@@ -84,7 +96,15 @@ namespace JamesonBugTracker.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
-                var user = new BTUser { UserName = Input.Email, Email = Input.Email,FirstName =Input.FirstName, LastName = Input.LastName };
+                var user = new BTUser {
+                    UserName = Input.Email,
+                    Email = Input.Email,
+                    FirstName = Input.FirstName,
+                    LastName = Input.LastName,
+                    AvatarFormFile = Input.ImageFile,
+                    AvatarFileContentType = Input.ImageFile is null ? _configuration["DefaultUserImage"].Split('.')[1] : Input.ImageFile.ContentType,
+                    AvatarFileData = Input.ImageFile is null ? await _fileService.EncodeFileAsync(_configuration["DefaultUserImage"]) : await _fileService.ConvertFileToByteArrayAsync(Input.ImageFile)
+                };
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
                 {

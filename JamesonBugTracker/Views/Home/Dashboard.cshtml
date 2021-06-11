@@ -1,4 +1,6 @@
 ﻿@model JamesonBugTracker.Models.ViewModels.DashboardViewModel
+
+
 @using JamesonBugTracker.Extensions
 @{
     ViewData["Title"] = "Dashboard";
@@ -9,6 +11,7 @@
     }
 }
 @using JamesonBugTracker.Services.Interfaces
+@inject IBTFileService _fileService
 @inject IBTTicketService _ticketService
 @inject IBTCompanyInfoService _companyInfoService
 <!-- Content Header (Page header) -->
@@ -114,7 +117,7 @@
                             <ul class="nav nav-tabs" id="project-tabs" role="tablist">
                                 <li class="pt-2 px-3"><h3 class="card-title">Projects</h3></li>
                                 @{ var i = 0;}
-                                @foreach (var project in Model.Projects.OrderByDescending(p =>p.Tickets.Count))
+                                @foreach (var project in Model.Projects.OrderByDescending(p => p.Tickets.Count))
                                 {
                                     @if (i == 0)
                                     {
@@ -137,7 +140,7 @@
                         <div class="card-body">
                             <div class="tab-content" id="custom-tabs-two-tabContent">
                                 @{ i = 0;}
-                                @foreach (var project in Model.Projects)
+                                @foreach (var project in Model.Projects.OrderByDescending(p=>p.Tickets.Count))
                                 {
                                     if (i == 0)
                                     {
@@ -273,7 +276,7 @@
                     </div>
                 }
                 <!-- /.col -->
-            <!-- /.row -->
+                <!-- /.row -->
                 <!-- TABLE: Development Tickets -->
                 <div class="card">
                     <div class="card-header border-transparent">
@@ -381,12 +384,12 @@
                                             </div>
                                         </div>
                                     </div><!-- /.card-body -->
-                                    </div>
-                                    <a class="my-2 btn btn-block btn-primary" asp-controller="Tickets" asp-action="MyTickets"> View My Tickets</a>
-                                    @if (User.IsInRole("ProjectManager") || User.IsInRole("Admin"))
-                                    {
-                                        <a class="my-2 btn btn-block btn-success"asp-controller="Tickets" asp-action="AllTickets"> View All Tickets</a>
-                                    }
+                                </div>
+                                <a class="my-2 btn btn-block btn-primary" asp-controller="Tickets" asp-action="MyTickets"> View My Tickets</a>
+                                @if (User.IsInRole("ProjectManager") || User.IsInRole("Admin"))
+                                {
+                                    <a class="my-2 btn btn-block btn-success" asp-controller="Tickets" asp-action="AllTickets"> View All Tickets</a>
+                                }
 
                             </div>
                         </div>
@@ -434,25 +437,25 @@
                                                 <tbody>
                                                     @foreach (var ticket in Model.SubmittedTickets)
                                                     {
-                                                    <tr>
-                                                        <td><a asp-action="Details" asp-controller="Tickets" asp-route-id="@ticket.Id">@ticket.Title</a></td>
-                                                        <td>@string.Format("{0:MMM dd yyyy}", ticket.Created)</td>
-                                                        <td>@string.Format("{0:MM/dd/yyyy hh:mm tt}", ticket.Updated)</td>
+                                                        <tr>
+                                                            <td><a asp-action="Details" asp-controller="Tickets" asp-route-id="@ticket.Id">@ticket.Title</a></td>
+                                                            <td>@string.Format("{0:MMM dd yyyy}", ticket.Created)</td>
+                                                            <td>@string.Format("{0:MM/dd/yyyy hh:mm tt}", ticket.Updated)</td>
 
-                                                        <td>@ticket.DeveloperUser?.FullName</td>
-                                                        <td>@ticket.TicketType.Name</td>
-                                                        <td>@ticket.TicketStatus.Name</td>
-                                                        <td><span class="badge priorityBadge">@ticket.TicketPriority.Name</span></td>
-                                                        <td>
-                                                            @if (User.IsInRole("ProjectManager") || User.IsInRole("Admin"))
-                                                            {
+                                                            <td>@ticket.DeveloperUser?.FullName</td>
+                                                            <td>@ticket.TicketType.Name</td>
+                                                            <td>@ticket.TicketStatus.Name</td>
+                                                            <td><span class="badge priorityBadge">@ticket.TicketPriority.Name</span></td>
+                                                            <td>
+                                                                @if (User.IsInRole("ProjectManager") || User.IsInRole("Admin"))
+                                                                {
 
-                                                                <a asp-controller="Tickets" asp-action="Edit" asp-route-id="@ticket.Id">Edit</a> <span>|</span>
-                                                            }
-                                                            <a asp-controller="Tickets" asp-action="Details" asp-route-id="@ticket.Id">Details</a> |
-                                                            <a asp-controller="Tickets" asp-action="Delete" asp-route-id="@ticket.Id">Delete</a>
-                                                        </td>
-                                                    </tr>
+                                                                    <a asp-controller="Tickets" asp-action="Edit" asp-route-id="@ticket.Id">Edit</a> <span>|</span>
+                                                                }
+                                                                <a asp-controller="Tickets" asp-action="Details" asp-route-id="@ticket.Id">Details</a> |
+                                                                <a asp-controller="Tickets" asp-action="Delete" asp-route-id="@ticket.Id">Delete</a>
+                                                            </td>
+                                                        </tr>
                                                     }
                                                 </tbody>
                                             </table>
@@ -504,68 +507,68 @@
                                         </div>
                                     </div><!-- /.card-body -->
                                 </div>
-                                    <a class="my-2 btn btn-block btn-primary" asp-controller="Tickets" asp-action="MyTickets"> View My Tickets</a>
-                                    @if (User.IsInRole("ProjectManager") || User.IsInRole("Admin"))
-                                    {
-                                        <a class="my-2 btn btn-block btn-success" asp-controller="Tickets" asp-action="AllTickets"> View All Tickets</a>
-                                    }
+                                <a class="my-2 btn btn-block btn-primary" asp-controller="Tickets" asp-action="MyTickets"> View My Tickets</a>
+                                @if (User.IsInRole("ProjectManager") || User.IsInRole("Admin"))
+                                {
+                                    <a class="my-2 btn btn-block btn-success" asp-controller="Tickets" asp-action="AllTickets"> View All Tickets</a>
+                                }
 
                             </div>
                         </div>
                     </div>
                 </div>
-            <!-- Main row -->
-            <div class="row">
-                <!-- Left col -->
-                <div class="col">
+                <!-- Main row -->
+                <div class="row">
+                    <!-- Left col -->
+                    <div class="col">
 
-                    <div class="row">
+                        <div class="row">
 
-                        <div class="col">
-                            <!-- USERS LIST -->
-                            <div class="card">
-                                <div class="card-header">
-                                    <h3 class="card-title">Company Members</h3>
+                            <div class="col">
+                                <!-- USERS LIST -->
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h3 class="card-title">Company Members</h3>
 
-                                    <div class="card-tools">
-                                        <span class="badge badge-secondary">@Model.Members.Count</span>
-                                        <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                                            <i class="fas fa-minus"></i>
-                                        </button>
+                                        <div class="card-tools">
+                                            <span class="badge badge-secondary">@Model.Members.Count</span>
+                                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                                <i class="fas fa-minus"></i>
+                                            </button>
+                                        </div>
                                     </div>
+                                    <!-- /.card-header -->
+                                    <div class="card-body p-0">
+                                        <ul class="users-list clearfix">
+                                            @foreach (var member in Model.Members)
+                                            {
+                                                <li>
+                                                    <img src="@_fileService.ConvertByteArrayToFile(member.AvatarFileData, member.AvatarFileContentType)" class="member-img" style="" alt="User Image">
+                                                    <a class="users-list-name" href="#">@member.FullName</a>
+                                                    <span class="users-list-date">@((await _ticketService.GetAllTicketsByRoleAsync("Submitter", member.Id)).Count) Submitted</span>
+                                                    <span class="users-list-date">@((await _ticketService.GetAllDeveloperTicketsByResolvedAsync(member.Id, false)).Count) Open Tickets</span>
+                                                </li>
+                                            }
+                                        </ul>
+                                        <!-- /.users-list -->
+                                    </div>
+                                    <!-- /.card-body -->
+                                    <div class="card-footer text-center">
+                                        <a href="javascript:">View All Users</a>
+                                    </div>
+                                    <!-- /.card-footer -->
                                 </div>
-                                <!-- /.card-header -->
-                                <div class="card-body p-0">
-                                    <ul class="users-list clearfix">
-                                        @foreach (var member in Model.Members)
-                                        {
-                                            <li>
-                                                <img src="~/img/Sethimg.jpg" class="member-img" alt="User Image">
-                                                <a class="users-list-name" href="#">@member.FullName</a>
-                                                <span class="users-list-date">@((await _ticketService.GetAllTicketsByRoleAsync("Submitter", member.Id)).Count) Submitted</span>
-                                                <span class="users-list-date">@((await _ticketService.GetAllDeveloperTicketsByResolvedAsync(member.Id, false)).Count) Open Tickets</span>
-                                            </li>
-                                        }
-                                    </ul>
-                                    <!-- /.users-list -->
-                                </div>
-                                <!-- /.card-body -->
-                                <div class="card-footer text-center">
-                                    <a href="javascript:">View All Users</a>
-                                </div>
-                                <!-- /.card-footer -->
+                                <!--/.card -->
                             </div>
-                            <!--/.card -->
+                            <!-- /.col -->
                         </div>
-                        <!-- /.col -->
-                    </div>
-                    <!-- /.row -->
+                        <!-- /.row -->
 
+
+                    </div>
+                    <!-- /.col -->
 
                 </div>
-                <!-- /.col -->
-                
-            </div>
             </div>
             <!-- /.row -->
         </div>
@@ -614,11 +617,11 @@
             @if (hasProjects)
             {
 
-            @:$('#custom-tabs-two-@Model.Projects.First().Id').tab('show')
+            @:$('#custom-tabs-two-@Model.Projects.OrderByDescending(p=> p.Tickets.Count).First().Id').tab('show')
             }
         });
     </script>
     <script src="~/js/chartBasics.js"></script>
-    
+
     <script src="~/js/Dashboard.js"></script>
 }

@@ -54,6 +54,10 @@ namespace JamesonBugTracker.Services
             }
             return string.Format("{0:n1}{1}", number, suffixes[counter]);
         }
-
+        public async Task<byte[]> EncodeFileAsync(string filename)
+        {
+            var file = $"{Directory.GetCurrentDirectory()}/wwwroot/img/{filename}";
+            return await File.ReadAllBytesAsync(file);
+        }
     }
 }

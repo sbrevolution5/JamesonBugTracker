@@ -7,6 +7,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
+using static JamesonBugTracker.Extensions.CustomAttributes;
 
 namespace JamesonBugTracker.Models
 {
@@ -29,12 +30,10 @@ namespace JamesonBugTracker.Models
         }
         [NotMapped]
         [DataType(DataType.Upload)]
-        //[MaxFileSize(1024*1024)]
-        //[AllowedExtensions(".jpg",".png" )]
+        [MaxFileSize(1024*1024)]
+        [AllowedExtensions(new string[] { ".jpg", ".png" })]
         public IFormFile AvatarFormFile { get; set; }
         
-        [DisplayName("File Name")]
-        public string AvatarFileName { get; set; }
         public byte[] AvatarFileData { get; set; }
 
         [DisplayName("File Extension")]

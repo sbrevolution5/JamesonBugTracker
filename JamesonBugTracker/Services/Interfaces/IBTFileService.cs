@@ -15,6 +15,6 @@ namespace JamesonBugTracker.Services.Interfaces
         public string GetFileIcon(string file);
 
         public string FormatFileSize(long bytes);
-
+        public Task<byte[]> EncodeFileAsync(string filename);
     }
 }

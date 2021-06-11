@@ -71,9 +71,11 @@ body {
 }
 /*Custom image styles*/
 .member-img{
-    max-width:128px;
-    max-height:128px;
+    object-fit: cover;
+    width:128px;
+    height:128px;
 }
+
 /*custom color styles*/
 .badge-orange{
     color: #000;

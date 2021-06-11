@@ -5,6 +5,10 @@
     ViewData["Title"] = $"{Model.Project.Name} - Details";
     var projectManager = await _projectService.GetProjectManagerAsync(Model.Project.Id);
 }
+@using JamesonBugTracker.Services.Interfaces
+@inject IBTFileService _fileService
+
+
 @section Header{
     <link href="~/plugins/chart.js/Chart.css" rel="stylesheet" />
 }
@@ -16,9 +20,9 @@
             <div class="card card-primary card-outline">
                 <div class="card-body box-profile">
                     <div class="text-center">
-                        <img class="profile-user-img img-fluid img-circle"
-                             src="../../dist/img/user4-128x128.jpg"
-                             alt="User profile picture">
+                        <img class="profile-user-img img-fluid img-circle member-img"
+                             src="@_fileService.ConvertByteArrayToFile(Model.Project.ImageFileData,Model.Project.ImageFileContentType)"
+                             alt="Project Icon">
                     </div>
 
                     <h3 class="profile-username text-center">@Model.Project.Name</h3>
@@ -82,7 +86,7 @@
                                 <button type="button" class="btn btn-tool" data-card-widget="collapse">
                                     <i class="fas fa-minus"></i>
                                 </button>
-                                
+
                             </div>
                         </div>
                         <div class="card-body">
@@ -103,7 +107,7 @@
                                 <button type="button" class="btn btn-tool" data-card-widget="collapse">
                                     <i class="fas fa-minus"></i>
                                 </button>
-                                
+
                             </div>
                         </div>
                         <div class="card-body">
@@ -124,7 +128,7 @@
                                 <button type="button" class="btn btn-tool" data-card-widget="collapse">
                                     <i class="fas fa-minus"></i>
                                 </button>
-                                
+
                             </div>
                         </div>
                         <div class="card-body">
@@ -239,7 +243,7 @@
     @if (User.IsInRole("ProjectManager") || User.IsInRole("Admin"))
     {
 
-    <a asp-action="Edit" asp-route-id="@Model.Project.Id">Edit</a> <span>|</span>
+        <a asp-action="Edit" asp-route-id="@Model.Project.Id">Edit</a> <span>|</span>
     }
     <a asp-action="Index">Back to List</a>
 </div>

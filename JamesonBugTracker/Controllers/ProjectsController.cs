@@ -11,6 +11,8 @@ using JamesonBugTracker.Services.Interfaces;
 using JamesonBugTracker.Models.ViewModels;
 using JamesonBugTracker.Extensions;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 
 namespace JamesonBugTracker.Controllers
 {
@@ -21,15 +23,19 @@ namespace JamesonBugTracker.Controllers
         private readonly UserManager<BTUser> _userManager;
         private readonly IBTCompanyInfoService _companyInfoService;
         private readonly IBTTicketService _ticketService;
+        private readonly IBTFileService _fileService;
+        private readonly IConfiguration _configuration;
 
 
-        public ProjectsController(ApplicationDbContext context, IBTProjectService projectService, UserManager<BTUser> userManager, IBTCompanyInfoService companyInfoService, IBTTicketService ticketService)
+        public ProjectsController(ApplicationDbContext context, IBTProjectService projectService, UserManager<BTUser> userManager, IBTCompanyInfoService companyInfoService, IBTTicketService ticketService, IBTFileService fileService, IConfiguration configuration)
         {
             _context = context;
             _projectService = projectService;
             _userManager = userManager;
             _companyInfoService = companyInfoService;
             _ticketService = ticketService;
+            _fileService = fileService;
+            _configuration = configuration;
         }
 
         // GET: Projects
@@ -103,14 +109,24 @@ namespace JamesonBugTracker.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Description,StartDate,EndDate,ProjectPriorityId")] Project project)
+        public async Task<IActionResult> Create([Bind("Id,Name,Description,StartDate,EndDate,ProjectPriorityId")] Project project, IFormFile customFile)
         {
             if (ModelState.IsValid)
             {
                 project.CompanyId = User.Identity.GetCompanyId().Value;
+                if (customFile is not null)
+                {
+                    project.ImageFileData = await _fileService.ConvertFileToByteArrayAsync(customFile);
+                    project.ImageFileContentType = customFile.ContentType;
+                }
+                else
+                {
+                    project.ImageFileData = await _fileService.EncodeFileAsync(_configuration["DefaultProjectImage"]);
+                    project.ImageFileContentType = _configuration["DefaultProjectImage"].Split('.')[1];
+                }
                 _context.Add(project);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("MyProjects");
             }
             ViewData["CompanyId"] = new SelectList(_context.Set<Company>(), "Id", "Name", project.CompanyId);
             ViewData["ProjectPriorityId"] = new SelectList(_context.Set<ProjectPriority>(), "Id", "Id", project.ProjectPriorityId);
@@ -140,7 +156,7 @@ namespace JamesonBugTracker.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,CompanyId,Name,Description,StartDate,EndDate,ArchiveDate,Archived,ImageFileName,ImageFileData,ImageFileContentType,ProjectPriorityId")] Project project)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,CompanyId,Name,Description,StartDate,EndDate,ArchiveDate,Archived,ImageFileName,ImageFileData,ImageFileContentType,ProjectPriorityId")] Project project, IFormFile customFile)
         {
             if (id != project.Id)
             {
@@ -151,6 +167,16 @@ namespace JamesonBugTracker.Controllers
             {
                 try
                 {
+                    if (customFile is not null)
+                    {
+                        project.ImageFileData = await _fileService.ConvertFileToByteArrayAsync(customFile);
+                        project.ImageFileContentType = customFile.ContentType;
+                    }
+                    else if (project.ImageFileData is null)
+                    {
+                        project.ImageFileData = await _fileService.EncodeFileAsync(_configuration["DefaultProjectImage"]);
+                        project.ImageFileContentType = _configuration["DefaultProjectImage"].Split('.')[1];
+                    }
                     _context.Update(project);
                     await _context.SaveChangesAsync();
                 }
@@ -165,7 +191,7 @@ namespace JamesonBugTracker.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("MyProjects");
             }
             ViewData["CompanyId"] = new SelectList(_context.Set<Company>(), "Id", "Name", project.CompanyId);
             ViewData["ProjectPriorityId"] = new SelectList(_context.Set<ProjectPriority>(), "Id", "Id", project.ProjectPriorityId);

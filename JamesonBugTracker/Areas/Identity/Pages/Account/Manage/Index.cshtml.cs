@@ -4,9 +4,13 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using JamesonBugTracker.Models;
+using JamesonBugTracker.Services.Interfaces;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Configuration;
+using static JamesonBugTracker.Extensions.CustomAttributes;
 
 namespace JamesonBugTracker.Areas.Identity.Pages.Account.Manage
 {
@@ -14,13 +18,17 @@ namespace JamesonBugTracker.Areas.Identity.Pages.Account.Manage
     {
         private readonly UserManager<BTUser> _userManager;
         private readonly SignInManager<BTUser> _signInManager;
+        private readonly IBTFileService _fileService;
+        private readonly IConfiguration _configuration;
 
         public IndexModel(
             UserManager<BTUser> userManager,
-            SignInManager<BTUser> signInManager)
+            SignInManager<BTUser> signInManager, IBTFileService fileService, IConfiguration configuration)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _fileService = fileService;
+            _configuration = configuration;
         }
 
         public string Username { get; set; }
@@ -30,9 +38,16 @@ namespace JamesonBugTracker.Areas.Identity.Pages.Account.Manage
 
         [BindProperty]
         public InputModel Input { get; set; }
+        public byte[] ImageData { get; set; }
+        public string ImageContentType { get; set; }
 
         public class InputModel
         {
+            
+            public IFormFile ImageFile { get; set; }
+            public byte[] ImageData { get; set; }
+            public string ContentType { get; set; }
+
             [Phone]
             [Display(Name = "Phone number")]
             public string PhoneNumber { get; set; }
@@ -42,12 +57,15 @@ namespace JamesonBugTracker.Areas.Identity.Pages.Account.Manage
         {
             var userName = await _userManager.GetUserNameAsync(user);
             var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
-
+            //var imageFile = _fileService.ConvertByteArrayToFile(user.AvatarFileData, user.AvatarFileContentType);
             Username = userName;
-
+            ImageData = user.AvatarFileData;
+            ImageContentType = user.AvatarFileContentType;
             Input = new InputModel
             {
-                PhoneNumber = phoneNumber
+                PhoneNumber = phoneNumber,
+                ImageData = user.AvatarFileData,
+                ContentType = user.AvatarFileContentType
             };
         }
 
@@ -87,7 +105,19 @@ namespace JamesonBugTracker.Areas.Identity.Pages.Account.Manage
                     return RedirectToPage();
                 }
             }
+            if (Input.ImageFile is not null)
+            {
 
+                user.AvatarFileData = await _fileService.ConvertFileToByteArrayAsync(Input.ImageFile);
+                user.AvatarFileContentType = Input.ImageFile.ContentType;
+                await _userManager.UpdateAsync(user);
+            }
+            if (user.AvatarFileData is null)
+            {
+                user.AvatarFileData = await _fileService.EncodeFileAsync(_configuration["DefaultUserImage"]);
+                user.AvatarFileContentType = _configuration["DefaultUserImage"].Split('.')[1];
+                await _userManager.UpdateAsync(user);
+            }
             await _signInManager.RefreshSignInAsync(user);
             StatusMessage = "Your profile has been updated";
             return RedirectToPage();
