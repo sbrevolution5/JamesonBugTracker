@@ -31,7 +31,7 @@ namespace JamesonBugTracker.Controllers
             _ticketService = ticketService;
             _userManager = userManager;
         }
-
+        [Authorize]
         public IActionResult Index()
         {
             return View();

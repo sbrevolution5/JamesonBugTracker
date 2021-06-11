@@ -12,6 +12,7 @@ using JamesonBugTracker.Services.Interfaces;
 
 namespace JamesonBugTracker.Controllers
 {
+        [Authorize]
     public class TicketCommentsController : Controller
     {
         private readonly ApplicationDbContext _context;

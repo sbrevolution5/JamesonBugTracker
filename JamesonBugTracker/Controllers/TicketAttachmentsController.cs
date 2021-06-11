@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace JamesonBugTracker.Controllers
 {
+        [Authorize]
     public class TicketAttachmentsController : Controller
     {
         private readonly ApplicationDbContext _context;

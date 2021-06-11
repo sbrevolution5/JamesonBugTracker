@@ -27,8 +27,16 @@ namespace JamesonBugTracker.Services
         }
 
 
-        public string ConvertByteArrayToFile(byte[] fileData, string extension)
+        public string ConvertByteArrayToFile(byte[]? fileData, string? extension)
         {
+            if (fileData == null)
+            {
+                return null;
+            }
+            if (extension== null)
+            {
+                return null;
+            }
             string imageBase64Data = Convert.ToBase64String(fileData);
             return string.Format($"data:image/{extension};base64,{imageBase64Data}");
 

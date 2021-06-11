@@ -16,6 +16,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace JamesonBugTracker.Controllers
 {
+        [Authorize]
     public class ProjectsController : Controller
     {
         private readonly ApplicationDbContext _context;

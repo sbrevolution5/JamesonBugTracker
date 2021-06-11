@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 
 namespace JamesonBugTracker.Controllers
 {
+        [Authorize]
     public class InvitesController : Controller
     {
         private readonly ApplicationDbContext _context;

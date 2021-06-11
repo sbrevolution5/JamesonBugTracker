@@ -6,6 +6,9 @@
 @{
     var companyId = User.Identity.GetCompanyId().Value;
 }
+@section Header{ 
+    <link href="~/plugins/toastr/toastr.min.css" rel="stylesheet" />
+}
 <div class="container-fluid">
 
 <div class="card">
@@ -97,6 +100,7 @@
         });
         </script>
     }
+<script src="~/plugins/toastr/toastr.min.js"></script>
 <script>
     //Used to Submit assignment form without a refresh
 
@@ -106,6 +110,7 @@
         // get the element Id of the form
         // alert(dataString); return false;
         var unassignedId = $(this).children("input").val()
+        var userFullName = "user"
         $.ajax({
             type: "POST",
             url: "/Tickets/AssignUser",
@@ -115,8 +120,10 @@
                 var rowId = (`#row-${unassignedId}`)
                 $(rowId)
                     .addClass("d-none")
+                toastr.success(`${userFullName} assigned to ticket`)
             }
         });
+        toastr.info('Trying to assign user to ticket. ')
 
         e.preventDefault();
     });

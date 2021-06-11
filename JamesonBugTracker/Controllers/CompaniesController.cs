@@ -10,6 +10,8 @@ using JamesonBugTracker.Models;
 
 namespace JamesonBugTracker.Controllers
 {
+        [Authorize]
+
     public class CompaniesController : Controller
     {
         private readonly ApplicationDbContext _context;

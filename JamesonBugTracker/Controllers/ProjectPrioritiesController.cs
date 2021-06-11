@@ -10,6 +10,7 @@ using JamesonBugTracker.Models;
 
 namespace JamesonBugTracker.Controllers
 {
+        [Authorize]
     public class ProjectPrioritiesController : Controller
     {
         private readonly ApplicationDbContext _context;
