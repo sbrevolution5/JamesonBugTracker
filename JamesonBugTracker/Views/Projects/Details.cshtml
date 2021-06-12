@@ -5,7 +5,6 @@
     ViewData["Title"] = $"{Model.Project.Name} - Details";
     var projectManager = await _projectService.GetProjectManagerAsync(Model.Project.Id);
 }
-@using JamesonBugTracker.Services.Interfaces
 @inject IBTFileService _fileService
 
 

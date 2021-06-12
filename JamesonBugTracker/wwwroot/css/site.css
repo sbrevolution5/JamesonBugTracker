@@ -75,7 +75,10 @@ body {
     width:128px;
     height:128px !important;
 }
-
+.table-avatar{
+    object-fit:cover;
+    height: 2.5rem;
+}
 /*custom color styles*/
 .badge-orange{
     color: #000;

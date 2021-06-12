@@ -6,8 +6,8 @@
 @inject IBTNotificationService _notificationService
 @{ 
     var userId = UserManager.GetUserId(User);
-    var notifications = await _notificationService.GetReceivedNotificationsAsync(userId);
-    var unseenCount = await _notificationService.GetUnseenRecievedNotificationsAsync(userId);
+    //var notifications = await _notificationService.GetReceivedNotificationsAsync(userId);
+    //var unseenCount = await _notificationService.GetUnseenRecievedNotificationsAsync(userId);
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -82,7 +82,7 @@
                     <button onclick="toggleDark()" class="btn btn-sm btn-primary">
                         <i id="darkIcon" class="fas fa-sun"></i>
                     </button>
-                </li>
+                </li>@*
                 <li class="nav-item dropdown">
                     <a class="nav-link" data-toggle="dropdown" href="#">
                         <i class="far fa-bell"></i>
@@ -140,7 +140,7 @@
                         <div class="dropdown-divider"></div>
                         <a href="#" class="dropdown-item dropdown-footer">See All Messages</a>
                     </div>
-                </li>
+                </li>*@
                 <!-- Notifications Dropdown Menu -->
                 <li class="nav-item dropdown">
                     <a class="nav-link" data-toggle="dropdown" href="#">

@@ -61,7 +61,7 @@
                                                 <td>@unassignedTicket.OwnerUser?.FullName</td>
                                                 <td>@unassignedTicket.Description</td>
                                                 <td>
-                                                    <form asp-controller="Tickets" asp-action="AssignUser" asp-route-db="true" class="assignForm">
+                                                    <form asp-controller="Tickets" asp-action="AssignUser" class="assignForm">
                                                         <input hidden name="ticketId" value="@unassignedTicket.Id" class="unassignedId" />
                                                         <div class="form-group">
                                                             <label for=""></label>
@@ -110,7 +110,7 @@
         // get the element Id of the form
         // alert(dataString); return false;
         var unassignedId = $(this).children("input").val()
-        var userFullName = "user"
+        var userFullName = $(this).children("div").children("select").children("option").filter(":selected").text()
         $.ajax({
             type: "POST",
             url: "/Tickets/AssignUser",
@@ -122,9 +122,9 @@
                 toastr.success(`${userFullName} assigned to ticket`)
             }
         });
+        e.preventDefault();
         toastr.info('Trying to assign user to ticket. ')
 
-        e.preventDefault();
     });
 </script>
 }

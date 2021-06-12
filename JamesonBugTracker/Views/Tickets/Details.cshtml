@@ -220,7 +220,7 @@
                                                                     {
                                                                         <span class="text-success">Assigned developer</span> <span>|</span>
                                                                     }
-                                                                    @if ((await _projectService.GetProjectManagerAsync(Model.ProjectId)).Id == comment.UserId)
+                                                                    @if ((await _projectService.GetProjectManagerAsync(Model.ProjectId))?.Id == comment.UserId)
                                                                     {
                                                                         <span class="text-primary">Project Manager</span> <span>|</span>
                                                                     }
@@ -259,7 +259,7 @@
                                                     {
                                                         <span class="text-success">Assigned developer</span> <span>|</span>
                                                     }
-                                                    @if ((await _projectService.GetProjectManagerAsync(Model.ProjectId)).Id == historyItem.UserId)
+                                                    @if ((await _projectService.GetProjectManagerAsync(Model.ProjectId))?.Id == historyItem.UserId)
                                                     {
                                                         <span class="text-primary">Project Manager</span> <span>|</span>
                                                     }
@@ -486,7 +486,7 @@
                                 {
                                     <span class="text-success">Assigned developer</span> <span>|</span>
                                 }
-                                @if ((await _projectService.GetProjectManagerAsync(Model.ProjectId)).Id == comment.UserId)
+                                @if ((await _projectService.GetProjectManagerAsync(Model.ProjectId))?.Id == comment.UserId)
                                 {
                                     <span class="text-primary">Project Manager</span> <span>|</span>
                                 }

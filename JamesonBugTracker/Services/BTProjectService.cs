@@ -337,12 +337,12 @@ namespace JamesonBugTracker.Services
                 List<Ticket> unassignedTickets = new();
                 foreach (var ticket in allTickets)
                 {
-                    if (ticket.TicketStatus.Name == "New")
+                    if (ticket.TicketStatus.Name == "Unassigned")
                     {
                         unassignedTickets.Add(ticket);
                     }
                 }
-                if (newTickets.Concat(unassignedTickets).ToList().Count > 1)
+                if (newTickets.Concat(unassignedTickets).ToList().Count > 0)
                 {
                     results.Add(project);
                 }
