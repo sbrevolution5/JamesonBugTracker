@@ -40,6 +40,7 @@ namespace JamesonBugTracker.Controllers
         //GET: Dashboard
         public async Task<IActionResult> Dashboard()
         {
+            
             string userId = _userManager.GetUserId(User);
             int companyId = User.Identity.GetCompanyId().Value;
 
