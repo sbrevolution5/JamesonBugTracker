@@ -116,7 +116,6 @@
             url: "/Tickets/AssignUser",
             data: dataString,
             success: function () {
-                //TODO This function needs to remove the row, I have the rowID correct but nothing is happening to the actual element I Think its some sort of selector issue
                 var rowId = (`#row-${unassignedId}`)
                 $(rowId)
                     .addClass("d-none")

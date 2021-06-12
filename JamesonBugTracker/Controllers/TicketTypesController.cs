@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using JamesonBugTracker.Data;
 using JamesonBugTracker.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace JamesonBugTracker.Controllers
 {

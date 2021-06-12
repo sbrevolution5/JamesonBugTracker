@@ -27,7 +27,7 @@ namespace JamesonBugTracker.Services
         }
 
 
-        public string ConvertByteArrayToFile(byte[]? fileData, string? extension)
+        public string ConvertByteArrayToFile(byte[] fileData, string extension)
         {
             if (fileData == null)
             {

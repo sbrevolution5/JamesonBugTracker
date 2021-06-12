@@ -93,7 +93,11 @@ namespace JamesonBugTracker.Services
                                                                         .Where(n => n.SenderId == userId).ToListAsync();
             return sentNotifications;
         }
-
+        public async Task<List<Notification>> GetUnseenRecievedNotificationsAsync(string userId)
+        {
+            var recieved = await GetReceivedNotificationsAsync(userId);
+            return recieved.Where(n => n.Viewed == false).ToList();
+        }
         public async Task MembersNotificationAsync(Notification notification, List<BTUser> members)
         {
             try

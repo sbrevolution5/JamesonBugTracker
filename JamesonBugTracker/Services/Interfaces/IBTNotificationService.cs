@@ -21,6 +21,7 @@ namespace JamesonBugTracker.Services.Interfaces
         public Task<List<Notification>> GetReceivedNotificationsAsync(string userId);
 
         public Task<List<Notification>> GetSentNotificationsAsync(string userId);
+        public Task<List<Notification>> GetUnseenRecievedNotificationsAsync(string userId);
 
     }
 }

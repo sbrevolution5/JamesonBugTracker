@@ -9,6 +9,7 @@ using JamesonBugTracker.Data;
 using JamesonBugTracker.Models;
 using Microsoft.AspNetCore.Identity;
 using JamesonBugTracker.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 
 namespace JamesonBugTracker.Controllers
 {

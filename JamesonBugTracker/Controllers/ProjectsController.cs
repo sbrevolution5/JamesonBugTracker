@@ -13,6 +13,7 @@ using JamesonBugTracker.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Authorization;
 
 namespace JamesonBugTracker.Controllers
 {

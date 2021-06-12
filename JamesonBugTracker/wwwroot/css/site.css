@@ -73,7 +73,7 @@ body {
 .member-img{
     object-fit: cover;
     width:128px;
-    height:128px;
+    height:128px !important;
 }
 
 /*custom color styles*/
