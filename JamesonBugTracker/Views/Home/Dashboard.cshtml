@@ -58,7 +58,9 @@
                         {
 
                             <span class="info-box-text">Unassigned Tickets</span>
-                            <span class="info-box-number"><a asp-controller="Tickets" asp-action="UnassignedTickets">@Model.UnassignedTickets.Count</a></span>
+                            <span class="info-box-number">@Model.UnassignedTickets.Count
+                            <a asp-controller="Tickets" asp-action="UnassignedTickets" class="float-right btn btn-outline-danger btn-sm">View Unassigned <i class="fas fa-arrow-right"></i></a>
+                        </span>
                         }
                         else
                         {
