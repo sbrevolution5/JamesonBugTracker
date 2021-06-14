@@ -123,7 +123,6 @@ namespace JamesonBugTracker.Services
                     };
                     await _context.TicketHistory.AddAsync(history);
                 }
-                //TODO Do we keep this functionality or not?
                 if (oldTicket.Comments.Count != newTicket.Comments.Count)
                 {
                     TicketComment latestComment = newTicket.Comments.OrderByDescending(c => c.Created).FirstOrDefault();
@@ -138,6 +137,22 @@ namespace JamesonBugTracker.Services
                         UserId = userId,
                         Description = $"{latestComment.User.FullName} commented: {latestComment.Comment}"
 
+                    };
+                    await _context.TicketHistory.AddAsync(history);
+                }
+                if(oldTicket.Attachments.Count != newTicket.Attachments.Count)
+                {
+                    TicketAttachment newAttachment = newTicket.Attachments.OrderByDescending(a => a.Created).FirstOrDefault();
+                    TicketHistory history = new()
+                    {
+                        TicketId = newTicket.Id,
+                        Property = "Attachment",
+                        OldValue = "",
+                        NewValue = newAttachment.FileName,
+                        AttachmentId = newAttachment.Id,
+                        Created = DateTime.Now,
+                        UserId = userId,
+                        Description = $"{newAttachment.User.FullName} added: {newAttachment.FileName}"
                     };
                     await _context.TicketHistory.AddAsync(history);
                 }

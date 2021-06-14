@@ -20,6 +20,7 @@ namespace JamesonBugTracker.Models
         [DisplayName("New Value")]
         public string NewValue { get; set; }
         public int CommentId { get; set; }
+        public int AttachmentId { get; set; }
 
         [DataType(DataType.Date)]
         public DateTimeOffset Created { get; set; }

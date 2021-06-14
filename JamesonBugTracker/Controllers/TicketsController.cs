@@ -165,7 +165,7 @@ namespace JamesonBugTracker.Controllers
                     TicketId = ticket.Id,
                     SenderId = btUser.Id,
                     Created = DateTime.Now,
-                    Message = $"New Ticket: {ticket.Title}, was created by {btUser?.FullName}",
+                    Message = $"created a new ticket: {ticket.Title}",
                     Title = "New Ticket"
                 };
                 if (projectManager is not null)
@@ -302,7 +302,7 @@ namespace JamesonBugTracker.Controllers
                         {
                             TicketId = ticket.Id,
                             Title = "A Ticket assigned to you was updated",
-                            Message = $"Ticket: [{ticket.Id}]:{ticket.Title} updated by {currentUser?.FullName}",
+                            Message = $"updated ticket: [{ticket.Id}]:{ticket.Title}",
                             Created = DateTimeOffset.Now,
                             SenderId = currentUser?.Id,
                             RecipientId = ticket.DeveloperUserId
@@ -404,7 +404,7 @@ namespace JamesonBugTracker.Controllers
                     {
                         TicketId = newTicket.Id,
                         Title = "You were assigned a New Ticket",
-                        Message = $"{currentUser.FullName} just assigned you to {newTicket.Id}:{newTicket.Title}",
+                        Message = $" just assigned you to {newTicket.Id}:{newTicket.Title}",
                         SenderId = currentUser.Id,
                         RecipientId = newTicket.DeveloperUserId,
                         Created = DateTimeOffset.Now,
@@ -420,7 +420,7 @@ namespace JamesonBugTracker.Controllers
                     {
                         TicketId = newTicket.Id,
                         Title = "You were unassigned from a ticket",
-                        Message = $"{currentUser.FullName} just assigned {newTicket.Id}:{newTicket.Title} to {newTicket.DeveloperUser.FullName} instead of you.",
+                        Message = $" just assigned {newTicket.Id}:{newTicket.Title} to {newTicket.DeveloperUser.FullName} instead of you.",
                         SenderId = currentUser.Id,
                         RecipientId = oldTicket.DeveloperUserId,
                         Created = DateTimeOffset.Now,
@@ -460,7 +460,7 @@ namespace JamesonBugTracker.Controllers
                     {
                         TicketId = newTicket.Id,
                         Title = "You were unassigned from a ticket",
-                        Message = $"{currentUser.FullName} just assigned {newTicket.Id}:{newTicket.Title} to {newTicket.DeveloperUser.FullName} instead of you.",
+                        Message = $" removed you from {newTicket.Id}:{newTicket.Title} ",
                         SenderId = currentUser.Id,
                         RecipientId = oldTicket.DeveloperUserId,
                         Created = DateTimeOffset.Now,

@@ -167,114 +167,190 @@
                                     <!-- timeline time label -->
                                     <!-- /.timeline-label -->
                                     <!-- timeline item -->
-                                    <div>
-                                        @if (historyItem.Property == "Title")
-                                        {
-                                            <i class="fas fa-ticket-alt bg-lightblue"></i>
-                                        }
-                                        else if (historyItem.Property == "Description")
-                                        {
-                                            <i class="far fa-file-alt bg-info"></i>
-                                        }
-                                        else if (historyItem.Property == "Developer User")
-                                        {
-                                            <i class="fas fa-user bg-warning"></i>
-                                        }
-                                        else if (historyItem.Property == "Ticket Type")
-                                        {
-                                            <i class="fas fa-align-justify bg-teal"></i>
-                                        }
-                                        else if (historyItem.Property == "Ticket Status")
-                                        {
-                                            <i class="fas fa-tasks bg-olive"></i>
-                                        }
-                                        else if (historyItem.Property == "Ticket Priority")
-                                        {
-                                            <i class="fas fa-exclamation-triangle bg-purple"></i>
-                                        }
-                                        else if (historyItem.Property == "")
-                                        {
-                                            <i class="far fa-file bg-success"></i>
-                                        }
-                                        @if (historyItem.Property == "Comment")
-                                        {
-                                            <i class="far fa-comment bg-indigo"></i>
+                            <div>
+                                @if (historyItem.Property == "Title")
+                                {
+                                    <i class="fas fa-ticket-alt bg-lightblue"></i>
+                                }
+                                else if (historyItem.Property == "Description")
+                                {
+                                    <i class="far fa-file-alt bg-info"></i>
+                                }
+                                else if (historyItem.Property == "Developer User")
+                                {
+                                    <i class="fas fa-user bg-warning"></i>
+                                }
+                                else if (historyItem.Property == "Ticket Type")
+                                {
+                                    <i class="fas fa-align-justify bg-teal"></i>
+                                }
+                                else if (historyItem.Property == "Ticket Status")
+                                {
+                                    <i class="fas fa-tasks bg-olive"></i>
+                                }
+                                else if (historyItem.Property == "Ticket Priority")
+                                {
+                                    <i class="fas fa-exclamation-triangle bg-purple"></i>
+                                }
+                                else if (historyItem.Property == "")
+                                {
+                                    <i class="far fa-file bg-success"></i>
+                                }
+                                @if (historyItem.Property == "Attachment")
+                                {
+                                    <i class="far fa-file bg-maroon"></i>
+                                    var attachment = Model.Attachments.Where(a => a.Id == historyItem.AttachmentId).FirstOrDefault();
+                                    <div class="timeline-item">
+                                        <span class="time"><i class="fas fa-clock"></i> @string.Format("{0:hh:mm tt}", historyItem.Created)</span>
+                                        <div class="row clearfix">
+                                            <div class="col">
+                                                <div class="card p-3">
+                                                    <div class="file">
+                                                        <div class="row">
+                                                            <div class="col-10">
 
-                                            var comment = Model.Comments.Where(c => c.Id == historyItem.CommentId).FirstOrDefault();
-                                            <div class="timeline-item">
-                                                <span class="time"><i class="fas fa-clock"></i> @string.Format("{0:hh:mm tt}", historyItem.Created)</span>
-                                                <div class="timeline-body">
+                                                                <a href="javascript:void(0);">
+                                                                    <div class="row">
+                                                                        <div class="col-3">
 
-                                                    @*<div class="card">
-                                                        <div class="card-body">*@
+                                                                            <div class="icon">
+                                                                                <img src="@_fileService.GetFileIcon(attachment.FileName)" style="height:60px;width:60px" />
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-5">
+                                                                            <div class="file-name">
+                                                                                <p class="mt-3 text-muted">@System.IO.Path.GetFileNameWithoutExtension(attachment.FileName)</p>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col">
+                                                                            <div class="row">
+                                                                                <div class="col">
 
-                                                    @*<div class="post">*@
-                                                    <div class="row">
-                                                        <div class="col">
+                                                                                    <small>Size: @_fileService.FormatFileSize(attachment.FileData.Length)</small>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="row">
+                                                                                <div class="col">
 
-                                                            <div class="user-block">
-                                                                <img class="img-circle img-bordered-sm" src="@_fileService.GetUserAvatar(comment.User)" alt="user image">
-                                                                <span class="username">
-                                                                    <a href="#">@comment.User.FullName</a> |
-                                                                    @if (Model.DeveloperUserId == comment.UserId)
-                                                                    {
-                                                                        <span class="text-success">Assigned developer</span> <span>|</span>
-                                                                    }
-                                                                    @if ((await _projectService.GetProjectManagerAsync(Model.ProjectId))?.Id == comment.UserId)
-                                                                    {
-                                                                        <span class="text-primary">Project Manager</span> <span>|</span>
-                                                                    }
-                                                                    @if (Model.OwnerUserId == comment.UserId)
-                                                                    {
-                                                                        <span class="text-danger">Submitter</span> <span>|</span>
-                                                                    }
-                                                                </span>
-                                                                <span class="description">@string.Format("{0:MMM dd yyyy}", comment.Created)</span>
+                                                                                    <small><span class="date text-muted">@attachment.Created.ToString("MMM dd, yyyy")</span></small>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </a>
                                                             </div>
-                                                            <!-- /.user-block -->
-                                                        </div>
-                                                    </div>
-                                                    <div class="row mt-1">
-                                                        <div class="col ml-4">
-
-                                                            <p>
-                                                                @Html.Raw(comment.Comment)
-                                                            </p>
+                                                            <div class="col-2">
+                                                                <div class="">
+                                                                    <a target="_blank" asp-action="ShowFile" asp-controller="Tickets" asp-route-Id="@attachment.Id" class="btn btn-icon btn-primary">
+                                                                        <i class="fa fa-download"></i>
+                                                                    </a>
+                                                                </div>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                            @*</div>*@
-                                            @*</div>
-                                                </div>*@
-                                        }
-                                        else
-                                        {
+                                        </div>
+                                        <h3 class="timeline-header">
+                                            @historyItem.User.FullName <span>|</span>
+                                            @if (Model.DeveloperUserId == historyItem.UserId)
+                                            {
+                                                <span class="text-success">Assigned developer</span> <span>|</span>
+                                            }
+                                            @if ((await _projectService.GetProjectManagerAsync(Model.ProjectId))?.Id == historyItem.UserId)
+                                            {
+                                                <span class="text-primary">Project Manager</span> <span>|</span>
+                                            }
+                                            @if (Model.OwnerUserId == historyItem.UserId)
+                                            {
+                                                <span class="text-danger">Submitter</span> <span>|</span>
+                                            }
+                                        </h3>
 
-                                            <div class="timeline-item">
-                                                <span class="time"><i class="fas fa-clock"></i> @string.Format("{0:hh:mm tt}", historyItem.Created)</span>
-                                                <h3 class="timeline-header">
-                                                    @historyItem.User.FullName <span>|</span>
-                                                    @if (Model.DeveloperUserId == historyItem.UserId)
-                                                    {
-                                                        <span class="text-success">Assigned developer</span> <span>|</span>
-                                                    }
-                                                    @if ((await _projectService.GetProjectManagerAsync(Model.ProjectId))?.Id == historyItem.UserId)
-                                                    {
-                                                        <span class="text-primary">Project Manager</span> <span>|</span>
-                                                    }
-                                                    @if (Model.OwnerUserId == historyItem.UserId)
-                                                    {
-                                                        <span class="text-danger">Submitter</span> <span>|</span>
-                                                    }
-                                                </h3>
-
-                                                <div class="timeline-body">
-                                                    @Html.Raw(historyItem.Description)
-                                                </div>
-                                            </div>
-                                        }
+                                        <div class="timeline-body">
+                                            @Html.Raw(historyItem.Description)
+                                        </div>
                                     </div>
+                                }
+                                else if (historyItem.Property == "Comment")
+                                {
+                                    <i class="far fa-comment bg-indigo"></i>
+
+                                    var comment = Model.Comments.Where(c => c.Id == historyItem.CommentId).FirstOrDefault();
+                                    <div class="timeline-item">
+                                        <span class="time"><i class="fas fa-clock"></i> @string.Format("{0:hh:mm tt}", historyItem.Created)</span>
+                                        <div class="timeline-body">
+
+                                            @*<div class="card">
+                    <div class="card-body">*@
+
+                                            @*<div class="post">*@
+                                            <div class="row">
+                                                <div class="col">
+
+                                                    <div class="user-block">
+                                                        <img class="img-circle img-bordered-sm" src="@_fileService.GetUserAvatar(comment.User)" alt="user image">
+                                                        <span class="username">
+                                                            <a href="#">@comment.User.FullName</a> |
+                                                            @if (Model.DeveloperUserId == comment.UserId)
+                                                            {
+                                                                <span class="text-success">Assigned developer</span> <span>|</span>
+                                                            }
+                                                            @if ((await _projectService.GetProjectManagerAsync(Model.ProjectId))?.Id == comment.UserId)
+                                                            {
+                                                                <span class="text-primary">Project Manager</span> <span>|</span>
+                                                            }
+                                                            @if (Model.OwnerUserId == comment.UserId)
+                                                            {
+                                                                <span class="text-danger">Submitter</span> <span>|</span>
+                                                            }
+                                                        </span>
+                                                        <span class="description">@string.Format("{0:MMM dd yyyy}", comment.Created)</span>
+                                                    </div>
+                                                    <!-- /.user-block -->
+                                                </div>
+                                            </div>
+                                            <div class="row mt-1">
+                                                <div class="col ml-4">
+
+                                                    <p>
+                                                        @Html.Raw(comment.Comment)
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    @*</div>*@
+                                    @*</div>
+            </div>*@
+                                }
+                                else
+                                {
+
+                                    <div class="timeline-item">
+                                        <span class="time"><i class="fas fa-clock"></i> @string.Format("{0:hh:mm tt}", historyItem.Created)</span>
+                                        <h3 class="timeline-header">
+                                            @historyItem.User.FullName <span>|</span>
+                                            @if (Model.DeveloperUserId == historyItem.UserId)
+                                            {
+                                                <span class="text-success">Assigned developer</span> <span>|</span>
+                                            }
+                                            @if ((await _projectService.GetProjectManagerAsync(Model.ProjectId))?.Id == historyItem.UserId)
+                                            {
+                                                <span class="text-primary">Project Manager</span> <span>|</span>
+                                            }
+                                            @if (Model.OwnerUserId == historyItem.UserId)
+                                            {
+                                                <span class="text-danger">Submitter</span> <span>|</span>
+                                            }
+                                        </h3>
+
+                                        <div class="timeline-body">
+                                            @Html.Raw(historyItem.Description)
+                                        </div>
+                                    </div>
+                                }
+                            </div>
                                 }
                                 <div>
                                     <i class="fas fa-clock bg-gray"></i>

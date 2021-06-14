@@ -20,14 +20,20 @@ namespace JamesonBugTracker.Controllers
         private readonly UserManager<BTUser> _userManager;
         private readonly IBTTicketService _ticketService;
         private readonly IBTHistoryService _historyService;
+        private readonly IBTNotificationService _notificationService;
+        private readonly IBTProjectService _projectService;
 
 
-        public TicketCommentsController(ApplicationDbContext context, UserManager<BTUser> userManager, IBTTicketService ticketService, IBTHistoryService historyService)
+
+
+        public TicketCommentsController(ApplicationDbContext context, UserManager<BTUser> userManager, IBTTicketService ticketService, IBTHistoryService historyService, IBTNotificationService notificationService, IBTProjectService projectService)
         {
             _context = context;
             _userManager = userManager;
             _ticketService = ticketService;
             _historyService = historyService;
+            _notificationService = notificationService;
+            _projectService = projectService;
         }
 
         // GET: TicketComments
@@ -74,14 +80,43 @@ namespace JamesonBugTracker.Controllers
         {
             if (ModelState.IsValid)
             {
+
                 var userId = _userManager.GetUserId(User);
                 var oldTicket = await _ticketService.GetOneTicketNotTrackedAsync(ticketComment.TicketId);
+                BTUser projectManager = await _projectService.GetProjectManagerAsync(oldTicket.ProjectId);
                 ticketComment.UserId = userId;
                 ticketComment.Created = DateTime.Now;
                 _context.Add(ticketComment);
                 await _context.SaveChangesAsync();
                 var newTicket = await _ticketService.GetOneTicketNotTrackedAsync(ticketComment.TicketId);
                 await _historyService.AddHistoryAsync(oldTicket, newTicket, userId);
+                if (ticketComment.UserId != newTicket.DeveloperUserId)
+                {
+                    Notification notification = new()
+                    {
+                        TicketId = newTicket.Id,
+                        Title = $"{ticketComment.User.FullName} commented on {newTicket.Title}",
+                        Message = $" commented on {newTicket.Title}",
+                        Created = DateTimeOffset.Now,
+                        SenderId = userId,
+                        RecipientId = newTicket.DeveloperUserId
+                    };
+                    await _notificationService.SaveNotificationAsync(notification);
+                }
+                if (ticketComment.UserId != projectManager.Id)
+                {
+                    Notification notification = new()
+                    {
+                        TicketId = newTicket.Id,
+                        Title = $" commented on \"{newTicket.Title}\"",
+
+                        Message = $" commented on {newTicket.Title}",
+                        Created = DateTimeOffset.Now,
+                        SenderId = userId,
+                        RecipientId = projectManager.Id
+                    };
+                    await _notificationService.SaveNotificationAsync(notification);
+                }
                 return RedirectToAction("Details", "Tickets", new { id = ticketComment.TicketId });
             }
             return RedirectToAction("Details", "Tickets", new { id = ticketComment.TicketId });
