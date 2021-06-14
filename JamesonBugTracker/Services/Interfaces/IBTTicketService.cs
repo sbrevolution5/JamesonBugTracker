@@ -8,6 +8,8 @@ namespace JamesonBugTracker.Services.Interfaces
 {
     public interface IBTTicketService
     {
+        Task UnassignTicketAsync(int ticketId);
+
         Task AssignTicketAsync(int ticketId, string userId);
 
         Task<BTUser> GetTicketDeveloperAsync(int ticketId);

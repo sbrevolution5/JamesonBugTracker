@@ -443,6 +443,41 @@ namespace JamesonBugTracker.Controllers
             }
             return RedirectToAction("Details", new { id = ticketId });
         }
+        public async Task<IActionResult> UnassignUser(int ticketId)
+        {
+
+            try
+            {
+                BTUser currentUser = await _userManager.GetUserAsync(User);
+                Ticket oldTicket = await _ticketService.GetOneTicketNotTrackedAsync(ticketId);
+                await _ticketService.UnassignTicketAsync(ticketId);
+                Ticket newTicket = await _ticketService.GetOneTicketNotTrackedAsync(ticketId);
+                await _historyService.AddHistoryAsync(oldTicket, newTicket, currentUser.Id);
+                #region Alert New and old user that ticket was changed 
+                if (oldTicket.DeveloperUserId != newTicket.DeveloperUserId)
+                {
+                    Notification notification = new()
+                    {
+                        TicketId = newTicket.Id,
+                        Title = "You were unassigned from a ticket",
+                        Message = $"{currentUser.FullName} just assigned {newTicket.Id}:{newTicket.Title} to {newTicket.DeveloperUser.FullName} instead of you.",
+                        SenderId = currentUser.Id,
+                        RecipientId = oldTicket.DeveloperUserId,
+                        Created = DateTimeOffset.Now,
+                    };
+                    await _notificationService.SaveNotificationAsync(notification);
+                    //if user unassigns themselves they won't get an email
+                    if (oldTicket.DeveloperUserId != currentUser.Id && oldTicket.DeveloperUserId is not null)
+                    {
+
+                        await _notificationService.EmailNotificationAsync(notification, notification.Title);
+                    }
+                }
+                #endregion
+            }
+            catch { throw; }
+            return RedirectToAction("Details", new { id = ticketId });
+        }
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> UpdateStatus(int ticketId, string statusName)

@@ -29,13 +29,14 @@
                 <img src="@_fileService.ConvertByteArrayToFile(Model.ImageData, Model.ImageContentType)" class="img-fluid comment-img" />
             </div>}
 
-            <div class="form-group">
-                <label asp-for="Input.ImageFile"></label>
-                <div class="custom-file">
-                    <input asp-for="Input.ImageFile" type="file" class="form-control-file custom-file-input" id="customFile" accept="image/*" />
-                    <label class="control-label custom-file-label" for="customFile">Choose</label>
-                </div>
+        <div class="form-group">
+            <label asp-for="Input.ImageFile"></label>
+            <div class="custom-file">
+                <input asp-for="Input.ImageFile" type="file" class="form-control-file custom-file-input" id="customFile" accept="image/*" />
+                <label class="control-label custom-file-label" for="customFile">Choose</label>
             </div>
+            <small class="text-muted"> Image will be scaled to a 128x128 square, and then put in a rounded circular frame. Distortion may happen as a result.</small>
+        </div>
             <button id="update-profile-button" type="submit" class="btn btn-primary">Save</button>
         </form>
     </div>

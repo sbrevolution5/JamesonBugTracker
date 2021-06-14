@@ -31,7 +31,7 @@ function ticketStatusBgColor() {
         ticketStatus = "bg-info";
     }
     else if (status == "New") {
-        ticketStatus = "bg-primary"
+        ticketStatus = "bg-secondary"
     }
     document.getElementById("ticketStatusBox").classList.toggle(ticketStatus)
 }
@@ -52,3 +52,25 @@ function ticketTypeBgColor() {
     }
     document.getElementById("ticketTypeBox").classList.toggle(ticketType)
 }
+//Ticket details Ajax, used to make ticket changes without resubmitting page.
+
+$(".assignForm").on("submit", function (e) {
+
+    var dataString = $(this).serialize();
+    var unassignedId = $(this).children("input").val()
+    var userFullName = $(this).children("div").children("select").children("option").filter(":selected").text()
+    $.ajax({
+        type: "POST",
+        url: "/Tickets/AssignUser",
+        data: dataString,
+        success: function () {
+            toastr.success(`${userFullName} assigned to ticket`)
+            $("#developerName").text(userFullName)
+            $("#ticketStatusText").text("Development")
+            ticketStatusBgColor();
+        }
+    });
+    e.preventDefault();
+    toastr.info('Trying to assign user to ticket. Please Wait')
+
+});

@@ -2,12 +2,12 @@
 @using JamesonBugTracker.Services.Interfaces
 @inject SignInManager<BTUser> SignInManager
 @inject UserManager<BTUser> UserManager
-@inject IBTFileService _fileService 
+@inject IBTFileService _fileService
 @inject IBTNotificationService _notificationService
-@{ 
+@{
     var userId = UserManager.GetUserId(User);
-    //var notifications = await _notificationService.GetReceivedNotificationsAsync(userId);
-    //var unseenCount = await _notificationService.GetUnseenRecievedNotificationsAsync(userId);
+    var unseenCount = (await _notificationService.GetUnseenRecievedNotificationsAsync(userId)).ToList().Count;
+    var notifications = (await _notificationService.GetReceivedNotificationsAsync(userId)).OrderByDescending(n => n.Created).Take(unseenCount > 5 ? unseenCount : 5).ToList();
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -24,6 +24,7 @@
     <!-- Theme style -->
     <link rel="stylesheet" href="~/css/adminlte.min.css">
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link href="~/plugins/toastr/toastr.min.css" rel="stylesheet" />
     @await RenderSectionAsync("Header", required: false)
     <link rel="stylesheet" href="~/css/site.css" />
 </head>
@@ -82,264 +83,258 @@
                     <button onclick="toggleDark()" class="btn btn-sm btn-primary">
                         <i id="darkIcon" class="fas fa-sun"></i>
                     </button>
-                </li>@*
-                <li class="nav-item dropdown">
-                    <a class="nav-link" data-toggle="dropdown" href="#">
-                        <i class="far fa-bell"></i>
-                        <span class="badge badge-danger navbar-badge">@notifications.Count</span>
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-                        @foreach(var notification in notifications)
-                        {<a href="#" class="dropdown-item">
-                            <!-- Message Start -->
-                            <div class="media">
-                                <img src="@_fileService.ConvertByteArrayToFile(notification.Sender.AvatarFileData,notification.Sender.AvatarFileContentType) " alt="User Avatar" class="img-size-50 mr-3 img-circle ">
-                                <div class="media-body">
-                                    <h3 class="dropdown-item-title">
-                                        @notification.Sender.FullName
-                                        <span class="float-right text-sm text-danger"><i class="fas fa-star"></i></span>
-                                    </h3>
-                                    <p class="text-sm">@notification.Message</p>
-                                    <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i> 4 Hours Ago</p>
-                                </div>
-                            </div>
-                            <!-- Message End -->
-                        </a>}
-                        <div class="dropdown-divider"></div>
-                        <a href="#" class="dropdown-item">
-                            <!-- Message Start -->
-                            <div class="media">
-                                <img src="dist/img/user8-128x128.jpg" alt="User Avatar" class="img-size-50 img-circle mr-3">
-                                <div class="media-body">
-                                    <h3 class="dropdown-item-title">
-                                        John Pierce
-                                        <span class="float-right text-sm text-muted"><i class="fas fa-star"></i></span>
-                                    </h3>
-                                    <p class="text-sm">I got your message bro</p>
-                                    <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i> 4 Hours Ago</p>
-                                </div>
-                            </div>
-                            <!-- Message End -->
-                        </a>
-                        <div class="dropdown-divider"></div>
-                        <a href="#" class="dropdown-item">
-                            <!-- Message Start -->
-                            <div class="media">
-                                <img src="dist/img/user3-128x128.jpg" alt="User Avatar" class="img-size-50 img-circle mr-3">
-                                <div class="media-body">
-                                    <h3 class="dropdown-item-title">
-                                        Nora Silvester
-                                        <span class="float-right text-sm text-warning"><i class="fas fa-star"></i></span>
-                                    </h3>
-                                    <p class="text-sm">The subject goes here</p>
-                                    <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i> 4 Hours Ago</p>
-                                </div>
-                            </div>
-                            <!-- Message End -->
-                        </a>
-                        <div class="dropdown-divider"></div>
-                        <a href="#" class="dropdown-item dropdown-footer">See All Messages</a>
-                    </div>
-                </li>*@
+                </li>
                 <!-- Notifications Dropdown Menu -->
                 <li class="nav-item dropdown">
                     <a class="nav-link" data-toggle="dropdown" href="#">
-                        
-                        <span class="badge badge-warning navbar-badge">15</span>
+                        <i class="far fa-bell"></i>
+                        @if (unseenCount > 0)
+                        {
+
+                         <span class="badge badge-danger navbar-badge">@unseenCount</span>
+                        }
                     </a>
                     <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-                        <span class="dropdown-header">15 Notifications</span>
-                        <div class="dropdown-divider"></div>
-                        <a href="#" class="dropdown-item">
-                            <i class="fas fa-envelope mr-2"></i> 4 new messages
-                            <span class="float-right text-muted text-sm">3 mins</span>
-                        </a>
-                        <div class="dropdown-divider"></div>
-                        <a href="#" class="dropdown-item">
-                            <i class="fas fa-users mr-2"></i> 8 friend requests
-                            <span class="float-right text-muted text-sm">12 hours</span>
-                        </a>
-                        <div class="dropdown-divider"></div>
-                        <a href="#" class="dropdown-item">
-                            <i class="fas fa-file mr-2"></i> 3 new reports
-                            <span class="float-right text-muted text-sm">2 days</span>
-                        </a>
-                        <div class="dropdown-divider"></div>
-                        <a href="#" class="dropdown-item dropdown-footer">See All Notifications</a>
-                    </div>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" data-widget="fullscreen" href="#" role="button">
-                        <i class="fas fa-expand-arrows-alt"></i>
-                    </a>
-                </li>
-                @*<li class="nav-item">
-                    <a class="nav-link" data-widget="control-sidebar" data-slide="true" href="#" role="button">
-                        <i class="fas fa-th-large"></i>
-                    </a>
-                </li>*@
-            </ul>
-        </nav>
-        <!-- /.navbar -->
-        <!-- Main Sidebar Container -->
-        <aside class="main-sidebar sidebar-dark-primary elevation-4">
-            <!-- Brand Logo -->
-            <a asp-controller="Home" asp-action="Dashboard" class="brand-link">
-                <img src="~/img/JamesonXSSquare.png" alt="Jameson Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
-                <span class="brand-text font-weight-light">Jameson Bug Tracker</span>
-            </a>
+                        @foreach (var notification in notifications)
+                        {
 
-            <!-- Sidebar -->
-            <div class="sidebar">
-                <!-- Sidebar user panel (optional) -->
-                @if (SignInManager.IsSignedIn(User))
-                {
-                    BTUser btUser = await UserManager.GetUserAsync(User); //Principal = person using application
+                            @if (notification.Viewed)
+                            {
+                                <div class="dropdown-item" id="not-@notification.Id">
+                                    <!-- Message Start -->
+                                    <div class="media">
+                                        <img src="@_fileService.ConvertByteArrayToFile(notification.Sender.AvatarFileData,notification.Sender.AvatarFileContentType) " alt="User Avatar" class="img-size-50 mr-3 img-circle ">
+                                        <div class="media-body">
+                                            <h3 class="dropdown-item-title">
+                                                @notification.Sender.FullName
+                                            </h3>
+                                            <span class="float-right text-sm text-danger-"><i class="far fa-star"></i></span>
+                                            <p class="text-sm">@notification.Message</p>
+                                            <a class="btn btn-sm btn-primary" asp-action="Details" asp-controller="Tickets" asp-route-id="@notification.TicketId">See Ticket</a>
+                                            <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i> @notification.Created</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                    }
+                                    else
+                                    {
+                                    <div class="dropdown-item" id="not-@notification.Id">
+                                        <!-- Message Start -->
+                                        <form class="seenForm">
+                                            <div class="media">
+                                                <img src="@_fileService.ConvertByteArrayToFile(notification.Sender.AvatarFileData,notification.Sender.AvatarFileContentType) " alt="User Avatar" class="img-size-50 mr-3 img-circle ">
+                                                <div class="media-body">
+                                                    <h3 class="dropdown-item-title">
+                                                        @notification.Sender.FullName
+                                                    </h3>
+                                                    <input hidden value="@notification.Id" name="id" />
+                                                    <span class="float-right text-sm text-danger-"><button type="submit" class="btn btn-link"><i id="seenIcon-@notification.Id" class="fas fa-star"></i></button></span>
+                                                    <p class="text-sm">@notification.Message</p>
+                                                    <a class="btn btn-sm btn-primary" asp-action="Details" asp-controller="Tickets" asp-route-id="@notification.TicketId">See Ticket</a>
+                                                    <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i> @notification.Created</p>
+                                                </div>
+                                                </div>
+                                        </form>
+                                    </div>
+                                    }
+                                    <!-- Message End -->
+                                <div class="dropdown-divider"></div>
+                            }
+                            <a asp-controller="Notifications" asp-action="Index" class="dropdown-item dropdown-footer">See All Notifications</a>
+                        </div>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-widget="fullscreen" href="#" role="button">
+                            <i class="fas fa-expand-arrows-alt"></i>
+                        </a>
+                    </li>
+                    @*<li class="nav-item">
+                            <a class="nav-link" data-widget="control-sidebar" data-slide="true" href="#" role="button">
+                                <i class="fas fa-th-large"></i>
+                            </a>
+                        </li>*@
+                </ul>
+            </nav>
+            <!-- /.navbar -->
+            <!-- Main Sidebar Container -->
+            <aside class="main-sidebar sidebar-dark-primary elevation-4">
+                <!-- Brand Logo -->
+                <a asp-controller="Home" asp-action="Dashboard" class="brand-link">
+                    <img src="~/img/JamesonXSSquare.png" alt="Jameson Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
+                    <span class="brand-text font-weight-light">Jameson Bug Tracker</span>
+                </a>
 
-                    <div class="user-panel mt-3 pb-3 mb-3 d-flex">
-                        <div class="image">
-                            <img src="@_fileService.ConvertByteArrayToFile(btUser.AvatarFileData, btUser.AvatarFileContentType)" class="img-circle elevation-2" alt="User Image">
-                        </div>
-                        <div class="info">
-                            <a asp-area="Identity" asp-page="/Account/Manage/Index" class="d-block">@btUser.FullName</a>
-                        </div>
-                        <div class="info float-right">
-                            <a href="javascript:document.getElementById('logoutForm').submit();"><i class="fas fa-sign-out-alt"></i></a>
-                        </div>
-                    </div>
-                }
-                else
-                {
-                    <div class="user-panel mt-3 pb-3 mb-3 d-flex">
-                        <div class="image">
-                            <img src="~/dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
-                        </div>
-                        <div class="info">
-                            <a class="d-block" asp-area="Identity" asp-page="/Account/Login">Log In</a>
-                        </div>
-                    </div>
-                }
+                <!-- Sidebar -->
+                <div class="sidebar">
+                    <!-- Sidebar user panel (optional) -->
+                    @if (SignInManager.IsSignedIn(User))
+                    {
+                        BTUser btUser = await UserManager.GetUserAsync(User); //Principal = person using application
 
-                <!-- SidebarSearch Form -->
-                <div class="form-inline">
-                    <div class="input-group" data-widget="sidebar-search">
-                        <input class="form-control form-control-sidebar" type="search" placeholder="Search" aria-label="Search">
-                        <div class="input-group-append">
-                            <button class="btn btn-sidebar">
-                                <i class="fas fa-search fa-fw"></i>
-                            </button>
+                        <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+                            <div class="image">
+                                <img src="@_fileService.ConvertByteArrayToFile(btUser.AvatarFileData, btUser.AvatarFileContentType)" class="img-circle elevation-2" alt="User Image">
+                            </div>
+                            <div class="info">
+                                <a asp-area="Identity" asp-page="/Account/Manage/Index" class="d-block">@btUser.FullName</a>
+                            </div>
+                            <div class="info float-right">
+                                <a href="javascript:document.getElementById('logoutForm').submit();"><i class="fas fa-sign-out-alt"></i></a>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+                            <div class="image">
+                                <img src="~/dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
+                            </div>
+                            <div class="info">
+                                <a class="d-block" asp-area="Identity" asp-page="/Account/Login">Log In</a>
+                            </div>
+                        </div>
+                    }
+
+                    <!-- SidebarSearch Form -->
+                    <div class="form-inline">
+                        <div class="input-group" data-widget="sidebar-search">
+                            <input class="form-control form-control-sidebar" type="search" placeholder="Search" aria-label="Search">
+                            <div class="input-group-append">
+                                <button class="btn btn-sidebar">
+                                    <i class="fas fa-search fa-fw"></i>
+                                </button>
+                            </div>
                         </div>
                     </div>
+
+                    <!-- Sidebar Menu -->
+                    <nav class="mt-2">
+                        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+                            <!-- Add icons to the links using the .nav-icon class
+                            with font-awesome or any other icon font library -->
+                            <li class="nav-item menu-open">
+                                <a href="#" class="nav-link">
+                                    <i class="nav-icon fas fa-ticket-alt"></i>
+                                    <p>
+                                        Tickets
+                                        <i class="right fas fa-angle-left"></i>
+                                    </p>
+                                </a>
+                                <ul class="nav nav-treeview">
+                                    <li class="nav-item">
+                                        <a asp-controller="Tickets" asp-action="AllTickets" class="nav-link">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p>All Tickets</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a asp-controller="Tickets" asp-action="MyTickets" class="nav-link">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p>My Tickets</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a asp-controller="Tickets" asp-action="Create" class="nav-link">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p>Create a New Ticket</p>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li class="nav-item menu-open">
+                                <a href="#" class="nav-link">
+                                    <i class="nav-icon fas fa-flask"></i>
+                                    <p>
+                                        Projects
+                                        <i class="right fas fa-angle-left"></i>
+                                    </p>
+                                </a>
+                                <ul class="nav nav-treeview">
+                                    <li class="nav-item">
+                                        <a asp-controller="Projects" asp-action="AllProjects" class="nav-link">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p>All Projects</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a asp-controller="Projects" asp-action="MyProjects" class="nav-link">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p>My Projects</p>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </nav>
+                    <!-- /.sidebar-menu -->
                 </div>
+                <!-- /.sidebar -->
+            </aside>
 
-                <!-- Sidebar Menu -->
-                <nav class="mt-2">
-                    <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-                        <!-- Add icons to the links using the .nav-icon class
-                        with font-awesome or any other icon font library -->
-                        <li class="nav-item menu-open">
-                            <a href="#" class="nav-link">
-                                <i class="nav-icon fas fa-ticket-alt"></i>
-                                <p>
-                                    Tickets
-                                    <i class="right fas fa-angle-left"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a asp-controller="Tickets" asp-action="AllTickets" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>All Tickets</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a asp-controller="Tickets" asp-action="MyTickets" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>My Tickets</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a asp-controller="Tickets" asp-action="Create" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Create a New Ticket</p>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="nav-item menu-open">
-                            <a href="#" class="nav-link">
-                                <i class="nav-icon fas fa-flask"></i>
-                                <p>
-                                    Projects
-                                    <i class="right fas fa-angle-left"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a asp-controller="Projects" asp-action="AllProjects" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>All Projects</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a asp-controller="Projects" asp-action="MyProjects" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>My Projects</p>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                    </ul>
-                </nav>
-                <!-- /.sidebar-menu -->
+            <!-- Content Wrapper. Contains page content -->
+            <div class="content-wrapper">
+                <div class="container-fluid p-3">
+                    @RenderBody()
+                </div>
             </div>
-            <!-- /.sidebar -->
-        </aside>
-
-        <!-- Content Wrapper. Contains page content -->
-        <div class="content-wrapper">
-            <div class="container-fluid p-3">
-                @RenderBody()
-            </div>
-        </div>
-        <!-- /.content-wrapper -->
-        <!-- Control Sidebar -->
-        <!--<aside class="control-sidebar control-sidebar-dark">-->
+            <!-- /.content-wrapper -->
+            <!-- Control Sidebar -->
+            <!--<aside class="control-sidebar control-sidebar-dark">-->
             <!-- Control sidebar content goes here -->
             <!--<div class="p-3">
-                <h5>Title</h5>
-                <p>Sidebar content</p>
-            </div>
-        </aside>-->
-        <!-- /.control-sidebar -->
-        <!-- Main Footer -->
-        <footer class="main-footer">
-            <!-- To the right -->
-            <div class="float-right d-none d-sm-inline">
-                <strong>Template Copyright &copy; 2014-2021 <a href="https://adminlte.io" target="_blank">AdminLTE.io</a>.</strong>
-            </div>
-            <!-- Default to the left -->
-            <strong>Copyright &copy; 2021 <a href="https://sethbcoding.com" target="_blank">Seth A. Burleson</a>.</strong> All rights reserved.
-        </footer>
-    </div>
-    <!-- ./wrapper -->
-    <!-- REQUIRED SCRIPTS -->
-    <!-- AdminLTE App -->
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/plugins/datatables/jquery.dataTables.js"></script>
-    <script src="~/plugins/datatables-bs4/js/dataTables.bootstrap4.js"></script>
-    <script src="~/dist/js/adminlte.min.js"></script>
-    <script>
-        let page = ""
-    </script>
-    @await RenderSectionAsync("Scripts", required: false)
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    <script>
-        $(window).on("load", loadDark());
-        $(function () {
-            $('[data-toggle="popover"]').popover()
-        })
-    </script>
-</body>
+                    <h5>Title</h5>
+                    <p>Sidebar content</p>
+                </div>
+            </aside>-->
+            <!-- /.control-sidebar -->
+            <!-- Main Footer -->
+            <footer class="main-footer">
+                <!-- To the right -->
+                <div class="float-right d-none d-sm-inline">
+                    <strong>Template Copyright &copy; 2014-2021 <a href="https://adminlte.io" target="_blank">AdminLTE.io</a>.</strong>
+                </div>
+                <!-- Default to the left -->
+                <strong>Copyright &copy; 2021 <a href="https://sethbcoding.com" target="_blank">Seth A. Burleson</a>.</strong> All rights reserved.
+            </footer>
+        </div>
+        <!-- ./wrapper -->
+        <!-- REQUIRED SCRIPTS -->
+        <!-- AdminLTE App -->
+        <script src="~/lib/jquery/dist/jquery.min.js"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="~/plugins/datatables/jquery.dataTables.js"></script>
+        <script src="~/plugins/datatables-bs4/js/dataTables.bootstrap4.js"></script>
+        <script src="~/plugins/toastr/toastr.min.js"></script>
+        <script src="~/dist/js/adminlte.min.js"></script>
+        <script>
+            let page = ""
+        </script>
+        @await RenderSectionAsync("Scripts", required: false)
+        <script src="~/js/site.js" asp-append-version="true"></script>
+        <script>
+            $(window).on("load", loadDark());
+            $(function () {
+                $('[data-toggle="popover"]').popover()
+            })
+            /*        AJAX for seen button*/
+            $(".seenForm").hover(function (e) {
+
+                var dataString = $(this).serialize();
+                // get the element Id of the form
+                // alert(dataString); return false;
+                var unassignedId = $(this).children("input").val()
+
+                $.ajax({
+                    type: "POST",
+                    url: "/Notifications/MarkSeen",
+                    data: dataString,
+                    success: function () {
+
+                    }
+                });
+                e.preventDefault();
+
+            });
+        </script>
+    </body>
 </html>

@@ -74,12 +74,12 @@
                                 <h3>Assigned to:</h3>
                                 @if (Model.DeveloperUserId is not null)
                                 {
-                                    <p>@Model.DeveloperUser?.FullName</p>
+                                    <p id="developerName">@Model.DeveloperUser?.FullName</p>
 
                                 }
                                 else
                                 {
-                                    <p>Unassigned</p>
+                                    <p id="developerName">Unassigned</p>
 
                                 }
                             </div>
@@ -213,7 +213,7 @@
                                                         <div class="col">
 
                                                             <div class="user-block">
-                                                                <img class="img-circle img-bordered-sm" src="../../dist/img/user1-128x128.jpg" alt="user image">
+                                                                <img class="img-circle img-bordered-sm" src="@_fileService.GetUserAvatar(comment.User)" alt="user image">
                                                                 <span class="username">
                                                                     <a href="#">@comment.User.FullName</a> |
                                                                     @if (Model.DeveloperUserId == comment.UserId)
@@ -335,7 +335,7 @@
                 </div>
                 @if (Model.DeveloperUserId is not null && (User.IsInRole("ProjectManager") || User.IsInRole("Admin")))
                 {
-                    <form asp-action="AssignUser">
+                    <form asp-action="AssignUser" class="assignForm">
                         <input hidden name="ticketId" value="@Model.Id" />
                         <div class="form-group pt-0">
                             <label for=""></label>
@@ -344,14 +344,19 @@
 
                             </select>
                         </div>
-                        <button type="submit" class="btn btn-danger btn-block">Reassign User</button>
+                        <button type="submit" class="btn btn-primary btn-block">Reassign User</button>
+                    </form>
+                    <form asp-action="UnassignUser">
+                        <input hidden name="ticketId" value="@Model.Id" />
+                        <button type="submit" class="btn btn-danger btn-block" disabled>Unassign User</button>
+
                     </form>
 
                 }
                 else if (User.IsInRole("ProjectManager") || User.IsInRole("Admin"))
                 {
 
-                    <form asp-action="AssignUser">
+                    <form asp-action="AssignUser" class="assignForm">
                         <input hidden name="ticketId" value="@Model.Id" />
                         <div class="form-group">
                             <label for=""></label>
@@ -360,7 +365,7 @@
 
                             </select>
                         </div>
-                        <button type="submit" class="btn btn-danger btn-block">Assign User</button>
+                        <button type="submit" class="btn btn-primary btn-block">Assign User</button>
                     </form>
                 }
                 <h5 class="mt-5 text-muted">Ticket Attachments</h5>
@@ -479,7 +484,7 @@
                 {
                     <div class="post">
                         <div class="user-block">
-                            <img class="img-circle img-bordered-sm" src="../../dist/img/user1-128x128.jpg" alt="user image">
+                            <img class="img-circle img-bordered-sm" src="@_fileService.GetUserAvatar(comment.User)" alt="user image">
                             <span class="username">
                                 <a href="#">@comment.User.FullName</a> |
                                 @if (Model.DeveloperUserId == comment.UserId)
@@ -516,6 +521,12 @@
 @section Scripts{
     <script src="../../plugins/summernote/summernote-bs4.min.js"></script>
     <script src="~/js/ticketDetails.js"></script>
+<script>
+    //TODO this doesn't work right at all......
+    function ajaxReload() {
+        $("#ticketStatusText").text = "New Data";
+}
+</script>
     <script>
         $(function () {
             // Summernote

@@ -1,4 +1,5 @@
-﻿using JamesonBugTracker.Services.Interfaces;
+﻿using JamesonBugTracker.Models;
+using JamesonBugTracker.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
@@ -66,6 +67,11 @@ namespace JamesonBugTracker.Services
         {
             var file = $"{Directory.GetCurrentDirectory()}/wwwroot/img/{filename}";
             return await File.ReadAllBytesAsync(file);
+        }
+
+        public string GetUserAvatar(BTUser user)
+        {
+            return ConvertByteArrayToFile(user.AvatarFileData, user.AvatarFileContentType);
         }
     }
 }

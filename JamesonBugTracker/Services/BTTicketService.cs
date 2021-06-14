@@ -26,6 +26,26 @@ namespace JamesonBugTracker.Services
             return await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
         }
 
+        public async Task UnassignTicketAsync(int ticketId)
+        {
+            Ticket ticket = await GetTicketByIdAsync(ticketId);
+            if(ticket is not null)
+            {
+                try
+                {
+                    ticket.TicketStatusId = (await LookupTicketStatusIdAsync("Unassigned")).Value;
+                    ticket.DeveloperUserId = null;
+                    ticket.Updated = DateTime.Now;
+                    await _context.SaveChangesAsync();
+                    return;
+                }
+                catch 
+                {
+
+                    throw;
+                }
+            }
+        }
         public async Task AssignTicketAsync(int ticketId, string userId)
         {
             Ticket ticket = await GetTicketByIdAsync(ticketId);

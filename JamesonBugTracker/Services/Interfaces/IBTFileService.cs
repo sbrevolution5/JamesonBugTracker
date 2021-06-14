@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using JamesonBugTracker.Models;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +12,7 @@ namespace JamesonBugTracker.Services.Interfaces
         public Task<byte[]> ConvertFileToByteArrayAsync(IFormFile file);
 
         public string ConvertByteArrayToFile(byte[] fileData, string extension);
+        public string GetUserAvatar(BTUser user);
 
         public string GetFileIcon(string file);
 

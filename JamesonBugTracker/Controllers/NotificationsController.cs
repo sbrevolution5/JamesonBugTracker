@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using JamesonBugTracker.Data;
 using JamesonBugTracker.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using JamesonBugTracker.Services.Interfaces;
 
 namespace JamesonBugTracker.Controllers
 {
@@ -15,17 +17,22 @@ namespace JamesonBugTracker.Controllers
     public class NotificationsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<BTUser> _userManager;
+        private readonly IBTNotificationService _notificationService;
 
-        public NotificationsController(ApplicationDbContext context)
+        public NotificationsController(ApplicationDbContext context, UserManager<BTUser> userManager, IBTNotificationService notificationService)
         {
             _context = context;
+            _userManager = userManager;
+            _notificationService = notificationService;
         }
 
         // GET: Notifications
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Notification.Include(n => n.Recipient).Include(n => n.Ticket);
-            return View(await applicationDbContext.ToListAsync());
+            var userId = _userManager.GetUserId(User);
+            var applicationDbContext = await _notificationService.GetReceivedNotificationsAsync(userId);
+            return View(applicationDbContext);
         }
 
         // GET: Notifications/Details/5
@@ -47,7 +54,19 @@ namespace JamesonBugTracker.Controllers
 
             return View(notification);
         }
-
+        [HttpPost]
+        public async Task<IActionResult> MarkSeen(int? id)
+        {
+            if (id is null)
+            {
+                return NotFound();
+            }
+            Notification seenNotification = await _context.Notification.FirstOrDefaultAsync(n => n.Id == id);
+            seenNotification.Viewed = true;
+            await _context.SaveChangesAsync();
+            return View();
+        }
+        
         // GET: Notifications/Create
         public IActionResult Create()
         {
