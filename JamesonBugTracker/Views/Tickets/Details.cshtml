@@ -202,7 +202,22 @@
                                     var attachment = Model.Attachments.Where(a => a.Id == historyItem.AttachmentId).FirstOrDefault();
                                     <div class="timeline-item">
                                         <span class="time"><i class="fas fa-clock"></i> @string.Format("{0:hh:mm tt}", historyItem.Created)</span>
-                                        <div class="row clearfix">
+                                        <h3 class="timeline-header">
+                                            @historyItem.User.FullName <span>|</span>
+                                            @if (Model.DeveloperUserId == historyItem.UserId)
+                                            {
+                                                <span class="text-success">Assigned developer</span> <span>|</span>
+                                            }
+                                            @if ((await _projectService.GetProjectManagerAsync(Model.ProjectId))?.Id == historyItem.UserId)
+                                            {
+                                                <span class="text-primary">Project Manager</span> <span>|</span>
+                                            }
+                                            @if (Model.OwnerUserId == historyItem.UserId)
+                                            {
+                                                <span class="text-danger">Submitter</span> <span>|</span>
+                                            }
+                                        </h3>
+                                        <div class="timeline-body row clearfix">
                                             <div class="col">
                                                 <div class="card p-3">
                                                     <div class="file">
@@ -251,25 +266,8 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <h3 class="timeline-header">
-                                            @historyItem.User.FullName <span>|</span>
-                                            @if (Model.DeveloperUserId == historyItem.UserId)
-                                            {
-                                                <span class="text-success">Assigned developer</span> <span>|</span>
-                                            }
-                                            @if ((await _projectService.GetProjectManagerAsync(Model.ProjectId))?.Id == historyItem.UserId)
-                                            {
-                                                <span class="text-primary">Project Manager</span> <span>|</span>
-                                            }
-                                            @if (Model.OwnerUserId == historyItem.UserId)
-                                            {
-                                                <span class="text-danger">Submitter</span> <span>|</span>
-                                            }
-                                        </h3>
 
-                                        <div class="timeline-body">
-                                            @Html.Raw(historyItem.Description)
-                                        </div>
+                                        
                                     </div>
                                 }
                                 else if (historyItem.Property == "Comment")

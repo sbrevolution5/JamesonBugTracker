@@ -10,6 +10,7 @@ using JamesonBugTracker.Models;
 using System.IO;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
+using JamesonBugTracker.Services.Interfaces;
 
 namespace JamesonBugTracker.Controllers
 {
@@ -18,11 +19,15 @@ namespace JamesonBugTracker.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<BTUser> _userManager;
+        private readonly IBTTicketService _ticketService;
+        private readonly IBTHistoryService _historyService;
 
-        public TicketAttachmentsController(ApplicationDbContext context, UserManager<BTUser> userManager)
+        public TicketAttachmentsController(ApplicationDbContext context, UserManager<BTUser> userManager, IBTTicketService ticketService, IBTHistoryService historyService)
         {
             _context = context;
             _userManager = userManager;
+            _ticketService = ticketService;
+            _historyService = historyService;
         }
 
         // GET: TicketAttachments
@@ -69,6 +74,9 @@ namespace JamesonBugTracker.Controllers
         {
             if (ModelState.IsValid)
             {
+                BTUser currentUser = await _userManager.GetUserAsync(User);
+                int ticketId = ticketAttachment.TicketId;
+                Ticket oldTicket = await _ticketService.GetOneTicketNotTrackedAsync(ticketId);
                 MemoryStream ms = new MemoryStream();
                 await ticketAttachment.FormFile.CopyToAsync(ms);
 
@@ -81,6 +89,9 @@ namespace JamesonBugTracker.Controllers
 
                 _context.Add(ticketAttachment);
                 await _context.SaveChangesAsync();
+                Ticket newTicket = await _ticketService.GetOneTicketNotTrackedAsync(ticketId);
+                await _historyService.AddHistoryAsync(oldTicket, newTicket, currentUser.Id);
+
                 return RedirectToAction("Details","Tickets",new {id = ticketAttachment.TicketId });
             }
             ViewData["TicketId"] = new SelectList(_context.Ticket, "Id", "Description", ticketAttachment.TicketId);

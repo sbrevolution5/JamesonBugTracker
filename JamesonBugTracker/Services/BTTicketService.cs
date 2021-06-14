@@ -358,6 +358,7 @@ namespace JamesonBugTracker.Services
                                                     .Include(t => t.TicketType)
                                                     .Include(t => t.Project)
                                                     .Include(t => t.DeveloperUser)
+                                                    .Include(t => t.Attachments).ThenInclude(a => a.User)
                                                     .AsNoTracking()
                                                     .FirstOrDefaultAsync(t => t.Id == ticketId);
             return oldTicket;
