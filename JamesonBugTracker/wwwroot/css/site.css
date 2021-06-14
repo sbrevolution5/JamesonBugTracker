@@ -84,3 +84,6 @@ body {
     color: #000;
     background-color: #fd7e14;
 }
+.navbar-badge{
+    font-size: .8rem;
+}

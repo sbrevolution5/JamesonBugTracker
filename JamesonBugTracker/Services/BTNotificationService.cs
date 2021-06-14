@@ -43,7 +43,7 @@ namespace JamesonBugTracker.Services
         {
             BTUser btUser = await _context.Users.FindAsync(notification.RecipientId);
             string btUserEmail = btUser?.Email;
-            string message = notification.Message;
+            string message = $"{notification.Sender.FullName} {notification.Message}";
             try
             {
 
