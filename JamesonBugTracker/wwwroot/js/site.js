@@ -2,6 +2,7 @@
 function toggleDark() {
     var element = document.getElementById("layoutBody")
     element.classList.toggle("dark-mode")
+    element.classList.toggle("accent-lightblue")
     var buttonElement = document.getElementById("darkIcon")
     buttonElement.classList.toggle("fa-moon")
     buttonElement.classList.toggle("fas")

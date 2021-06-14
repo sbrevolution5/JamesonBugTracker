@@ -30,13 +30,12 @@ namespace JamesonBugTracker.Controllers
             _context = context;
             _companyInfoService = companyInfoService;
         }
+        [Authorize(Roles="Admin")]
         [HttpGet]
         public async Task<IActionResult> ManageUserRoles()
         {
             List<ManageUserRolesViewModel> model = new();
-            //TODO Company users
             int companyId = User.Identity.GetCompanyId().Value;
-
             List<BTUser> users = await _companyInfoService.GetAllMembersAsync(companyId);
             foreach (var user in users)
             {
@@ -52,6 +51,10 @@ namespace JamesonBugTracker.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ManageUserRoles(ManageUserRolesViewModel member)
         {
+            if (User.IsInRole("DemoUser"))
+            {
+                return RedirectToAction("DemoError", "Home");
+            }
             BTUser user = _context.Users.Find(member.BTUser.Id);
             IEnumerable<string> roles = await _rolesService.ListUserRolesAsync(user);
             await _rolesService.RemoveUserFromRolesAsync(user, roles); // TODO refactor

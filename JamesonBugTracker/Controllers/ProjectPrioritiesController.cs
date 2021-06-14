@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace JamesonBugTracker.Controllers
 {
-        [Authorize]
+    [Authorize]
     public class ProjectPrioritiesController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -141,6 +141,10 @@ namespace JamesonBugTracker.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            if (User.IsInRole("DemoUser"))
+            {
+                return RedirectToAction("DemoError", "Home");
+            }
             var projectPriority = await _context.ProjectPriority.FindAsync(id);
             _context.ProjectPriority.Remove(projectPriority);
             await _context.SaveChangesAsync();

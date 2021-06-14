@@ -96,7 +96,7 @@ namespace JamesonBugTracker.Controllers
                     {
                         TicketId = newTicket.Id,
                         Title = $"{ticketComment.User.FullName} commented on {newTicket.Title}",
-                        Message = $" commented on {newTicket.Title}",
+                        Message = $" commented on \"{newTicket.Title}\"",
                         Created = DateTimeOffset.Now,
                         SenderId = userId,
                         RecipientId = newTicket.DeveloperUserId
@@ -110,7 +110,7 @@ namespace JamesonBugTracker.Controllers
                         TicketId = newTicket.Id,
                         Title = $" commented on \"{newTicket.Title}\"",
 
-                        Message = $" commented on {newTicket.Title}",
+                        Message = $" commented on \"{newTicket.Title}\"",
                         Created = DateTimeOffset.Now,
                         SenderId = userId,
                         RecipientId = projectManager.Id

@@ -122,6 +122,10 @@ namespace JamesonBugTracker.Controllers
         // GET: Companies/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
+            if (User.IsInRole("DemoUser"))
+            {
+                return RedirectToAction("DemoError", "Home");
+            }
             if (id == null)
             {
                 return NotFound();

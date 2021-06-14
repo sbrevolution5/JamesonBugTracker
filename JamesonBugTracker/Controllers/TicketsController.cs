@@ -91,7 +91,6 @@ namespace JamesonBugTracker.Controllers
                 return NotFound();
             }
             int companyId = User.Identity.GetCompanyId().Value;
-
             var ticket = await _context.Ticket
                 .Include(t => t.DeveloperUser)
                 .Include(t => t.OwnerUser)
@@ -106,7 +105,11 @@ namespace JamesonBugTracker.Controllers
                 .Include(t => t.History)
                 .FirstOrDefaultAsync(m => m.Id == id);
             ViewData["AssignUsers"] = new SelectList(await _projectService.GetMembersWithoutPMAsync(ticket.ProjectId), "Id", "FullName", ticket.DeveloperUserId);
-
+            if (ticket.Project.CompanyId != companyId)
+            {
+                //DONT LET THEM IN?
+                return NotFound();
+            }
             if (ticket == null)
             {
                 return NotFound();
@@ -378,6 +381,10 @@ namespace JamesonBugTracker.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ArchiveConfirmed(int id)
         {
+            if (User.IsInRole("DemoUser"))
+            {
+                return RedirectToAction("DemoError", "Home");
+            }
             var ticket = await _context.Ticket.FindAsync(id);
             ticket.ArchiveDate = DateTime.Now;
             ticket.Archived = true;

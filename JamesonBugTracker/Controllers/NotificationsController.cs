@@ -148,37 +148,7 @@ namespace JamesonBugTracker.Controllers
             return View(notification);
         }
 
-        // GET: Notifications/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var notification = await _context.Notification
-                .Include(n => n.Recipient)
-                .Include(n => n.Ticket)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (notification == null)
-            {
-                return NotFound();
-            }
-
-            return View(notification);
-        }
-
-        // POST: Notifications/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var notification = await _context.Notification.FindAsync(id);
-            _context.Notification.Remove(notification);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
+       
         private bool NotificationExists(int id)
         {
             return _context.Notification.Any(e => e.Id == id);

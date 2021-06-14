@@ -19,24 +19,27 @@ using Microsoft.AspNetCore.Http;
 using static JamesonBugTracker.Extensions.CustomAttributes;
 using JamesonBugTracker.Services.Interfaces;
 using Microsoft.Extensions.Configuration;
+using JamesonBugTracker.Data;
 
 namespace JamesonBugTracker.Areas.Identity.Pages.Account
 {
     [AllowAnonymous]
     public class RegisterModel : PageModel
     {
+        private readonly ApplicationDbContext _context;
         private readonly SignInManager<BTUser> _signInManager;
         private readonly UserManager<BTUser> _userManager;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
         private readonly IBTFileService _fileService;
         private readonly IConfiguration _configuration;
+        private readonly IBTRolesService _roleService;
 
         public RegisterModel(
             UserManager<BTUser> userManager,
             SignInManager<BTUser> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender, IBTFileService fileService, IConfiguration configuration)
+            IEmailSender emailSender, IBTFileService fileService, IConfiguration configuration, ApplicationDbContext context, IBTRolesService roleService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -44,6 +47,8 @@ namespace JamesonBugTracker.Areas.Identity.Pages.Account
             _emailSender = emailSender;
             _fileService = fileService;
             _configuration = configuration;
+            _context = context;
+            _roleService = roleService;
         }
 
         [BindProperty]
@@ -59,6 +64,18 @@ namespace JamesonBugTracker.Areas.Identity.Pages.Account
             [MaxFileSize(2 * 1024 * 1024)]
             [AllowedExtensions(new string[] { ".jpg", ".png" })]
             public IFormFile ImageFile { get; set; }
+            [Display(Name = "Company Icon")]
+            [MaxFileSize(2 * 1024 * 1024)]
+            [AllowedExtensions(new string[] { ".jpg", ".png" })]
+            public IFormFile CompanyImageFile { get; set; }
+            [Required]
+            [DisplayName("Company Name")]
+            [StringLength(50)]
+            public string CompanyName { get; set; }
+            [Required]
+            [DisplayName("Company Description")]
+            [StringLength(500)]
+            public string CompanyDescription { get; set; }
             [Required]
             [EmailAddress]
             [Display(Name = "Email")]
@@ -96,6 +113,16 @@ namespace JamesonBugTracker.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
+                var newCompany = new Company()
+                {
+                    Name = Input.CompanyName,
+                    Description = Input.CompanyDescription,
+
+                    ImageFileContentType = Input.CompanyImageFile is null ? _configuration["DefaultCompanyImage"].Split('.')[1] : Input.CompanyImageFile.ContentType,
+                    ImageFileData = Input.ImageFile is null ? await _fileService.EncodeFileAsync(_configuration["DefaultCompanyImage"]) : await _fileService.ConvertFileToByteArrayAsync(Input.CompanyImageFile)
+                };
+                await _context.AddAsync(newCompany);
+                await _context.SaveChangesAsync();
                 var user = new BTUser {
                     UserName = Input.Email,
                     Email = Input.Email,
@@ -103,11 +130,16 @@ namespace JamesonBugTracker.Areas.Identity.Pages.Account
                     LastName = Input.LastName,
                     AvatarFormFile = Input.ImageFile,
                     AvatarFileContentType = Input.ImageFile is null ? _configuration["DefaultUserImage"].Split('.')[1] : Input.ImageFile.ContentType,
-                    AvatarFileData = Input.ImageFile is null ? await _fileService.EncodeFileAsync(_configuration["DefaultUserImage"]) : await _fileService.ConvertFileToByteArrayAsync(Input.ImageFile)
+                    AvatarFileData = Input.ImageFile is null ? await _fileService.EncodeFileAsync(_configuration["DefaultUserImage"]) : await _fileService.ConvertFileToByteArrayAsync(Input.ImageFile),
+                    CompanyId = newCompany.Id
                 };
+                //List<string> roles = new();
+                //roles.Add("")
+                //await _roleService.RemoveUserFromRolesAsync(user, roles);
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
                 {
+                    await _roleService.AddUserToRoleAsync(user, "Admin");
                     _logger.LogInformation("User created a new account with password.");
 
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
