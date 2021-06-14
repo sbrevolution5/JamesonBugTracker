@@ -54,11 +54,32 @@
                 <td>@ticket.TicketType.Name</td>
                 <td><span class="badge priorityBadge">@ticket.TicketPriority.Name</span></td>
                 <td>@ticket.TicketPriorityId</td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@ticket.Id">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@ticket.Id">Details</a> |
-                    <a asp-action="Archive" asp-route-id="@ticket.Id">Archive</a>
-                </td>
+                @if (User.IsInRole("Admin") || User.IsInRole("ProjectManager"))
+                {
+
+                    <td>
+                        <div class="btn-group">
+                            <a asp-action="Details" asp-route-id="@ticket.Id" class="btn btn-default">Details</a>
+                            <button type="button" class="btn btn-default dropdown-toggle dropdown-icon" data-toggle="dropdown">
+                                <span class="sr-only">Toggle Dropdown</span>
+                            </button>
+                            <div class="dropdown-menu bg-warning" role="menu">
+                                <a class="dropdown-item bg-warning" asp-action="Edit" asp-route-id="@ticket.Id">Edit</a>
+                                <a class="dropdown-item bg-danger" asp-action="Archive" asp-route-id="@ticket.Id">Archive</a>
+
+                            </div>
+                        </div>
+
+
+                    </td>
+                }
+                else
+                {
+                    <td>
+                        <a asp-action="Details" asp-route-id="@ticket.Id" class="btn btn-default">Details</a>
+
+                    </td>
+                }
             </tr>
             }
         </tbody>
@@ -72,11 +93,13 @@
     <script>
     $(document).ready(function () {
         $('#ticketTable').DataTable({
+            "order": [[3, 'dsc']],
             columnDefs: [
                 { targets: [2, 4, 10], visible: false },
                 { "orderData": 2, targets: [1] },
                 { "orderData": 4, targets: [3] },
                 { "orderData": 10, targets: [9] },
+                { "searchable": false, "targets": 11 },
                 { targets: '_all', visible: true }
             ]
         });

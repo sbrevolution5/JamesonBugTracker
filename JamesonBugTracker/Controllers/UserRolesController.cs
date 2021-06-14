@@ -1,4 +1,5 @@
 ﻿using JamesonBugTracker.Data;
+using JamesonBugTracker.Extensions;
 using JamesonBugTracker.Models;
 using JamesonBugTracker.Models.Enums;
 using JamesonBugTracker.Models.ViewModels;
@@ -18,21 +19,25 @@ namespace JamesonBugTracker.Controllers
     public class UserRolesController : Controller
     {
         private readonly IBTRolesService _rolesService;
+        private readonly IBTCompanyInfoService _companyInfoService;
         private readonly UserManager<BTUser> _userManager;
         private readonly ApplicationDbContext _context;
 
-        public UserRolesController(ApplicationDbContext context, UserManager<BTUser> userManager, IBTRolesService bTRolesService)
+        public UserRolesController(ApplicationDbContext context, UserManager<BTUser> userManager, IBTRolesService bTRolesService, IBTCompanyInfoService companyInfoService)
         {
             _userManager = userManager;
             _rolesService = bTRolesService;
             _context = context;
+            _companyInfoService = companyInfoService;
         }
         [HttpGet]
         public async Task<IActionResult> ManageUserRoles()
         {
             List<ManageUserRolesViewModel> model = new();
             //TODO Company users
-            List<BTUser> users = _context.Users.ToList();
+            int companyId = User.Identity.GetCompanyId().Value;
+
+            List<BTUser> users = await _companyInfoService.GetAllMembersAsync(companyId);
             foreach (var user in users)
             {
                 ManageUserRolesViewModel vm = new();

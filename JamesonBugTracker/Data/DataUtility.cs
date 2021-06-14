@@ -535,7 +535,7 @@ namespace JamesonBugTracker.Data
                 FirstName = "Demo",
                 LastName = "Admin",
                 EmailConfirmed = true,
-                CompanyId = company1Id
+                CompanyId = company2Id
             };
             try
             {
