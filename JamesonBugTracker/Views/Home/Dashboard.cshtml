@@ -228,7 +228,7 @@
                                                 <!-- /.col -->
                                                 <div class="col-md-4">
                                                     <p class="text-center">
-                                                        <strong>Goal Completion</strong>
+                                                        <strong>Project Progress by date</strong>
                                                     </p>
 
                                                     <div class="progress-group">
@@ -236,14 +236,14 @@
                                                             <span class="info-box-icon"><i class="far fa-calendar-alt"></i></span>
 
                                                             <div class="info-box-content">
-                                                                <span class="info-box-text">Events</span>
-                                                                <span class="info-box-number">41,410</span>
+                                                                <span class="info-box-text">End Date</span>
+                                                                <span class="info-box-number">@string.Format("{0:MMM dd yyyy}", project.EndDate)</span>
 
                                                                 <div class="progress">
-                                                                    <div class="progress-bar" style="width: 70%"></div>
+                                                                    <div class="progress-bar" id="progress-bar-@project.Id" style="width: 70%"></div>
                                                                 </div>
-                                                                <span class="progress-description">
-                                                                    70% Increase in 30 Days
+                                                                <span class="progress-description" id="progress-description-@project.Id">
+
                                                                 </span>
                                                             </div>
                                                             <!-- /.info-box-content -->
@@ -416,7 +416,7 @@
                         <!-- /.card -->
 
                     </div>
-                                    }
+                }
                 <!-- /.col -->
                 <!-- /.row -->
                 <!-- TABLE: Development Tickets -->
@@ -877,4 +877,36 @@
         i++;
     }
     </script>
+    <script>
+        var endDate
+        var startDate
+        var interval
+        var now
+        var width
+        var barElement
+    </script>
+    @foreach (var project in Model.Projects)
+    {
+        <script>
+        //TODO Get date from c#
+
+        endDate = @project.EndDate.ToUnixTimeSeconds();
+        startDate = @project.StartDate.ToUnixTimeSeconds();
+        interval = endDate - startDate
+        now = @DateTimeOffset.Now.ToUnixTimeSeconds();
+        now -= startDate
+        width = Math.round(now / interval * 100);
+
+        barElement = document.getElementById("progress-bar-@project.Id")
+        barElement.style.width = `${width}%`
+        
+      if (width <= 100) {
+
+          document.getElementById("progress-description-@project.Id").innerText = `${width}%`
+      } else {
+          document.getElementById("progress-description-@project.Id").innerText = `Project End Date was @string.Format("{0:MMM dd yyyy}", project.EndDate)`
+
+    }
+        </script>
+    }
 }
