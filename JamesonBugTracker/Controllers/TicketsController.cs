@@ -263,7 +263,7 @@ namespace JamesonBugTracker.Controllers
                 BTUser projectManager = await _projectService.GetProjectManagerAsync(ticket.ProjectId);
                 BTUser currentUser = await _userManager.GetUserAsync(User);
 
-                Ticket oldTicket = await _ticketService.GetOneTicketNotTrackedAsync(ticket.Id);
+                //Ticket oldTicket = await _ticketService.GetOneTicketNotTrackedAsync(ticket.Id);
                 try
                 {
                     ticket.Updated = DateTime.Now;
@@ -273,7 +273,7 @@ namespace JamesonBugTracker.Controllers
                     notification = new()
                     {
                         TicketId = ticket.Id,
-                        Title = $"Ticket modified on project - {oldTicket.Project.Name}",
+                        Title = $"Ticket modified on project - oldTicket.Project.Name", //TODO FIX BACK TO INTERPOLATED
                         Message = $"Ticket: [{ticket.Id}]:{ticket.Title} updated by {currentUser?.FullName}",
                         Created = DateTime.Now,
                         SenderId = currentUser?.Id,
@@ -326,7 +326,7 @@ namespace JamesonBugTracker.Controllers
                     }
                 }
                 Ticket newTicket = await _ticketService.GetOneTicketNotTrackedAsync(ticket.Id);
-                await _historyService.AddHistoryAsync(oldTicket, newTicket, currentUser.Id);
+                //await _historyService.AddHistoryAsync(oldTicket, newTicket, currentUser.Id);
                 return RedirectToAction("Details", "Projects", new { id = ticket.ProjectId });
 
             }

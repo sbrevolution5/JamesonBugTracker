@@ -371,7 +371,6 @@
                                                                                         <span class="text-danger">Submitter</span> <span>|</span>
                                                                                     }
                                                                                 </span>
-                                                                                <span class="description">@string.Format("{0:MMM dd yyyy}", comment.Created)</span>
                                                                             </div>
                                                                             <!-- /.user-block -->
                                                                         </div>
@@ -498,7 +497,7 @@
                     </form>
                     <form asp-action="UnassignUser">
                         <input hidden name="ticketId" value="@Model.Id" />
-                        <button type="submit" class="btn btn-danger btn-block" disabled>Unassign User</button>
+                        <button type="submit" class="btn btn-danger btn-block" >Unassign User</button>
 
                     </form>
 

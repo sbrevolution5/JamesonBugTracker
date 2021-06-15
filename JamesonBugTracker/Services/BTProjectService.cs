@@ -183,7 +183,7 @@ namespace JamesonBugTracker.Services
 
         public async Task<List<BTUser>> GetProjectMembersByRoleAsync(int projectId, string role)
         {
-            Project project = await GetProjectByIdAsync(projectId);
+            Project project = await _context.Project.Include(p=>p.Members).FirstOrDefaultAsync(p=> p.Id==projectId); // Explicit call to _context.Projects....etc.
             List<BTUser> membersByRole = new();
             foreach (var user in project.Members)
             {
