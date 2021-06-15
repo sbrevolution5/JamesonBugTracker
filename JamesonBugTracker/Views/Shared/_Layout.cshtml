@@ -140,7 +140,7 @@
 
                     <div class="user-panel mt-3 pb-3 mb-3 d-flex">
                         <div class="image">
-                            <img src="@_fileService.ConvertByteArrayToFile(btUser.AvatarFileData, btUser.AvatarFileContentType)" class="img-circle elevation-2" alt="User Image">
+                            <img src="@_fileService.ConvertByteArrayToFile(btUser.AvatarFileData, btUser.AvatarFileContentType)" class="img-circle elevation-2" alt="User Image" style="height:2.1rem">
                         </div>
                         <div class="info">
                             <a asp-area="Identity" asp-page="/Account/Manage/Index" class="d-block">@btUser.FullName</a>

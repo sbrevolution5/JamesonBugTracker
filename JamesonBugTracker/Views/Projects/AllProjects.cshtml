@@ -70,7 +70,7 @@
                                     {
 
                                         <li class="list-inline-item">
-                                            <img alt="Avatar" class="table-avatar" src="@_fileService.ConvertByteArrayToFile(member.AvatarFileData, member.AvatarFileContentType)" data-container="body" data-toggle="popover" data-placement="top" data-trigger="hover" data-content="@member.FullName">
+                                            <img alt="Avatar" class="table-avatar" src="@_fileService.GetUserAvatar(member)" data-container="body" data-toggle="popover" data-placement="top" data-trigger="hover" data-content="@member.FullName">
                                         </li>
                                     }
                                 </ul>
