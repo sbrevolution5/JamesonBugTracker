@@ -26,7 +26,8 @@ namespace JamesonBugTracker.Controllers
         private readonly IBTProjectService _projectService;
         private readonly IEmailSender _emailService;
         private readonly IBTInviteService _inviteService;
-        public InvitesController(ApplicationDbContext context, IDataProtector protector, UserManager<BTUser> userManager, IBTProjectService projectService, IEmailSender emailService, IBTInviteService inviteService)
+        private readonly IBTCompanyInfoService _companyService;
+        public InvitesController(ApplicationDbContext context, IDataProtector protector, UserManager<BTUser> userManager, IBTProjectService projectService, IEmailSender emailService, IBTInviteService inviteService, IBTCompanyInfoService companyService)
         {
             _context = context;
             _protector = protector;
@@ -34,6 +35,7 @@ namespace JamesonBugTracker.Controllers
             _projectService = projectService;
             _emailService = emailService;
             _inviteService = inviteService;
+            _companyService = companyService;
         }
 
         // GET: Invites
@@ -68,11 +70,13 @@ namespace JamesonBugTracker.Controllers
         // GET: Invites/Create
         public async Task<IActionResult> Create()
         {
+            int companyId = User.Identity.GetCompanyId().Value;
+
             InviteViewModel model = new();
 
             if (User.IsInRole("Admin"))
             {
-                model.ProjectsList = new SelectList(_context.Project, "Id", "Name");
+                model.ProjectsList = new SelectList(await _companyService.GetAllProjectsAsync(companyId), "Id", "Name");
             }
             else if (User.IsInRole("ProjectManager"))
             {

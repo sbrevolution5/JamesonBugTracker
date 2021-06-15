@@ -53,6 +53,7 @@
                     </tr>
                 </thead>
                 <tbody>
+
                     @foreach (var project in Model)
                     {
 
@@ -79,23 +80,13 @@
                             </td>
                             <td class="project_progress">
                                 <div class="progress progress-sm">
-                                    <script>
-
-                                        //TODO Get date from c#
-                                        var start = new Date(2012, 6, 2); // Jul 02 2012
-                                        var end = new Date(2012, 8, 2); // Sep 02 2012
-                                        var today = new Date();
-
-                                        var total = end - start;
-                                        var progress = today - start;
-                                        var percent = Math.round(progress / total * 100)
-                                    </script>
-                                    <div class="progress-bar bg-green" role="progressbar" aria-valuenow="@DateTime.Now" aria-valuemin="@project.StartDate" aria-valuemax="@project.EndDate" style="width: 50%">
+                                    <div class="progress-bar" role="progressbar" aria-valuenow="@DateTime.Now" aria-valuemin="@project.StartDate" aria-valuemax="@project.EndDate" style="width: 50%" id="progress-@project.Id">
                                     </div>
                                 </div>
-                                <small>
+                                <small id="progress-percent-@project.Id">
                                     57% Complete
                                 </small>
+
                             </td>
                             <td class="project-state">
                                 <span id="ticketPriorityText" class="badge priorityBadge">@project.ProjectPriority.Name</span>
@@ -135,6 +126,51 @@
     <script src="~/plugins/datatables/jquery.dataTables.js"></script>
     <script src="~/plugins/datatables-bs4/js/dataTables.bootstrap4.js"></script>
     <script src="~/js/MyProjects.js"></script>
+    <script>
+        var endDate
+        var startDate
+        var interval
+        var now
+        var width
+        var barElement
+    </script>
+    @foreach (var project in Model)
+    {
+        <script>
+        //TODO Get date from c#
+
+        endDate = @project.EndDate.ToUnixTimeSeconds();
+        startDate = @project.StartDate.ToUnixTimeSeconds();
+        interval = endDate - startDate
+        now = @DateTimeOffset.Now.ToUnixTimeSeconds();
+        now -= startDate
+        width = Math.round(now / interval * 100);
+
+        barElement = document.getElementById("progress-@project.Id")
+        barElement.style.width = `${width}%`
+        if (width >= 100) {
+            barElement.classList.toggle("bg-success")
+        }else if (width > 85) {
+          barElement.classList.toggle("bg-danger")
+          barElement.classList.toggle("progress-bar-striped")
+      } else if (width >50 && width <=85) {
+          barElement.classList.toggle("bg-warning")
+          barElement.classList.toggle("progress-bar-striped")
+      } else {
+          barElement.classList.toggle("bg-primary")
+          barElement.classList.toggle("progress-bar-striped")
+      }
+      if (width <= 100) {
+
+          document.getElementById("progress-percent-@project.Id").innerText = `${width}%`
+      } else {
+          document.getElementById("progress-percent-@project.Id").innerText = `Project End Date was @string.Format("{0:MMM dd yyyy}", project.StartDate)`
+
+    }
+        </script>
+    }
+
+
     <script>
         $(document).ready(function () {
             $('#projectTable').DataTable();

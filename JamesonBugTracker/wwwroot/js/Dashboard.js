@@ -1,4 +1,8 @@
-﻿
+﻿function projCharts(projId,i,priData,typeData,statusData) {//Priority Chart JS
+    newDoughnutChart($`#priorityChart-${projId}`, ['Urgent', 'High', 'Medium', 'Low'], priData[i])
+    newDoughnutChart($`#typeChart-${projId}`, ['Maintenance', 'UI', 'Runtime', 'New Development'], typeData[i])
+    newDoughnutChart($`#statusChart-${projId}`, ['Archived', 'Resolved', 'Testing', 'Development', 'Unassigned', 'New'], statusData[i])
+}
 function charts() {//Priority Chart JS
     newDoughnutChart("#devPriorityChart", ['Urgent', 'High', 'Medium', 'Low'], devPriority)
     newDoughnutChart("#devTypeChart", ['Maintenance', 'UI', 'Runtime', 'New Development'], devTypes)

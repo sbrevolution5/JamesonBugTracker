@@ -58,14 +58,15 @@
                         {
 
                             <span class="info-box-text">Unassigned Tickets</span>
-                            <span class="info-box-number">@Model.UnassignedTickets.Count
-                            <a asp-controller="Tickets" asp-action="UnassignedTickets" class="float-right btn btn-outline-danger btn-sm">View Unassigned <i class="fas fa-arrow-right"></i></a>
-                        </span>
+                            <span class="info-box-number">
+                                @Model.UnassignedTickets.Count
+                                <a asp-controller="Tickets" asp-action="UnassignedTickets" class="float-right btn btn-outline-danger btn-sm">View Unassigned <i class="fas fa-arrow-right"></i></a>
+                            </span>
                         }
                         else
                         {
                             <span class="info-box-text">Total Tickets</span>
-                            <span class="info-box-number"><a asp-controller="Tickets" asp-action="UnassignedTickets">@(Model.DevelopmentTickets.Count+Model.SubmittedTickets.Count)</a></span>
+                            <span class="info-box-number"><a asp-controller="Tickets" asp-action="UnassignedTickets">@(Model.DevelopmentTickets.Count + Model.SubmittedTickets.Count)</a></span>
                         }
                     </div>
                     <!-- /.info-box-content -->
@@ -97,7 +98,6 @@
                         <span class="info-box-text">Projects</span>
                         @if (hasProjects)
                         {
-
                             <span class="info-box-number">@Model.Projects.Count</span>
                         }
                     </div>
@@ -147,7 +147,7 @@
                                     if (i == 0)
                                     {
                                         <div class="tab-pane fade" id="custom-tabs-two-@project.Id" role="tabpanel" aria-labelledby="custom-tabs-two-@project.Id-tab">
-                                            <div class="row" id="@project.Id-chart">
+                                            <div class="row" id="project-@project.Id-chart">
 
                                                 <div class="col-md-8">
                                                     <p class="text-center">
@@ -156,7 +156,71 @@
 
                                                     <div class="chart">
                                                         <!-- Sales Chart Canvas -->
-                                                        <canvas id="salesChart" height="180" style="height: 180px;"></canvas>
+                                                        <div class="row">
+                                                            <div class="col-md-4">
+
+                                                                <!-- DONUT CHART Type -->
+                                                                <div class="card card-danger">
+                                                                    <div class="card-header">
+                                                                        <h3 class="card-title">Ticket Types</h3>
+
+                                                                        <div class="card-tools">
+                                                                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                                                                <i class="fas fa-minus"></i>
+                                                                            </button>
+
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="card-body">
+                                                                        <canvas id="typeChart-@project.Id" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                                                                    </div>
+                                                                    <!-- /.card-body -->
+                                                                </div>
+                                                                <!-- /.card -->
+                                                            </div>
+                                                            <!-- DONUT CHART Status -->
+                                                            <div class="col-md-4">
+
+                                                                <div class="card card-danger">
+                                                                    <div class="card-header">
+                                                                        <h3 class="card-title">Ticket Status</h3>
+
+                                                                        <div class="card-tools">
+                                                                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                                                                <i class="fas fa-minus"></i>
+                                                                            </button>
+
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="card-body">
+                                                                        <canvas id="statusChart-@project.Id" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                                                                    </div>
+                                                                    <!-- /.card-body -->
+                                                                </div>
+                                                                <!-- /.card -->
+                                                            </div>
+                                                            <!-- DONUT CHART Priority-->
+                                                            <div class="col-md-4">
+
+                                                                <div class="card card-danger">
+                                                                    <div class="card-header">
+                                                                        <h3 class="card-title">Ticket Priority</h3>
+
+                                                                        <div class="card-tools">
+                                                                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                                                                <i class="fas fa-minus"></i>
+                                                                            </button>
+
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="card-body">
+                                                                        <canvas id="priorityChart-@project.Id" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                                                                    </div>
+                                                                    <!-- /.card-body -->
+                                                                </div>
+                                                                <!-- /.card -->
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                     <!-- /.chart-responsive -->
                                                     <a class="btn btn-primary" asp-controller="Projects" asp-action="Details" asp-route-id="@project.Id">See More Details</a>
@@ -168,11 +232,23 @@
                                                     </p>
 
                                                     <div class="progress-group">
-                                                        Add Products to Cart
-                                                        <span class="float-right"><b>160</b>/200</span>
-                                                        <div class="progress progress-sm">
-                                                            <div class="progress-bar bg-primary" style="width: 80%"></div>
+                                                        <div class="info-box bg-gradient-warning">
+                                                            <span class="info-box-icon"><i class="far fa-calendar-alt"></i></span>
+
+                                                            <div class="info-box-content">
+                                                                <span class="info-box-text">Events</span>
+                                                                <span class="info-box-number">41,410</span>
+
+                                                                <div class="progress">
+                                                                    <div class="progress-bar" style="width: 70%"></div>
+                                                                </div>
+                                                                <span class="progress-description">
+                                                                    70% Increase in 30 Days
+                                                                </span>
+                                                            </div>
+                                                            <!-- /.info-box-content -->
                                                         </div>
+                                                        <!-- /.info-box -->
                                                     </div>
                                                     <!-- /.progress-group -->
 
@@ -212,14 +288,78 @@
                                     {
 
                                         <div class="tab-pane fade" id="custom-tabs-two-@project.Id" role="tabpanel" aria-labelledby="custom-tabs-two-@project.Id-tab">
-                                            <div class="row" id="@project.Id-chart">
+                                            <div class="row" id="project-@project.Id-chart">
                                                 <div class="col-md-8">
                                                     <p class="text-center">
                                                         <strong>@project.Name</strong>
                                                     </p>
                                                     <div class="chart">
                                                         <!-- Sales Chart Canvas -->
-                                                        <canvas id="salesChart" height="180" style="height: 180px;"></canvas>
+                                                        <div class="row">
+                                                            <div class="col-md-4">
+
+                                                                <!-- DONUT CHART Type -->
+                                                                <div class="card card-danger">
+                                                                    <div class="card-header">
+                                                                        <h3 class="card-title">Ticket Types</h3>
+
+                                                                        <div class="card-tools">
+                                                                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                                                                <i class="fas fa-minus"></i>
+                                                                            </button>
+
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="card-body">
+                                                                        <canvas id="typeChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                                                                    </div>
+                                                                    <!-- /.card-body -->
+                                                                </div>
+                                                                <!-- /.card -->
+                                                            </div>
+                                                            <!-- DONUT CHART Status -->
+                                                            <div class="col-md-4">
+
+                                                                <div class="card card-danger">
+                                                                    <div class="card-header">
+                                                                        <h3 class="card-title">Ticket Status</h3>
+
+                                                                        <div class="card-tools">
+                                                                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                                                                <i class="fas fa-minus"></i>
+                                                                            </button>
+
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="card-body">
+                                                                        <canvas id="statusChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                                                                    </div>
+                                                                    <!-- /.card-body -->
+                                                                </div>
+                                                                <!-- /.card -->
+                                                            </div>
+                                                            <!-- DONUT CHART Priority-->
+                                                            <div class="col-md-4">
+
+                                                                <div class="card card-danger">
+                                                                    <div class="card-header">
+                                                                        <h3 class="card-title">Ticket Priority</h3>
+
+                                                                        <div class="card-tools">
+                                                                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                                                                <i class="fas fa-minus"></i>
+                                                                            </button>
+
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="card-body">
+                                                                        <canvas id="priorityChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                                                                    </div>
+                                                                    <!-- /.card-body -->
+                                                                </div>
+                                                                <!-- /.card -->
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                     <!-- /.chart-responsive -->
                                                     <a class="btn btn-primary" asp-controller="Projects" asp-action="Details" asp-route-id="@project.Id">See More Details</a>
@@ -276,7 +416,7 @@
                         <!-- /.card -->
 
                     </div>
-                }
+                                    }
                 <!-- /.col -->
                 <!-- /.row -->
                 <!-- TABLE: Development Tickets -->
@@ -321,53 +461,53 @@
                                                 <tbody>
                                                     @foreach (var ticket in Model.UnresolvedDevelopmentTickets)
                                                     {
-                                                    <tr>
-                                                        <td><a asp-action="Details" asp-controller="Tickets" asp-route-id="@ticket.Id">@ticket.Title</a></td>
-                                                        <td>@string.Format("{0:MMM dd yyyy}", ticket.Created)</td>
-                                                        <td>@(ticket.Created.ToUnixTimeSeconds())</td>
+                                                        <tr>
+                                                            <td><a asp-action="Details" asp-controller="Tickets" asp-route-id="@ticket.Id">@ticket.Title</a></td>
+                                                            <td>@string.Format("{0:MMM dd yyyy}", ticket.Created)</td>
+                                                            <td>@(ticket.Created.ToUnixTimeSeconds())</td>
 
-                                                        <td>@string.Format("{0:MM/dd/yyyy hh:mm tt}", ticket.Updated)</td>
-                                                        @if (ticket.Updated is not null)
-                                                        {
+                                                            <td>@string.Format("{0:MM/dd/yyyy hh:mm tt}", ticket.Updated)</td>
+                                                            @if (ticket.Updated is not null)
+                                                            {
 
-                                                            <td>@(ticket.Updated.Value.ToUnixTimeSeconds())</td>
-                                                        }
-                                                        else
-                                                        {
-                                                            <td></td>
-                                                        }
-                                                        <td>@ticket.OwnerUser?.FullName</td>
-                                                        <td>@ticket.TicketType.Name</td>
-                                                        <td><span class="badge priorityBadge">@ticket.TicketPriority.Name</span></td>
-                                                        <td>@ticket.TicketPriorityId</td>
-                                                        
+                                                                <td>@(ticket.Updated.Value.ToUnixTimeSeconds())</td>
+                                                            }
+                                                            else
+                                                            {
+                                                                <td></td>
+                                                            }
+                                                            <td>@ticket.OwnerUser?.FullName</td>
+                                                            <td>@ticket.TicketType.Name</td>
+                                                            <td><span class="badge priorityBadge">@ticket.TicketPriority.Name</span></td>
+                                                            <td>@ticket.TicketPriorityId</td>
+
                                                             @if (User.IsInRole("Admin") || User.IsInRole("ProjectManager"))
                                                             {
 
-                                                            <td>
-                                                                <div class="btn-group">
-                                                                    <a asp-action="Details" asp-controller="Tickets" asp-route-id="@ticket.Id" class="btn btn-default">Details</a>
-                                                                    <button type="button" class="btn btn-default dropdown-toggle dropdown-icon" data-toggle="dropdown">
-                                                                        <span class="sr-only">Toggle Dropdown</span>
-                                                                    </button>
-                                                                    <div class="dropdown-menu bg-warning" role="menu">
-                                                                        <a class="dropdown-item bg-warning" asp-action="Edit" asp-controller="Tickets" asp-route-id="@ticket.Id">Edit</a>
-                                                                        <a class="dropdown-item bg-danger" asp-action="Archive" asp-controller="Tickets" asp-route-id="@ticket.Id">Archive</a>
+                                                                <td>
+                                                                    <div class="btn-group">
+                                                                        <a asp-action="Details" asp-controller="Tickets" asp-route-id="@ticket.Id" class="btn btn-default">Details</a>
+                                                                        <button type="button" class="btn btn-default dropdown-toggle dropdown-icon" data-toggle="dropdown">
+                                                                            <span class="sr-only">Toggle Dropdown</span>
+                                                                        </button>
+                                                                        <div class="dropdown-menu bg-warning" role="menu">
+                                                                            <a class="dropdown-item bg-warning" asp-action="Edit" asp-controller="Tickets" asp-route-id="@ticket.Id">Edit</a>
+                                                                            <a class="dropdown-item bg-danger" asp-action="Archive" asp-controller="Tickets" asp-route-id="@ticket.Id">Archive</a>
 
+                                                                        </div>
                                                                     </div>
-                                                                </div>
 
 
-                                                            </td>
-                                                        }
-                                                        else
-                                                        {
-                                                            <td>
-                                                                <a asp-action="Details" asp-route-id="@ticket.Id" class="btn btn-default">Details</a>
+                                                                </td>
+                                                            }
+                                                            else
+                                                            {
+                                                                <td>
+                                                                    <a asp-action="Details" asp-route-id="@ticket.Id" class="btn btn-default">Details</a>
 
-                                                            </td>
-                                                        }
-                                                            
+                                                                </td>
+                                                            }
+
                                                         </tr>
                                                     }
                                                 </tbody>
@@ -474,53 +614,53 @@
                                                 <tbody>
                                                     @foreach (var ticket in Model.SubmittedTickets)
                                                     {
-                                                    <tr>
-                                                        <td><a asp-action="Details" asp-controller="Tickets" asp-route-id="@ticket.Id">@ticket.Title</a></td>
-                                                        <td>@string.Format("{0:MMM dd yyyy}", ticket.Created)</td>
-                                                        <td>@(ticket.Created.ToUnixTimeSeconds())</td>
-                                                        <td>@string.Format("{0:MM/dd/yyyy hh:mm tt}", ticket.Updated)</td>
-                                                        @if (ticket.Updated is not null)
-                                                        {
+                                                        <tr>
+                                                            <td><a asp-action="Details" asp-controller="Tickets" asp-route-id="@ticket.Id">@ticket.Title</a></td>
+                                                            <td>@string.Format("{0:MMM dd yyyy}", ticket.Created)</td>
+                                                            <td>@(ticket.Created.ToUnixTimeSeconds())</td>
+                                                            <td>@string.Format("{0:MM/dd/yyyy hh:mm tt}", ticket.Updated)</td>
+                                                            @if (ticket.Updated is not null)
+                                                            {
 
-                                                            <td>@(ticket.Updated.Value.ToUnixTimeSeconds())</td>
-                                                        }
-                                                        else
-                                                        {
-                                                            <td></td>
-                                                        }
+                                                                <td>@(ticket.Updated.Value.ToUnixTimeSeconds())</td>
+                                                            }
+                                                            else
+                                                            {
+                                                                <td></td>
+                                                            }
 
-                                                        <td>@ticket.DeveloperUser?.FullName</td>
-                                                        <td>@ticket.TicketType.Name</td>
-                                                        <td>@ticket.TicketStatus.Name</td>
-                                                        <td><span class="badge priorityBadge">@ticket.TicketPriority.Name</span></td>
-                                                        <td>@ticket.TicketPriorityId</td>
-                                                        @if (User.IsInRole("Admin") || User.IsInRole("ProjectManager"))
-                                                        {
+                                                            <td>@ticket.DeveloperUser?.FullName</td>
+                                                            <td>@ticket.TicketType.Name</td>
+                                                            <td>@ticket.TicketStatus.Name</td>
+                                                            <td><span class="badge priorityBadge">@ticket.TicketPriority.Name</span></td>
+                                                            <td>@ticket.TicketPriorityId</td>
+                                                            @if (User.IsInRole("Admin") || User.IsInRole("ProjectManager"))
+                                                            {
 
-                                                            <td>
-                                                                <div class="btn-group">
-                                                                    <a asp-action="Details" asp-route-id="@ticket.Id" asp-controller="Tickets" class="btn btn-default">Details</a>
-                                                                    <button type="button" class="btn btn-default dropdown-toggle dropdown-icon" data-toggle="dropdown">
-                                                                        <span class="sr-only">Toggle Dropdown</span>
-                                                                    </button>
-                                                                    <div class="dropdown-menu bg-warning" role="menu">
-                                                                        <a class="dropdown-item bg-warning" asp-action="Edit" asp-controller="Tickets" asp-route-id="@ticket.Id">Edit</a>
-                                                                        <a class="dropdown-item bg-danger" asp-action="Archive" asp-controller="Tickets" asp-route-id="@ticket.Id">Archive</a>
+                                                                <td>
+                                                                    <div class="btn-group">
+                                                                        <a asp-action="Details" asp-route-id="@ticket.Id" asp-controller="Tickets" class="btn btn-default">Details</a>
+                                                                        <button type="button" class="btn btn-default dropdown-toggle dropdown-icon" data-toggle="dropdown">
+                                                                            <span class="sr-only">Toggle Dropdown</span>
+                                                                        </button>
+                                                                        <div class="dropdown-menu bg-warning" role="menu">
+                                                                            <a class="dropdown-item bg-warning" asp-action="Edit" asp-controller="Tickets" asp-route-id="@ticket.Id">Edit</a>
+                                                                            <a class="dropdown-item bg-danger" asp-action="Archive" asp-controller="Tickets" asp-route-id="@ticket.Id">Archive</a>
 
+                                                                        </div>
                                                                     </div>
-                                                                </div>
 
 
-                                                            </td>
-                                                        }
-                                                        else
-                                                        {
-                                                            <td>
-                                                                <a asp-action="Details" asp-route-id="@ticket.Id" class="btn btn-default">Details</a>
+                                                                </td>
+                                                            }
+                                                            else
+                                                            {
+                                                                <td>
+                                                                    <a asp-action="Details" asp-route-id="@ticket.Id" class="btn btn-default">Details</a>
 
-                                                            </td>
-                                                        }
-                                                    </tr>
+                                                                </td>
+                                                            }
+                                                        </tr>
                                                     }
                                                 </tbody>
                                             </table>
@@ -650,9 +790,10 @@
 @section Scripts{
     <script src="~/js/PriorityBadge.js"></script>
     <script>
-        
+
         $(document).ready(function () {
             $('#developmentTable').DataTable({
+                "responsive":true,
                 "order": [[3, 'dsc']],
                 columnDefs: [
                     { targets: [2,4,8], visible: false },
@@ -676,7 +817,7 @@
             });
             @if (hasProjects)
             {
-                @:$('#custom-tabs-two-@Model.Projects.OrderByDescending(p=> p.Tickets.Count).First().Id').tab('show')
+                @:$('#custom-tabs-two-@Model.Projects.OrderByDescending(p => p.Tickets.Count).First().Id').tab('show')
             }
         });</script>
 
@@ -688,21 +829,52 @@
         let devPriority = [0, 0, 0, 0]
         @foreach (var ticket in Model.UnresolvedDevelopmentTickets)
         {
-            @:devTypes[0+@(ticket.TicketTypeId-1)] += 1
-            @:devStatuses[0+@(ticket.TicketStatusId-1)]++
-            @:devPriority[0+@(ticket.TicketPriorityId-1)]++
+            @:devTypes[0+@(ticket.TicketTypeId - 1)] += 1
+            @:devStatuses[0+@(ticket.TicketStatusId - 1)]++
+            @:devPriority[0+@(ticket.TicketPriorityId - 1)]++
         }
         let subTypes = [0, 0, 0, 0]
         let subStatuses = [0,0,0,0,0,0]
         let subPriority = [0, 0, 0, 0]
         @foreach (var ticket in Model.SubmittedTickets)
         {
-            @:subTypes[0+@(ticket.TicketTypeId-1)] += 1
-            @:subStatuses[0+@(ticket.TicketStatusId-1)]++
-            @:subPriority[0+@(ticket.TicketPriorityId-1)]++
+            @:subTypes[0+@(ticket.TicketTypeId - 1)] += 1
+            @:subStatuses[0+@(ticket.TicketStatusId - 1)]++
+            @:subPriority[0+@(ticket.TicketPriorityId - 1)]++
+        }
+        var typesArray
+        var statusesArray
+        var priorityArray
+        let i = 0
+        let tempTypes = [0, 0, 0, 0]
+        let tempStatuses = [0,0,0,0,0,0]
+        let tempPriority = [0, 0, 0, 0]
+    @foreach (var project in Model.Projects)
+    {
+        @:tempTypes= []
+        @:tempStatuses= []
+        @:tempPriority= []
+        @foreach (var ticket in project.Tickets)
+        {
+            @:tempTypes[0+@(ticket.TicketTypeId - 1)] += 1
+            @:tempStatuses[0+@(ticket.TicketStatusId - 1)]++
+            @:tempPriority[0 +@(ticket.TicketPriorityId - 1)]++
+        }
+        @:typesArray.push(subTypes)
+        @:statusesArray.push(tempStatuses)
+        @:priorityArray.push(tempPriority)
+            @:i++
         }
     </script>
     <script src="~/js/chartBasics.js"></script>
 
     <script src="~/js/Dashboard.js"></script>
+    <script>
+        @{int i = 0; }
+    @foreach (var project in Model.Projects)
+    {
+        @:projCharts(@project.Id, @i, priorityArray, typesArray, statusesArray)
+        i++;
+    }
+    </script>
 }

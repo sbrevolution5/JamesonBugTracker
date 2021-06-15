@@ -1,9 +1,11 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @using JamesonBugTracker.Services.Interfaces
+@using JamesonBugTracker.Extensions
 @inject SignInManager<BTUser> SignInManager
 @inject UserManager<BTUser> UserManager
 @inject IBTFileService _fileService
 @inject IBTNotificationService _notificationService
+@inject IBTTicketService _ticketService
 @{
     var userId = UserManager.GetUserId(User);
     var unseenCount = (await _notificationService.GetUnseenRecievedNotificationsAsync(userId)).ToList().Count;
@@ -32,7 +34,7 @@
     <partial name="_LogoutPartial" />
     <div class="wrapper">
         <div class="preloader flex-column justify-content-center align-items-center">
-            <img class="animation__wobble" src="~/img/JamesonSmall.png" alt="JamesonLogo" height="300" width="438">
+            <img  src="~/img/Jamesonani.gif" alt="JamesonLogo" height="300" width="438">
         </div>
         <!-- Navbar -->
         <nav class="main-header navbar navbar-expand navbar-dark">
@@ -43,15 +45,6 @@
                 </li>
                 <li class="nav-item d-none d-sm-inline-block">
                     <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Dashboard">Dashboard</a>
-                </li>
-                <li class="nav-item d-none d-sm-inline-block">
-                    <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Landing">landing page</a>
-                </li>
-                <li>
-                    <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                </li>
-                <li class="nav-item d-none d-sm-inline-block">
-                    <a href="#" class="nav-link">Contact</a>
                 </li>
             </ul>
 
@@ -196,6 +189,23 @@
                                         <p>My Tickets</p>
                                     </a>
                                 </li>
+                                @if (User.IsInRole("Admin") || User.IsInRole("ProjectManager"))
+                                {
+                                    <li class="nav-item">
+                                        <a asp-controller="Tickets" asp-action="UnassignedTickets" class="nav-link">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p>Unassigned Tickets</p>
+                                            @{
+                                                var companyId = User.Identity.GetCompanyId().Value;
+                                                var unassignedCount = (await _ticketService.GetAllUnassignedTicketsAsync(companyId)).Count;
+                                            }
+                                            @if (unassignedCount > 0)
+                                            {
+                                                <span class="badge badge-danger navbar-badge">@unassignedCount</span>
+                                            }
+                                        </a>
+                                    </li>
+                                }
                                 <li class="nav-item">
                                     <a asp-controller="Tickets" asp-action="Create" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>

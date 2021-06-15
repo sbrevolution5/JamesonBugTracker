@@ -27,7 +27,7 @@ namespace JamesonBugTracker.Models
         [DataType(DataType.Date)]
         public DateTimeOffset StartDate { get; set; }
         
-        [DisplayName("Start Date")]
+        [DisplayName("End Date")]
         [DataType(DataType.Date)]
         public DateTimeOffset EndDate { get; set; }
         
