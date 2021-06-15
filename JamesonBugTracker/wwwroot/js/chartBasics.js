@@ -12,7 +12,6 @@ function darkSwap() {
         //Light colors
         backgroundColor = ['#dc3545', '#fd7e14', '#ffc108', '#27a745', '#1385ff', '#6f42c1',]
         textColor = '#202529'
-
     }
     charts()
 }
