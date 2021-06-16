@@ -103,6 +103,7 @@ namespace JamesonBugTracker.Controllers
                 .Include(t => t.Comments)
                 .ThenInclude(c => c.User)
                 .Include(t => t.History)
+                .AsSplitQuery()
                 .FirstOrDefaultAsync(m => m.Id == id);
             ViewData["AssignUsers"] = new SelectList(await _projectService.GetMembersWithoutPMAsync(ticket.ProjectId), "Id", "FullName", ticket.DeveloperUserId);
             if (ticket.Project.CompanyId != companyId)

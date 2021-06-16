@@ -34,7 +34,7 @@ namespace JamesonBugTracker.Controllers
         }
 
         // GET: Companies
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
             return RedirectToAction("Details", new { id = User.Identity.GetCompanyId() });
 
