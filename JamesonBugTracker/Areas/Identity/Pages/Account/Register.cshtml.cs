@@ -119,7 +119,7 @@ namespace JamesonBugTracker.Areas.Identity.Pages.Account
                     Description = Input.CompanyDescription,
 
                     ImageFileContentType = Input.CompanyImageFile is null ? _configuration["DefaultCompanyImage"].Split('.')[1] : Input.CompanyImageFile.ContentType,
-                    ImageFileData = Input.ImageFile is null ? await _fileService.EncodeFileAsync(_configuration["DefaultCompanyImage"]) : await _fileService.ConvertFileToByteArrayAsync(Input.CompanyImageFile)
+                    ImageFileData = Input.CompanyImageFile is null ? await _fileService.EncodeFileAsync(_configuration["DefaultCompanyImage"]) : await _fileService.ConvertFileToByteArrayAsync(Input.CompanyImageFile)
                 };
                 await _context.AddAsync(newCompany);
                 await _context.SaveChangesAsync();

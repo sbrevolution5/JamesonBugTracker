@@ -1,48 +1,278 @@
 ﻿@model JamesonBugTracker.Models.Company
-
+@using JamesonBugTracker.Services.Interfaces
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = Model.Name + " Details";
 }
+@inject IBTFileService _fileService
+@inject IBTTicketService _ticketService
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-6">
+                <h1 class="m-0">Company Details</h1>
 
-<h1>Details</h1>
+            </div><!-- /.col -->
+            <div class="col-6 text-right">
+                @if (User.IsInRole("ProjectManager") || User.IsInRole("Admin"))
+                {
 
-<div>
-    <h4>Company</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Description)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ImageFileName)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ImageFileName)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ImageFileData)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ImageFileData)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ImageFileContentType)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ImageFileContentType)
-        </dd>
-    </dl>
+                    <a class="btn btn-warning" asp-action="Edit" asp-route-id="@Model.Id">Edit</a>
+                }
+
+            </div>
+        </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-3">
+
+            <!-- Profile Image -->
+            <div class="card card-primary card-outline">
+                <div class="card-body box-profile">
+                    <div class="text-center">
+                        <img class="profile-user-img img-fluid img-circle member-img"
+                             src="@_fileService.ConvertByteArrayToFile(Model.ImageFileData,Model.ImageFileContentType)"
+                             alt="Project Icon">
+                    </div>
+
+                    <h3 class="profile-username text-center">@Model.Name</h3>
+
+                    <p class="text-muted ">@Model.Description</p>
+
+                    <ul class="list-group list-group-unbordered mb-3">
+                        <li class="list-group-item">
+                            @* <b>Start Date</b> <a class="float-right">@string.Format("{0:MMM dd yyyy}", Model.Project.StartDate)</a>*@
+                        </li>
+                        <li class="list-group-item">
+                            @*<b>End Date</b> <a class="float-right">@string.Format("{0:MMM dd yyyy}", Model.Project.EndDate)</a>*@
+                        </li>
+                        <li class="list-group-item">
+                            @*<b>Priority</b> <a class="float-right">@Model.Project.ProjectPriority.Name</a>*@
+                        </li>
+                    </ul>
+
+                    <a asp-controller="Projects" asp-action="Create" class="btn btn-primary btn-block"><b>Add Project</b></a>
+                </div>
+                <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+            <!-- About Me Box -->
+            <div class="card card-primary">
+                <div class="card-header">
+                    <h3 class="card-title">Members</h3>
+                </div>
+                <!-- /.card-header -->
+                <div class="card-body">
+                    @*<strong>Project Manager: @projectManager?.FullName</strong>
+                        <hr />
+                        @foreach (var member in Model.Project.Members)
+                        {
+                            <strong><i class="fas fa-book mr-1"></i> @member.FullName</strong>
+
+                            <p class="text-muted">
+                                Number of tickets assigned, number of tickets submitted
+                            </p>
+
+                            <hr>
+                        }*@
+
+                </div>
+                <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+        </div>
+        <!-- /.col -->
+        <div class="col-md-9">
+            <!--Members area-->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Company Members</h3>
+
+                    <div class="card-tools">
+                        <span class="badge badge-secondary">@Model.Members.Count</span>
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                    </div>
+                </div>
+                <!-- /.card-header -->
+                <div class="card-body p-0">
+                    <ul class="users-list clearfix">
+                        @foreach (var member in Model.Members)
+                        {
+                            <li>
+                                <img src="@_fileService.ConvertByteArrayToFile(member.AvatarFileData, member.AvatarFileContentType)" class="member-img" style="" alt="User Image">
+                                <a class="users-list-name" href="#">@member.FullName</a>
+                                <span class="users-list-date">@((await _ticketService.GetAllTicketsByRoleAsync("Submitter", member.Id)).Count) Submitted</span>
+                                <span class="users-list-date">@((await _ticketService.GetAllDeveloperTicketsByResolvedAsync(member.Id, false)).Count) Open Tickets</span>
+                            </li>
+                        }
+                    </ul>
+                    <!-- /.users-list -->
+                </div>
+                <!-- /.card-body -->
+                <div class="card-footer text-center">
+                    <a href="javascript:">View All Users</a>
+                </div>
+                <!-- /.card-footer -->
+            </div>
+            <!--/.card -->
+            <!--Ticket Table-->
+            <div class="card p-2">
+                <div class="card-header">
+                    <h3 class="card-title">Projects</h3>
+
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    <table id="projectTable" class="table table-striped projects">
+                        <thead>
+                            <tr>
+                                <th style="width: 20%">
+                                    Project Name
+                                </th>
+                                <th style="width: 10%">
+                                    Team Members
+                                </th>
+                                <th style="width: 20%">
+                                    Project Progress
+                                </th>
+                                <th style="width: 8%" class="text-center">
+                                    Status
+                                </th>
+                                <th style="width: 25%">
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var project in Model.Projects)
+                            {
+                                <tr>
+                                    <td>
+                                        <a>
+                                            @project.Name
+                                        </a>
+                                        <br />
+                                        <small>
+                                            @string.Format("{0:MMM dd yyyy}", project.StartDate)
+                                        </small>
+                                    </td>
+                                    <td>
+                                        <ul class="list-inline">
+                                            @foreach (var member in project.Members)
+                                            {
+
+                                                <li class="list-inline-item">
+                                                    <img alt="Avatar" class="table-avatar" src="@_fileService.GetUserAvatar(member)" data-container="body" data-toggle="popover" data-placement="top" data-trigger="hover" data-content="@member.FullName">
+                                                </li>
+                                            }
+                                        </ul>
+                                    </td>
+                                    <td class="project_progress">
+                                        <div class="progress progress-sm">
+                                            <div class="progress-bar" role="progressbar" aria-valuenow="@DateTime.Now" aria-valuemin="@project.StartDate" aria-valuemax="@project.EndDate" style="width: 50%" id="progress-@project.Id">
+                                            </div>
+                                        </div>
+                                        <small id="progress-percent-@project.Id">
+                                            57% Complete
+                                        </small>
+
+                                    </td>
+                                    <td class="project-state">
+                                        <span class="badge priorityBadge">@project.ProjectPriority.Name</span>
+                                    </td>
+                                    <td class="project-actions text-right">
+                                        <a asp-action="Edit" asp-route-id="@project.Id">
+                                            <i class="fas fa-pencil-alt">
+                                            </i>Edit
+                                        </a> |
+                                        <a asp-action="Details" asp-route-id="@project.Id">
+                                            <i class="fas fa-folder">
+                                            </i>Details
+                                        </a> |
+                                        <a asp-action="Delete" asp-route-id="@project.Id">
+                                            <i class="fas fa-trash">
+                                            </i>Delete
+                                        </a> |
+                                        <a asp-action="AddMembers" asp-route-id="@project.Id">
+                                            <i class="fas fa-user">
+                                            </i>Assign Users
+                                        </a>
+
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+            <!-- /.card -->
+            <!-- /.card -->
+        </div>
+        <!-- /.col -->
+    </div>
+    <!-- /.row -->
+</div><!-- /.container-fluid -->
+<!-- /.row -->
+
+@section Scripts{
+    <script src="~/js/PriorityBadge.js"></script>
+    <script src="~/plugins/datatables/jquery.dataTables.js"></script>
+    <script src="~/plugins/datatables-bs4/js/dataTables.bootstrap4.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#projectTable').DataTable();
+
+        });
+    </script>
+    <script>
+        var endDate
+        var startDate
+        var interval
+        var now
+        var width
+        var barElement
+    </script>
+    @foreach (var project in Model.Projects)
+    {
+        <script>
+        //TODO Get date from c#
+
+        endDate = @project.EndDate.ToUnixTimeSeconds();
+        startDate = @project.StartDate.ToUnixTimeSeconds();
+        interval = endDate - startDate
+        now = @DateTimeOffset.Now.ToUnixTimeSeconds();
+        now -= startDate
+        width = Math.round(now / interval * 100);
+
+        barElement = document.getElementById("progress-@project.Id")
+        barElement.style.width = `${width}%`
+        if (width >= 100) {
+            barElement.classList.toggle("bg-success")
+        }else if (width > 85) {
+          barElement.classList.toggle("bg-danger")
+          barElement.classList.toggle("progress-bar-striped")
+      } else if (width >50 && width <=85) {
+          barElement.classList.toggle("bg-warning")
+          barElement.classList.toggle("progress-bar-striped")
+      } else {
+          barElement.classList.toggle("bg-primary")
+          barElement.classList.toggle("progress-bar-striped")
+      }
+      if (width <= 100) {
+
+          document.getElementById("progress-percent-@project.Id").innerText = `${width}%`
+      } else {
+          document.getElementById("progress-percent-@project.Id").innerText = `Project End Date was @string.Format("{0:MMM dd yyyy}", project.EndDate)`
+
+    }
+        </script>
+    }
+}

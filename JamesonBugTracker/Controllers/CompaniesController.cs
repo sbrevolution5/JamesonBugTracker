@@ -8,6 +8,10 @@ using Microsoft.EntityFrameworkCore;
 using JamesonBugTracker.Data;
 using JamesonBugTracker.Models;
 using Microsoft.AspNetCore.Authorization;
+using JamesonBugTracker.Extensions;
+using JamesonBugTracker.Services.Interfaces;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 
 namespace JamesonBugTracker.Controllers
 {
@@ -16,28 +20,39 @@ namespace JamesonBugTracker.Controllers
     public class CompaniesController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IBTCompanyInfoService _companyService;
+        private readonly IBTFileService _fileService;
+        private readonly IConfiguration _configuration;
 
-        public CompaniesController(ApplicationDbContext context)
+
+        public CompaniesController(ApplicationDbContext context, IBTCompanyInfoService companyService, IConfiguration configuration, IBTFileService fileService)
         {
             _context = context;
+            _companyService = companyService;
+            _configuration = configuration;
+            _fileService = fileService;
         }
 
         // GET: Companies
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Company.ToListAsync());
+            return RedirectToAction("Details", new { id = User.Identity.GetCompanyId() });
+
         }
 
         // GET: Companies/Details/5
         public async Task<IActionResult> Details(int? id)
         {
+            if (User.Identity.GetCompanyId() != id)
+            {
+                return RedirectToAction("Details", new { id = User.Identity.GetCompanyId() });
+            }
             if (id == null)
             {
                 return NotFound();
             }
 
-            var company = await _context.Company
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var company = await _companyService.GetCompanyInfoByIdAsync(id);
             if (company == null)
             {
                 return NotFound();
@@ -89,7 +104,7 @@ namespace JamesonBugTracker.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,ImageFileName,ImageFileData,ImageFileContentType")] Company company)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description")] Company company, IFormFile imageFile)
         {
             if (id != company.Id)
             {
@@ -100,6 +115,8 @@ namespace JamesonBugTracker.Controllers
             {
                 try
                 {
+                    company.ImageFileContentType = imageFile is null ? _configuration["DefaultCompanyImage"].Split('.')[1] : imageFile.ContentType;
+                    company.ImageFileData = imageFile is null ? await _fileService.EncodeFileAsync(_configuration["DefaultCompanyImage"]) : await _fileService.ConvertFileToByteArrayAsync(imageFile);
                     _context.Update(company);
                     await _context.SaveChangesAsync();
                 }

@@ -75,6 +75,9 @@ namespace JamesonBugTracker.Services
             {
                 company = await _context.Company.Include(c => c.Members)
                                                 .Include(c => c.Projects)
+                                                .ThenInclude(p => p.Members)
+                                                .Include(c => c.Projects)
+                                                .ThenInclude(p => p.ProjectPriority)
                                                 .Include(c => c.Invites)
                                                 .FirstOrDefaultAsync(c => c.Id == companyId);
 

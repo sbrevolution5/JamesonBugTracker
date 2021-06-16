@@ -6,8 +6,11 @@
 @inject IBTFileService _fileService
 @inject IBTNotificationService _notificationService
 @inject IBTTicketService _ticketService
+@inject IBTCompanyInfoService _companyService
 @{
     var userId = UserManager.GetUserId(User);
+    var companyId = User.Identity.GetCompanyId().Value;
+    var company = await _companyService.GetCompanyInfoByIdAsync(companyId);
     var unseenCount = (await _notificationService.GetUnseenRecievedNotificationsAsync(userId)).ToList().Count;
     var notifications = (await _notificationService.GetReceivedNotificationsAsync(userId)).OrderByDescending(n => n.Created).Take(unseenCount > 5 ? unseenCount : 5).ToList();
 }
@@ -145,7 +148,7 @@
                         <div class="info">
                             <a asp-area="Identity" asp-page="/Account/Manage/Index" class="d-block">@btUser.FullName</a>
                         </div>
-                        <div class="info float-right">
+                        <div class="info ml-2">
                             <a href="javascript:document.getElementById('logoutForm').submit();"><i class="fas fa-sign-out-alt"></i></a>
                         </div>
                     </div>
@@ -161,13 +164,20 @@
                         </div>
                     </div>
                 }
-
-
+                <!--Company Panel-->
+                <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+                    <div class="image">
+                        <img src="@_fileService.ConvertByteArrayToFile(company.ImageFileData, company.ImageFileContentType)" class="img-circle elevation-2" alt="User Image" style="height:2.1rem">
+                    </div>
+                    <div class="info">
+                        <a asp-controller="Companies" asp-action="Details" asp-route-id="@companyId" class="d-block">@company.Name<span class="ml-3 text-right"><i class="far fa-building"></i></span></a>
+                    </div>
+                </div>
                 <!-- Sidebar Menu -->
                 <nav class="mt-2">
                     <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                         <!-- Add icons to the links using the .nav-icon class
-                        with font-awesome or any other icon font library -->
+            with font-awesome or any other icon font library -->
                         <li class="nav-item menu-open">
                             <a href="#" class="nav-link">
                                 <i class="nav-icon fas fa-ticket-alt"></i>
@@ -196,7 +206,7 @@
                                             <i class="far fa-circle nav-icon"></i>
                                             <p>Unassigned Tickets</p>
                                             @{
-                                                var companyId = User.Identity.GetCompanyId().Value;
+                                                
                                                 var unassignedCount = (await _ticketService.GetAllUnassignedTicketsAsync(companyId)).Count;
                                             }
                                             @if (unassignedCount > 0)

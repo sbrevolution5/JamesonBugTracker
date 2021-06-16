@@ -23,7 +23,10 @@
 
             </div><!-- /.col -->
             <div class="col-6 text-right">
-                <h2 class="m-0 text-muted">@((await _companyInfoService.GetCompanyInfoByIdAsync(User.Identity.GetCompanyId().Value)).Name)</h2>
+                @{ 
+                                var company = await _companyInfoService.GetCompanyInfoByIdAsync(User.Identity.GetCompanyId().Value);
+                }
+                <h2 class="m-0 text-muted"><img src="@_fileService.ConvertByteArrayToFile(company.ImageFileData, company.ImageFileContentType)" class=" mr-3 img-circle elevation-2" alt="User Image" style="height:2.1rem">@company.Name</h2>
             </div>
         </div><!-- /.row -->
     </div><!-- /.container-fluid -->
@@ -66,7 +69,7 @@
                         else
                         {
                             <span class="info-box-text">Total Tickets</span>
-                            <span class="info-box-number"><a asp-controller="Tickets" asp-action="UnassignedTickets">@(Model.DevelopmentTickets.Count + Model.SubmittedTickets.Count)</a></span>
+                            <span class="info-box-number"><a asp-controller="Tickets" asp-action="MyTickets">@(Model.DevelopmentTickets.Count + Model.SubmittedTickets.Count)</a></span>
                         }
                     </div>
                     <!-- /.info-box-content -->
@@ -119,18 +122,18 @@
                             <ul class="nav nav-tabs" id="project-tabs" role="tablist">
                                 <li class="pt-2 px-3"><h3 class="card-title">Projects</h3></li>
                                 @{ var i = 0;}
-                                @foreach (var project in Model.Projects.OrderByDescending(p => p.Tickets.Count))
+                    @foreach (var project in Model.Projects.OrderByDescending(p => p.Tickets.Count))
                                 {
-                                    @if (i == 0)
+                        @if (i == 0)
                                     {
 
-
+                                <script>console.log("FIRST")</script>
                                         <li class="nav-item">
                                             <a class="nav-link active" id="custom-tabs-two-@project.Id-tab" data-toggle="pill" href="#custom-tabs-two-@project.Id" role="tab" aria-controls="custom-tabs-two-@project." aria-selected="true">@project.Name</a>
                                         </li>
                                     }
                                     else
-                                    {
+                    {
                                         <li class="nav-item">
                                             <a class="nav-link" id="custom-tabs-two-@project.Id-tab" data-toggle="pill" href="#custom-tabs-two-@project.Id" role="tab" aria-controls="custom-tabs-two-@project.Id" aria-selected="false">@project.Name</a>
                                         </li>
@@ -142,10 +145,10 @@
                         <div class="card-body">
                             <div class="tab-content" id="custom-tabs-two-tabContent">
                                 @{ i = 0;}
-                                @foreach (var project in Model.Projects.OrderByDescending(p => p.Tickets.Count))
+                    @foreach (var project in Model.Projects.OrderByDescending(p => p.Tickets.Count))
                                 {
-                                    if (i == 0)
-                                    {
+                        if (i == 0)
+                        {
                                         <div class="tab-pane fade" id="custom-tabs-two-@project.Id" role="tabpanel" aria-labelledby="custom-tabs-two-@project.Id-tab">
                                             <div class="row" id="project-@project.Id-chart">
 
@@ -160,9 +163,9 @@
                                                             <!-- DONUT CHART Type -->
                                                             <div class="col-md-4">
 
-                                                                <div class="card card-danger">
+                                                                <div class="card">
                                                                     <div class="card-header">
-                                                                        <h3 class="card-title">Ticket Status</h3>
+                                                                        <h3 class="card-title">Ticket Type</h3>
 
                                                                         <div class="card-tools">
                                                                             <button type="button" class="btn btn-tool" data-card-widget="collapse">
@@ -181,7 +184,7 @@
                                                             <!-- DONUT CHART Status -->
                                                             <div class="col-md-4">
 
-                                                                <div class="card card-danger">
+                                                                <div class="card">
                                                                     <div class="card-header">
                                                                         <h3 class="card-title">Ticket Status</h3>
 
@@ -202,7 +205,7 @@
                                                             <!-- DONUT CHART Priority-->
                                                             <div class="col-md-4">
 
-                                                                <div class="card card-danger">
+                                                                <div class="card ">
                                                                     <div class="card-header">
                                                                         <h3 class="card-title">Ticket Priority</h3>
 
@@ -277,7 +280,7 @@
                                         </div>
                                     }
                                     else
-                                    {
+                    {
 
                                         <div class="tab-pane fade" id="custom-tabs-two-@project.Id" role="tabpanel" aria-labelledby="custom-tabs-two-@project.Id-tab">
                                             <div class="row" id="project-@project.Id-chart">
@@ -295,7 +298,7 @@
 
                                                                 <div class="card card-danger">
                                                                     <div class="card-header">
-                                                                        <h3 class="card-title">Ticket Status</h3>
+                                                                        <h3 class="card-title">Ticket Type</h3>
 
                                                                         <div class="card-tools">
                                                                             <button type="button" class="btn btn-tool" data-card-widget="collapse">
@@ -469,7 +472,7 @@
                                                                 <td>@(ticket.Updated.Value.ToUnixTimeSeconds())</td>
                                                             }
                                                             else
-                                                            {
+                        {
                                                                 <td></td>
                                                             }
                                                             <td>@ticket.OwnerUser?.FullName</td>
@@ -497,7 +500,7 @@
                                                                 </td>
                                                             }
                                                             else
-                                                            {
+                    {
                                                                 <td>
                                                                     <a asp-action="Details" asp-route-id="@ticket.Id" class="btn btn-default">Details</a>
 
@@ -628,7 +631,7 @@
                                                                 <td>@(ticket.Updated.Value.ToUnixTimeSeconds())</td>
                                                             }
                                                             else
-                                                            {
+                        {
                                                                 <td></td>
                                                             }
 
@@ -657,7 +660,7 @@
                                                                 </td>
                                                             }
                                                             else
-                                                            {
+                    {
                                                                 <td>
                                                                     <a asp-action="Details" asp-route-id="@ticket.Id" class="btn btn-default">Details</a>
 
@@ -796,7 +799,7 @@
 
         $(document).ready(function () {
             $('#developmentTable').DataTable({
-                                            "responsive":true,
+                                "responsive":true,
                 "order": [[3, 'dsc']],
                 columnDefs: [
                     { targets: [2,4,8], visible: false },
@@ -808,7 +811,7 @@
                 ]
             });
             $('#submittedTable').DataTable({
-                                            "order": [[3, 'dsc']],
+                                "order": [[3, 'dsc']],
                 columnDefs: [
                     { targets: [2, 4,9], visible: false },
                     { "orderData": 2, targets: [1] },
@@ -818,7 +821,7 @@
                     { targets: '_all', visible: true }
                 ]
             });
-                                        @if (hasProjects)
+                            @if (hasProjects)
             {
                 @:$('#custom-tabs-two-@Model.Projects.OrderByDescending(p => p.Tickets.Count).First().Id').tab('show')
             }
