@@ -148,7 +148,7 @@
 
                                                 <div class="chart">
                                                     <!-- Charts  -->
-                                                    <div class="row px-2">
+                                                    <div class="row p-2">
                                                         <!-- DONUT CHART Type -->
                                                         <div class="col-md-4">
 
@@ -220,7 +220,7 @@
                                                 <div class="row">
 
                                                     <div class="progress-group">
-                                                        <div class="info-box bg-gradient-warning">
+                                                        <div class="info-box" id="progress-bg-@project.Id">
                                                             <span class="info-box-icon"><i class="far fa-calendar-alt"></i></span>
 
                                                             <div class="info-box-content">
@@ -251,7 +251,7 @@
                                                         }
                                                         <div class="row">
                                                             <div class="col-3">
-                                                                <img src="@_fileService.ConvertByteArrayToFile(project.ImageFileData, project.ImageFileContentType)" class="img-fluid img-circle" />
+                                                                <img src="@_fileService.ConvertByteArrayToFile(project.ImageFileData, project.ImageFileContentType)" class="img-fluid img-circle member-img" />
                                                             </div>
                                                             <div class="col-9">
                                                                 <a class="btn btn-lg btn-primary" asp-controller="Projects" asp-action="Details" asp-route-id="@project.Id">See More Details</a>
@@ -280,7 +280,7 @@
 
                                                 <div class="chart">
                                                     <!-- Charts  -->
-                                                    <div class="row px-2">
+                                                    <div class="row p-2">
                                                         <!-- DONUT CHART Type -->
                                                         <div class="col-md-4">
 
@@ -911,7 +911,8 @@
             var interval
             var now
             var width
-            var barElement
+    var barElement
+    var bgElement
 </script>
 @foreach (var project in Model.Projects)
 {
@@ -925,13 +926,22 @@
         now -= startDate
         width = Math.round(now / interval * 100);
 
+        bgElement = document.getElementById("progress-bg-@project.Id")
         barElement = document.getElementById("progress-bar-@project.Id")
         barElement.style.width = `${width}%`
 
       if (width <= 100) {
-
+          if (width >= 85) {
+              bgElement.classList.toggle("bg-danger")
+          } else if (width >= 50) {
+              bgElement.classList.toggle("bg-warning")
+          } else if (width >= 0) {
+              bgElement.classList.toggle("bg-primary")
+          }
           document.getElementById("progress-description-@project.Id").innerText = `${width}%`
       } else {
+              bgElement.classList.toggle("bg-success")
+
           document.getElementById("progress-description-@project.Id").innerText = `Project End Date was @string.Format("{0:MMM dd yyyy}", project.EndDate)`
 
     }

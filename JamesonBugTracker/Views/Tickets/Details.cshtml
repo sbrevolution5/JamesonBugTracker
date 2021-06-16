@@ -628,9 +628,7 @@
     <script src="~/js/ticketDetails.js"></script>
     <script>
     //TODO this doesn't work right at all......
-    function ajaxReload() {
-        $("#ticketStatusText").text = "New Data";
-    }
+    
      @if (Model.Comments.Count > 0)
             {
                 @:$('#custom-tabs-comments').tab('show')
@@ -651,4 +649,7 @@
         $(window).on("load", ticketStatusBgColor());
         $(window).on("load", ticketTypeBgColor());
     </script>
+<script>
+
+</script>
 }

@@ -63,7 +63,7 @@ $(".assignForm").on("submit", function (e) {
         type: "POST",
         url: "/Tickets/AssignUser",
         data: dataString,
-        success: function () {
+        success: function (result) {
             toastr.success(`${userFullName} assigned to ticket`)
             $("#developerName").text(userFullName)
             $("#ticketStatusText").text("Development")
