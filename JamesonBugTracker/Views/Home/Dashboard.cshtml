@@ -3,11 +3,6 @@
 @using JamesonBugTracker.Extensions
 @{
     ViewData["Title"] = "Dashboard";
-    bool hasProjects = true;
-    if (Model.Projects.Count < 1)
-    {
-        hasProjects = false;
-    }
 }
 @using JamesonBugTracker.Services.Interfaces
 @inject IBTFileService _fileService
@@ -23,8 +18,8 @@
 
             </div><!-- /.col -->
             <div class="col-6 text-right">
-                @{ 
-                                var company = await _companyInfoService.GetCompanyInfoByIdAsync(User.Identity.GetCompanyId().Value);
+                @{
+                    var company = await _companyInfoService.GetCompanyInfoByIdAsync(User.Identity.GetCompanyId().Value);
                 }
                 <h2 class="m-0 text-muted"><img src="@_fileService.ConvertByteArrayToFile(company.ImageFileData, company.ImageFileContentType)" class=" mr-3 img-circle elevation-2" alt="User Image" style="height:2.1rem">@company.Name</h2>
             </div>
@@ -99,10 +94,7 @@
 
                     <div class="info-box-content">
                         <span class="info-box-text">Projects</span>
-                        @if (hasProjects)
-                        {
-                            <span class="info-box-number">@Model.Projects.Count</span>
-                        }
+                        <span class="info-box-number">@Model.Projects.Count</span>
                     </div>
                     <!-- /.info-box-content -->
                 </div>
@@ -114,307 +106,305 @@
 
         <div class="row">
             <div class="col-md-12">
-                @if (hasProjects)
-                {
 
-                    <div class="card card-primary card-tabs">
-                        <div class="card-header p-0 pt-1">
-                            <ul class="nav nav-tabs" id="project-tabs" role="tablist">
-                                <li class="pt-2 px-3"><h3 class="card-title">Projects</h3></li>
-                                @{ var i = 0;}
-                    @foreach (var project in Model.Projects.OrderByDescending(p => p.Tickets.Count))
+
+                <div class="card card-primary card-tabs">
+                    <div class="card-header p-0 pt-1">
+                        <ul class="nav nav-tabs" id="project-tabs" role="tablist">
+                            <li class="pt-2 px-3"><h3 class="card-title">Projects</h3></li>
+                            @{ var i = 0;}
+                            @foreach (var project in Model.Projects.OrderByDescending(p => p.Tickets.Count))
+                            {
+                                @if (i == 0)
                                 {
-                        @if (i == 0)
-                                    {
-                                        <li class="nav-item">
-                                            <a class="nav-link active" id="custom-tabs-two-@project.Id-tab" data-toggle="pill" href="#custom-tabs-two-@project.Id" role="tab" aria-controls="custom-tabs-two-@project." aria-selected="true">@project.Name</a>
-                                        </li>
-                                    }
-                                    else
-                    {
-                                        <li class="nav-item">
-                                            <a class="nav-link" id="custom-tabs-two-@project.Id-tab" data-toggle="pill" href="#custom-tabs-two-@project.Id" role="tab" aria-controls="custom-tabs-two-@project.Id" aria-selected="false">@project.Name</a>
-                                        </li>
-                                    }
-                                    i++;
+                                    <li class="nav-item">
+                                        <a class="nav-link active" id="custom-tabs-two-@project.Id-tab" data-toggle="pill" href="#custom-tabs-two-@project.Id" role="tab" aria-controls="custom-tabs-two-@project." aria-selected="true">@project.Name</a>
+                                    </li>
                                 }
-                            </ul>
-                        </div>
-                        <div class="card-body">
-                            <div class="tab-content" id="custom-tabs-two-tabContent">
-                                @{ i = 0;}
-                    @foreach (var project in Model.Projects.OrderByDescending(p => p.Tickets.Count))
+                                else
                                 {
-                        if (i == 0)
-                        {
-                                        <div class="tab-pane fade" id="custom-tabs-two-@project.Id" role="tabpanel" aria-labelledby="custom-tabs-two-@project.Id-tab">
-                                            <div class="row" id="project-@project.Id-chart">
-
-                                                <div class="col-md-8">
-                                                    <p class="text-center">
-                                                        <strong>@project.Name</strong>
-                                                    </p>
-
-                                                    <div class="chart">
-                                                        <!-- Charts  -->
-                                                        <div class="row">
-                                                            <!-- DONUT CHART Type -->
-                                                            <div class="col-md-4">
-
-                                                                <div class="card">
-                                                                    <div class="card-header">
-                                                                        <h3 class="card-title">Ticket Type</h3>
-
-                                                                        <div class="card-tools">
-                                                                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                                                                                <i class="fas fa-minus"></i>
-                                                                            </button>
-
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="card-body">
-                                                                        <canvas id="projTypeChart-@project.Id" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
-                                                                    </div>
-                                                                    <!-- /.card-body -->
-                                                                </div>
-                                                                <!-- /.card -->
-                                                            </div>
-                                                            <!-- DONUT CHART Status -->
-                                                            <div class="col-md-4">
-
-                                                                <div class="card">
-                                                                    <div class="card-header">
-                                                                        <h3 class="card-title">Ticket Status</h3>
-
-                                                                        <div class="card-tools">
-                                                                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                                                                                <i class="fas fa-minus"></i>
-                                                                            </button>
-
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="card-body">
-                                                                        <canvas id="projStatusChart-@project.Id" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
-                                                                    </div>
-                                                                    <!-- /.card-body -->
-                                                                </div>
-                                                                <!-- /.card -->
-                                                            </div>
-                                                            <!-- DONUT CHART Priority-->
-                                                            <div class="col-md-4">
-
-                                                                <div class="card ">
-                                                                    <div class="card-header">
-                                                                        <h3 class="card-title">Ticket Priority</h3>
-
-                                                                        <div class="card-tools">
-                                                                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                                                                                <i class="fas fa-minus"></i>
-                                                                            </button>
-
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="card-body">
-                                                                        <canvas id="projPriorityChart-@project.Id" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
-                                                                    </div>
-                                                                    <!-- /.card-body -->
-                                                                </div>
-                                                                <!-- /.card -->
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <!-- /.chart-responsive -->
-                                                </div>
-                                                <!-- /.col -->
-                                                <div class="col-md-4">
-                                                    <div class="row">
-
-                                                        <div class="progress-group">
-                                                            <div class="info-box bg-gradient-warning">
-                                                                <span class="info-box-icon"><i class="far fa-calendar-alt"></i></span>
-
-                                                                <div class="info-box-content">
-                                                                    <span class="info-box-text">End Date</span>
-                                                                    <span class="info-box-number">@string.Format("{0:MMM dd yyyy}", project.EndDate)</span>
-
-                                                                    <div class="progress">
-                                                                        <div class="progress-bar" id="progress-bar-@project.Id" style="width: 70%"></div>
-                                                                    </div>
-                                                                    <span class="progress-description" id="progress-description-@project.Id">
-
-                                                                    </span>
-                                                                </div>
-                                                                <!-- /.info-box-content -->
-                                                            </div>
-                                                            <!-- /.info-box -->
-                                                            @if (await _projectService.GetProjectManagerAsync(project.Id) is not null)
-                                                            {
-
-                                                                <div class="row">
-                                                                    <div class="col-4">
-                                                                        <img src="@_fileService.GetUserAvatar(await _projectService.GetProjectManagerAsync(project.Id))" class="img-fluid img-circle" />
-                                                                    </div>
-                                                                    <div class="col-8">
-                                                                        <p><span class="text-bold">Project Manager: </span>@((await _projectService.GetProjectManagerAsync(project.Id)).FullName)</p>
-                                                                    </div>
-                                                                </div>
-                                                            }
-                                                            <div class="row">
-                                                                <div class="col-4">
-                                                                    <img src="@_fileService.ConvertByteArrayToFile(project.ImageFileData, project.ImageFileContentType)" class="img-fluid img-circle" />
-                                                                </div>
-                                                                <div class="col-8">
-                                                                    <a class="btn btn-lg btn-primary" asp-controller="Projects" asp-action="Details" asp-route-id="@project.Id">See More Details</a>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <!-- /.progress-group -->
-
-                                                </div>
-                                                <!-- /.col -->
-                                            </div>
-                                            <!-- /.row -->
-                                        </div>
-                                    }
-                                    else
-                    {
-
-                                        <div class="tab-pane fade" id="custom-tabs-two-@project.Id" role="tabpanel" aria-labelledby="custom-tabs-two-@project.Id-tab">
-                                            <div class="row" id="project-@project.Id-chart">
-
-                                                <div class="col-md-8">
-                                                    <p class="text-center">
-                                                        <strong>@project.Name</strong>
-                                                    </p>
-
-                                                    <div class="chart">
-                                                        <!-- Charts  -->
-                                                        <div class="row">
-                                                            <!-- DONUT CHART Type -->
-                                                            <div class="col-md-4">
-
-                                                                <div class="card card-danger">
-                                                                    <div class="card-header">
-                                                                        <h3 class="card-title">Ticket Type</h3>
-
-                                                                        <div class="card-tools">
-                                                                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                                                                                <i class="fas fa-minus"></i>
-                                                                            </button>
-
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="card-body">
-                                                                        <canvas id="projTypeChart-@project.Id" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
-                                                                    </div>
-                                                                    <!-- /.card-body -->
-                                                                </div>
-                                                                <!-- /.card -->
-                                                            </div>
-                                                            <!-- DONUT CHART Status -->
-                                                            <div class="col-md-4">
-
-                                                                <div class="card card-danger">
-                                                                    <div class="card-header">
-                                                                        <h3 class="card-title">Ticket Status</h3>
-
-                                                                        <div class="card-tools">
-                                                                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                                                                                <i class="fas fa-minus"></i>
-                                                                            </button>
-
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="card-body">
-                                                                        <canvas id="projStatusChart-@project.Id" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
-                                                                    </div>
-                                                                    <!-- /.card-body -->
-                                                                </div>
-                                                                <!-- /.card -->
-                                                            </div>
-                                                            <!-- DONUT CHART Priority-->
-                                                            <div class="col-md-4">
-
-                                                                <div class="card card-danger">
-                                                                    <div class="card-header">
-                                                                        <h3 class="card-title">Ticket Priority</h3>
-
-                                                                        <div class="card-tools">
-                                                                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                                                                                <i class="fas fa-minus"></i>
-                                                                            </button>
-
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="card-body">
-                                                                        <canvas id="projPriorityChart-@project.Id" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
-                                                                    </div>
-                                                                    <!-- /.card-body -->
-                                                                </div>
-                                                                <!-- /.card -->
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <!-- /.chart-responsive -->
-
-                                                </div>
-                                                <!-- /.col -->
-                                                <div class="col-md-4">
-                                                    <div class="row">
-                                                        <div class="col-4">
-                                                            <img src="@_fileService.GetUserAvatar(await _projectService.GetProjectManagerAsync(project.Id))" class="profile-user-img img-fluid img-circle member-img" />
-                                                        </div>
-                                                        <div class="col-8">
-                                                            <p><span class="text-bold">Project Manager: </span>@((await _projectService.GetProjectManagerAsync(project.Id)).FullName)</p>
-                                                        </div>
-                                                    </div>
-                                                    <div class="row">
-                                                        <div class="col-4">
-                                                            <img src="@_fileService.ConvertByteArrayToFile(project.ImageFileData, project.ImageFileContentType)" class="profile-user-img img-fluid img-circle member-img" />
-                                                        </div>
-                                                        <div class="col-8">
-                                                            <a class="btn btn-lg btn-primary" asp-controller="Projects" asp-action="Details" asp-route-id="@project.Id">See More Details</a>
-                                                        </div>
-                                                    </div>
-                                                    <div class="row">
-
-                                                        <div class="progress-group">
-                                                            <div class="info-box bg-gradient-warning">
-                                                                <span class="info-box-icon"><i class="far fa-calendar-alt"></i></span>
-
-                                                                <div class="info-box-content">
-                                                                    <span class="info-box-text">End Date</span>
-                                                                    <span class="info-box-number">@string.Format("{0:MMM dd yyyy}", project.EndDate)</span>
-
-                                                                    <div class="progress">
-                                                                        <div class="progress-bar" id="progress-bar-@project.Id" style="width: 70%"></div>
-                                                                    </div>
-                                                                    <span class="progress-description" id="progress-description-@project.Id">
-
-                                                                    </span>
-                                                                </div>
-                                                                <!-- /.info-box-content -->
-                                                            </div>
-                                                            <!-- /.info-box -->
-                                                        </div>
-                                                    </div>
-                                                    <!-- /.progress-group -->
-
-                                                </div>
-                                                <!-- /.col -->
-                                            </div>
-                                            <!-- /.row -->
-                                        </div>
-                                    }
+                                    <li class="nav-item">
+                                        <a class="nav-link" id="custom-tabs-two-@project.Id-tab" data-toggle="pill" href="#custom-tabs-two-@project.Id" role="tab" aria-controls="custom-tabs-two-@project.Id" aria-selected="false">@project.Name</a>
+                                    </li>
                                 }
-                                @{ i++;}
-                            </div>
-                        </div>
-                        <!-- /.card -->
-
+                                i++;
+                            }
+                        </ul>
                     </div>
-                }
+                    <div class="card-body">
+                        <div class="tab-content" id="custom-tabs-two-tabContent">
+                            @{ i = 0;}
+                            @foreach (var project in Model.Projects.OrderByDescending(p => p.Tickets.Count))
+                            {
+                                if (i == 0)
+                                {
+                                    <div class="tab-pane fade" id="custom-tabs-two-@project.Id" role="tabpanel" aria-labelledby="custom-tabs-two-@project.Id-tab">
+                                        <div class="row" id="project-@project.Id-chart">
+
+                                            <div class="col-md-8">
+                                                <p class="text-center">
+                                                    <strong>@project.Name</strong>
+                                                </p>
+
+                                                <div class="chart">
+                                                    <!-- Charts  -->
+                                                    <div class="row px-2">
+                                                        <!-- DONUT CHART Type -->
+                                                        <div class="col-md-4">
+
+                                                            <div class="card shadow elevation-2">
+                                                                <div class="card-header">
+                                                                    <h3 class="card-title">Ticket Type</h3>
+
+                                                                    <div class="card-tools">
+                                                                        <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                                                            <i class="fas fa-minus"></i>
+                                                                        </button>
+
+                                                                    </div>
+                                                                </div>
+                                                                <div class="card-body">
+                                                                    <canvas id="projTypeChart-@project.Id" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                                                                </div>
+                                                                <!-- /.card-body -->
+                                                            </div>
+                                                            <!-- /.card -->
+                                                        </div>
+                                                        <!-- DONUT CHART Status -->
+                                                        <div class="col-md-4">
+
+                                                            <div class="card shadow elevation-2">
+                                                                <div class="card-header">
+                                                                    <h3 class="card-title">Ticket Status</h3>
+
+                                                                    <div class="card-tools">
+                                                                        <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                                                            <i class="fas fa-minus"></i>
+                                                                        </button>
+
+                                                                    </div>
+                                                                </div>
+                                                                <div class="card-body">
+                                                                    <canvas id="projStatusChart-@project.Id" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                                                                </div>
+                                                                <!-- /.card-body -->
+                                                            </div>
+                                                            <!-- /.card -->
+                                                        </div>
+                                                        <!-- DONUT CHART Priority-->
+                                                        <div class="col-md-4">
+
+                                                            <div class="card shadow elevation-2">
+                                                                <div class="card-header">
+                                                                    <h3 class="card-title">Ticket Priority</h3>
+
+                                                                    <div class="card-tools">
+                                                                        <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                                                            <i class="fas fa-minus"></i>
+                                                                        </button>
+
+                                                                    </div>
+                                                                </div>
+                                                                <div class="card-body">
+                                                                    <canvas id="projPriorityChart-@project.Id" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                                                                </div>
+                                                                <!-- /.card-body -->
+                                                            </div>
+                                                            <!-- /.card -->
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <!-- /.chart-responsive -->
+                                            </div>
+                                            <!-- /.col -->
+                                            <div class="col-md-4">
+                                                <div class="row">
+
+                                                    <div class="progress-group">
+                                                        <div class="info-box bg-gradient-warning">
+                                                            <span class="info-box-icon"><i class="far fa-calendar-alt"></i></span>
+
+                                                            <div class="info-box-content">
+                                                                <span class="info-box-text">End Date</span>
+                                                                <span class="info-box-number">@string.Format("{0:MMM dd yyyy}", project.EndDate)</span>
+
+                                                                <div class="progress">
+                                                                    <div class="progress-bar" id="progress-bar-@project.Id" style="width: 70%"></div>
+                                                                </div>
+                                                                <span class="progress-description" id="progress-description-@project.Id">
+
+                                                                </span>
+                                                            </div>
+                                                            <!-- /.info-box-content -->
+                                                        </div>
+                                                        <!-- /.info-box -->
+                                                        @if (await _projectService.GetProjectManagerAsync(project.Id) is not null)
+                                                        {
+
+                                                            <div class="row">
+                                                                <div class="col-3">
+                                                                    <img src="@_fileService.GetUserAvatar(await _projectService.GetProjectManagerAsync(project.Id))" class="img-fluid img-circle" />
+                                                                </div>
+                                                                <div class="col-9">
+                                                                    <p><span class="text-bold">Project Manager: </span>@((await _projectService.GetProjectManagerAsync(project.Id)).FullName)</p>
+                                                                </div>
+                                                            </div>
+                                                        }
+                                                        <div class="row">
+                                                            <div class="col-3">
+                                                                <img src="@_fileService.ConvertByteArrayToFile(project.ImageFileData, project.ImageFileContentType)" class="img-fluid img-circle" />
+                                                            </div>
+                                                            <div class="col-9">
+                                                                <a class="btn btn-lg btn-primary" asp-controller="Projects" asp-action="Details" asp-route-id="@project.Id">See More Details</a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <!-- /.progress-group -->
+
+                                            </div>
+                                            <!-- /.col -->
+                                        </div>
+                                        <!-- /.row -->
+                                    </div>
+                                }
+                                else
+                                {
+
+                                    <div class="tab-pane fade" id="custom-tabs-two-@project.Id" role="tabpanel" aria-labelledby="custom-tabs-two-@project.Id-tab">
+                                        <div class="row" id="project-@project.Id-chart">
+
+                                            <div class="col-md-8">
+                                                <p class="text-center">
+                                                    <strong>@project.Name</strong>
+                                                </p>
+
+                                                <div class="chart">
+                                                    <!-- Charts  -->
+                                                    <div class="row px-2">
+                                                        <!-- DONUT CHART Type -->
+                                                        <div class="col-md-4">
+
+                                                            <div class="card card-danger">
+                                                                <div class="card-header">
+                                                                    <h3 class="card-title">Ticket Type</h3>
+
+                                                                    <div class="card-tools">
+                                                                        <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                                                            <i class="fas fa-minus"></i>
+                                                                        </button>
+
+                                                                    </div>
+                                                                </div>
+                                                                <div class="card-body">
+                                                                    <canvas id="projTypeChart-@project.Id" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                                                                </div>
+                                                                <!-- /.card-body -->
+                                                            </div>
+                                                            <!-- /.card -->
+                                                        </div>
+                                                        <!-- DONUT CHART Status -->
+                                                        <div class="col-md-4">
+
+                                                            <div class="card card-danger">
+                                                                <div class="card-header">
+                                                                    <h3 class="card-title">Ticket Status</h3>
+
+                                                                    <div class="card-tools">
+                                                                        <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                                                            <i class="fas fa-minus"></i>
+                                                                        </button>
+
+                                                                    </div>
+                                                                </div>
+                                                                <div class="card-body">
+                                                                    <canvas id="projStatusChart-@project.Id" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                                                                </div>
+                                                                <!-- /.card-body -->
+                                                            </div>
+                                                            <!-- /.card -->
+                                                        </div>
+                                                        <!-- DONUT CHART Priority-->
+                                                        <div class="col-md-4">
+
+                                                            <div class="card card-danger">
+                                                                <div class="card-header">
+                                                                    <h3 class="card-title">Ticket Priority</h3>
+
+                                                                    <div class="card-tools">
+                                                                        <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                                                            <i class="fas fa-minus"></i>
+                                                                        </button>
+
+                                                                    </div>
+                                                                </div>
+                                                                <div class="card-body">
+                                                                    <canvas id="projPriorityChart-@project.Id" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                                                                </div>
+                                                                <!-- /.card-body -->
+                                                            </div>
+                                                            <!-- /.card -->
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <!-- /.chart-responsive -->
+
+                                            </div>
+                                            <!-- /.col -->
+                                            <div class="col-md-4">
+                                                <div class="row">
+                                                    <div class="col-4">
+                                                        <img src="@_fileService.GetUserAvatar(await _projectService.GetProjectManagerAsync(project.Id))" class="profile-user-img img-fluid img-circle member-img" />
+                                                    </div>
+                                                    <div class="col-8">
+                                                        <p><span class="text-bold">Project Manager: </span>@((await _projectService.GetProjectManagerAsync(project.Id)).FullName)</p>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-4">
+                                                        <img src="@_fileService.ConvertByteArrayToFile(project.ImageFileData, project.ImageFileContentType)" class="profile-user-img img-fluid img-circle member-img" />
+                                                    </div>
+                                                    <div class="col-8">
+                                                        <a class="btn btn-lg btn-primary" asp-controller="Projects" asp-action="Details" asp-route-id="@project.Id">See More Details</a>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+
+                                                    <div class="progress-group">
+                                                        <div class="info-box bg-gradient-warning">
+                                                            <span class="info-box-icon"><i class="far fa-calendar-alt"></i></span>
+
+                                                            <div class="info-box-content">
+                                                                <span class="info-box-text">End Date</span>
+                                                                <span class="info-box-number">@string.Format("{0:MMM dd yyyy}", project.EndDate)</span>
+
+                                                                <div class="progress">
+                                                                    <div class="progress-bar" id="progress-bar-@project.Id" style="width: 70%"></div>
+                                                                </div>
+                                                                <span class="progress-description" id="progress-description-@project.Id">
+
+                                                                </span>
+                                                            </div>
+                                                            <!-- /.info-box-content -->
+                                                        </div>
+                                                        <!-- /.info-box -->
+                                                    </div>
+                                                </div>
+                                                <!-- /.progress-group -->
+
+                                            </div>
+                                            <!-- /.col -->
+                                        </div>
+                                        <!-- /.row -->
+                                    </div>
+                                }
+                            }
+                            @{ i++;}
+                        </div>
+                    </div>
+                    <!-- /.card -->
+
+                </div>
                 <!-- /.col -->
                 <!-- /.row -->
                 <!-- TABLE: Development Tickets -->
@@ -471,7 +461,7 @@
                                                                 <td>@(ticket.Updated.Value.ToUnixTimeSeconds())</td>
                                                             }
                                                             else
-                        {
+                                                            {
                                                                 <td></td>
                                                             }
                                                             <td>@ticket.OwnerUser?.FullName</td>
@@ -499,7 +489,7 @@
                                                                 </td>
                                                             }
                                                             else
-                    {
+                                                            {
                                                                 <td>
                                                                     <a asp-action="Details" asp-route-id="@ticket.Id" class="btn btn-default">Details</a>
 
@@ -630,7 +620,7 @@
                                                                 <td>@(ticket.Updated.Value.ToUnixTimeSeconds())</td>
                                                             }
                                                             else
-                        {
+                                                            {
                                                                 <td></td>
                                                             }
 
@@ -659,7 +649,7 @@
                                                                 </td>
                                                             }
                                                             else
-                    {
+                                                            {
                                                                 <td>
                                                                     <a asp-action="Details" asp-route-id="@ticket.Id" class="btn btn-default">Details</a>
 
@@ -820,10 +810,8 @@
                     { targets: '_all', visible: true }
                 ]
             });
-                            @if (hasProjects)
-            {
-                @:$('#custom-tabs-two-@Model.Projects.OrderByDescending(p => p.Tickets.Count).First().Id').tab('show')
-            }
+
+                $('#custom-tabs-two-@Model.Projects.OrderByDescending(p => p.Tickets.Count).First().Id').tab('show')
         });</script>
 
     <script src="~/js/PriorityBadge.js"></script>
@@ -881,7 +869,9 @@
                 }
             });
         }
-        chartWithAjax("/Home/ProjChartMethod", { dev: true }, "#devProjChart")
+
+        function charts(){
+            chartWithAjax("/Home/ProjChartMethod", { dev: true }, "#devProjChart")
         chartWithAjax("/Home/StatusChartMethod", { dev: true }, "#devStatusChart")
         chartWithAjax("/Home/TypeChartMethod", { dev: true }, "#devTypeChart")
         chartWithAjax("/Home/PriorityChartMethod", { dev: true }, "#devPriorityChart")
@@ -889,41 +879,41 @@
         chartWithAjax("/Home/StatusChartMethod", { dev: false }, "#subStatusChart")
         chartWithAjax("/Home/TypeChartMethod", { dev: false }, "#subTypeChart")
         chartWithAjax("/Home/PriorityChartMethod", { dev: false }, "#subPriorityChart")
+        @foreach (var project in Model.Projects)
+            {
 
 
+                @:chartWithAjax("/Home/ProjStatusChartMethod", { projId: @project.Id }, "#projStatusChart-@project.Id")
+                    @:chartWithAjax("/Home/ProjTypeChartMethod", { projId: @project.Id }, "#projTypeChart-@project.Id")
+                    @:chartWithAjax("/Home/ProjPriorityChartMethod", { projId: @project.Id }, "#projPriorityChart-@project.Id")
+    
+}
 
+}
 
     </script>
 
-    @foreach (var project in Model.Projects)
-    {
-        <script>
 
-                    chartWithAjax("/Home/ProjStatusChartMethod", { projId: @project.Id }, "#projStatusChart-@project.Id")
-                    chartWithAjax("/Home/ProjTypeChartMethod", { projId: @project.Id }, "#projTypeChart-@project.Id")
-                    chartWithAjax("/Home/ProjPriorityChartMethod", { projId: @project.Id }, "#projPriorityChart-@project.Id")
-        </script>
-    }
+<script>
+
+
+</script>
+<script src="~/js/chartBasics.js"></script>
+
+<script src="~/js/Dashboard.js"></script>
+<script>
+</script>
+<script>
+            var endDate
+            var startDate
+            var interval
+            var now
+            var width
+            var barElement
+</script>
+@foreach (var project in Model.Projects)
+{
     <script>
-
-
-    </script>
-    <script src="~/js/chartBasics.js"></script>
-
-    <script src="~/js/Dashboard.js"></script>
-    <script>
-    </script>
-    <script>
-        var endDate
-        var startDate
-        var interval
-        var now
-        var width
-        var barElement
-    </script>
-    @foreach (var project in Model.Projects)
-    {
-        <script>
 
 
         endDate = @project.EndDate.ToUnixTimeSeconds();
@@ -943,6 +933,6 @@
           document.getElementById("progress-description-@project.Id").innerText = `Project End Date was @string.Format("{0:MMM dd yyyy}", project.EndDate)`
 
     }
-        </script>
-    }
+    </script>
+}
 }
