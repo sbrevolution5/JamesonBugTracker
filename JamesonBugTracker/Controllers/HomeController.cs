@@ -228,11 +228,11 @@ namespace JamesonBugTracker.Controllers
             List<SubData> dsArray = new();
             List<int> howManyTickets = new();
             List<string> colors = new();
-            //Antonio's Random Colors
             foreach (TicketType type in types)
             {
                 howManyTickets.Add(tickets.Where(t => t.TicketStatusId == type.Id).Count());
 
+            //Antonio's Random Colors
                 //    // This code will randomly select a color for each element of the data 
                 //    Color randomColor = Color.FromArgb(rnd.Next(256), rnd.Next(256), rnd.Next(256));
                 //    string colorHex = string.Format("#{0:X6}", randomColor.ToArgb() & 0X00FFFFFF);

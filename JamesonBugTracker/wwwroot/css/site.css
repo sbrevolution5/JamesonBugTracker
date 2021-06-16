@@ -87,3 +87,13 @@ body {
 .navbar-badge{
     font-size: .8rem;
 }
+.sm-sq-img {
+    height: 5.5rem;
+    width: 5.5rem;
+    object-fit: cover;
+}
+.md-sq-img {
+    height: 7rem;
+    width: 7rem;
+    object-fit: cover;
+}

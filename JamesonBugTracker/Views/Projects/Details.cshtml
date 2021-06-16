@@ -6,7 +6,7 @@
     var projectManager = await _projectService.GetProjectManagerAsync(Model.Project.Id);
 }
 @inject IBTFileService _fileService
-
+@inject IBTTicketService _ticketService
 
 @section Header{
     <link href="~/plugins/chart.js/Chart.css" rel="stylesheet" />
@@ -15,7 +15,7 @@
     <div class="row">
         <div class="col-md-3">
 
-            <!-- Profile Image -->
+            <!-- Project Image -->
             <div class="card card-primary card-outline">
                 <div class="card-body box-profile">
                     <div class="text-center">
@@ -56,12 +56,21 @@
                     <hr />
                     @foreach (var member in Model.Project.Members)
                     {
+                        <div class="row">
+                            <div class="col-8">
+
                         <strong><i class="fas fa-book mr-1"></i> @member.FullName</strong>
-
                         <p class="text-muted">
-                            Number of tickets assigned, number of tickets submitted
+                            <span class="users-list-date">@((await _ticketService.GetAllTicketsByRoleAsync("Submitter", member.Id)).Count) Submitted</span>
+                            <span class="users-list-date">@((await _ticketService.GetAllDeveloperTicketsByResolvedAsync(member.Id, false)).Count) Open Tickets</span>
                         </p>
+                            </div>
+                            <div class="col-4">
 
+                        <img src="@_fileService.GetUserAvatar(member)" class="img-circle img-fluid sm-sq-img"/>
+                            </div>
+
+                        </div>
                         <hr>
                     }
 
@@ -73,11 +82,11 @@
         <!-- /.col -->
         <div class="col-md-9">
             <!--Row of charts-->
-            <div class="row">
+            <div class="row px-2">
                 <div class="col-md-4">
 
                     <!-- DONUT CHART Type -->
-                    <div class="card card-danger">
+                    <div class="card shadow elevation-1">
                         <div class="card-header">
                             <h3 class="card-title">Ticket Types</h3>
 
@@ -98,7 +107,7 @@
                 <!-- DONUT CHART Status -->
                 <div class="col-md-4">
 
-                    <div class="card card-danger">
+                    <div class="card shadow elevation-1">
                         <div class="card-header">
                             <h3 class="card-title">Ticket Status</h3>
 
@@ -119,7 +128,7 @@
                 <!-- DONUT CHART Priority-->
                 <div class="col-md-4">
 
-                    <div class="card card-danger">
+                    <div class="card shadow elevation-1">
                         <div class="card-header">
                             <h3 class="card-title">Ticket Priority</h3>
 
@@ -250,15 +259,63 @@
     <script src="~/js/PriorityBadge.js"></script>
     <script src="~/plugins/chart.js/Chart.bundle.js"></script>
     <script>
-        let types = [0,0,0,0]
-        let statuses = [0,0,0,0,0,0]
-        let priority = [0,0,0,0]
-        @foreach (var ticket in Model.Project.Tickets)
-        {
-            @:types[0+@(ticket.TicketTypeId-1)]++
-            @:statuses[0+@(ticket.TicketStatusId-1)]++
-            @:priority[0+@(ticket.TicketPriorityId-1)]++
+        var isDark = document.getElementById("layoutBody").classList.contains("dark-mode")
+        if (isDark) {
+            //Dark colors RED Orange YELLOW Green blue (primary)
+            backgroundColor = ['#e74b3c', '#fd7e14', '#f39c12', '#06BC8C', '#3f6791', '#6f42c1']
+            textColor = '#dddddd'
+        } else {
+            //Light colors
+            backgroundColor = ['#dc3545', '#fd7e14', '#ffc108', '#27a745', '#1385ff', '#6f42c1',]
+            textColor = '#202529'
+
         }
+        function chartWithAjax(url, data, id) {
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: data,
+                //contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (result) {
+                    //Donut
+                    var donutChartCanvas = $(id).get(0).getContext('2d')
+                    var donutData = result
+                    for (var i = 0; i < donutData.datasets.length; i++) {
+                        donutData.datasets[i].backgroundColor = backgroundColor
+                    }
+                    var donutOptions = {
+                        maintainAspectRatio: false,
+                        responsive: true,
+                        legend: {
+                            labels: {
+                                fontColor: textColor
+                            }
+                        }
+                    }
+                    //Create pie or douhnut chart
+                    // You can switch between pie and douhnut using the method below.
+                    new Chart(donutChartCanvas, {
+                        type: 'doughnut',
+                        data: donutData,
+                        options: donutOptions
+                    })
+                },
+                failure: function (result) {
+                    alert(result.d + "Failed");
+                },
+                error: function (result) {
+                    alert(result.d + "Error");
+                }
+            });
+        }
+        function charts() {
+
+        chartWithAjax("/Home/ProjStatusChartMethod", { projId: @Model.Project.Id }, "#statusChart")
+                    chartWithAjax("/Home/ProjTypeChartMethod", { projId: @Model.Project.Id }, "#typeChart")
+                    chartWithAjax("/Home/ProjPriorityChartMethod", { projId: @Model.Project.Id }, "#priorityChart")
+        }
+        charts();
     </script>
     <script>
         $(document).ready(function () {
@@ -267,5 +324,4 @@
         });
     </script>
     <script src="~/js/chartBasics.js"></script>
-    <script src="~/js/ProjectDetails.js"></script>
 }
