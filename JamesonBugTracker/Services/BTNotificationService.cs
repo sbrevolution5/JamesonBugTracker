@@ -70,7 +70,7 @@ namespace JamesonBugTracker.Services
                                                                             .ThenInclude(t => t.Attachments)
                                                                         .Include(n => n.Ticket)
                                                                             .ThenInclude(t => t.Comments)
-                                                                        .Where(n => n.RecipientId == userId).AsNoTracking().ToListAsync();
+                                                                        .Where(n => n.RecipientId == userId).AsNoTracking().AsSplitQuery().ToListAsync();
             return recievedNotifictions;
         }
 

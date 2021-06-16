@@ -135,6 +135,7 @@ namespace JamesonBugTracker.Services
                                              .Include(p => p.Tickets)
                                                 .ThenInclude(t => t.Comments)
                                              .Where(p => p.CompanyId == companyId)
+                                             .AsSplitQuery()
                                              .ToListAsync();
             return projects;
 
