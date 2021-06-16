@@ -126,8 +126,6 @@
                                 {
                         @if (i == 0)
                                     {
-
-                                <script>console.log("FIRST")</script>
                                         <li class="nav-item">
                                             <a class="nav-link active" id="custom-tabs-two-@project.Id-tab" data-toggle="pill" href="#custom-tabs-two-@project.Id" role="tab" aria-controls="custom-tabs-two-@project." aria-selected="true">@project.Name</a>
                                         </li>
@@ -410,6 +408,7 @@
                                         </div>
                                     }
                                 }
+                                @{ i++;}
                             </div>
                         </div>
                         <!-- /.card -->

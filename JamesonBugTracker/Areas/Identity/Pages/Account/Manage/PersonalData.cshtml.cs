@@ -22,6 +22,10 @@ namespace JamesonBugTracker.Areas.Identity.Pages.Account.Manage
 
         public async Task<IActionResult> OnGet()
         {
+            if (User.IsInRole("DemoUser"))
+            {
+                return RedirectToAction("DemoError", "Home");
+            }
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
