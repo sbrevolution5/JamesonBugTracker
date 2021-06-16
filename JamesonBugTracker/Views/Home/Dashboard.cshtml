@@ -134,7 +134,7 @@
                     <div class="card-body">
                         <div class="tab-content" id="custom-tabs-two-tabContent">
                             @{ i = 0;}
-                            @foreach (var project in Model.Projects.OrderByDescending(p => p.Tickets.Count))
+                            @foreach (var project in Model.Projects?.OrderByDescending(p => p.Tickets.Count))
                             {
                                 if (i == 0)
                                 {
@@ -809,8 +809,11 @@
                     { targets: '_all', visible: true }
                 ]
             });
+            @if (Model.Projects.Count > 0)
+            {
 
-                $('#custom-tabs-two-@Model.Projects.OrderByDescending(p => p.Tickets.Count).First().Id').tab('show')
+                @:$('#custom-tabs-two-@Model.Projects?.OrderByDescending(p => p.Tickets.Count)?.First().Id').tab('show')
+            }
         });</script>
 
     <script src="~/js/PriorityBadge.js"></script>

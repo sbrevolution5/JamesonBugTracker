@@ -107,7 +107,7 @@ namespace JamesonBugTracker.Services
                                                     .Include(t => t.History)
                                                     .Include(t => t.Comments)
                                                     .OrderByDescending(t => t.Updated)
-                                                    .AsSplitQuery()
+                                                    
                                                  .ToListAsync();
                 return tickets;
             }
@@ -157,7 +157,7 @@ namespace JamesonBugTracker.Services
                                                 .Include(t => t.Comments)
                                                 .Where(t => t.DeveloperUserId == userId)
                                                 .OrderByDescending(t => t.Updated)
-                                                .AsSplitQuery()
+                                                
                                                 .ToListAsync();
                 }
                 else if (role == "ProjectManager")
@@ -180,7 +180,7 @@ namespace JamesonBugTracker.Services
                                                 .Include(t => t.History)
                                                 .Include(t => t.Comments)
                                                 .Where(t => t.OwnerUserId == userId)
-                                                .AsSplitQuery()
+                                                
                                                 .ToListAsync();
                 }
 
@@ -380,7 +380,7 @@ namespace JamesonBugTracker.Services
                                                 .Include(t => t.History)
                                                 .Include(t => t.Comments)
                                                 .Where(t => t.ProjectId == projectId)
-                                                .AsSplitQuery()
+                                                
                                                 .ToListAsync();
             return tickets;
         }

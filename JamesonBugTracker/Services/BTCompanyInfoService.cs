@@ -79,7 +79,7 @@ namespace JamesonBugTracker.Services
                                                 .Include(c => c.Projects)
                                                 .ThenInclude(p => p.ProjectPriority)
                                                 .Include(c => c.Invites)
-                                                .AsSplitQuery()
+                                                
                                                 .FirstOrDefaultAsync(c => c.Id == companyId);
 
             }
