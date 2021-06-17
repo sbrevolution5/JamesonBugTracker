@@ -255,6 +255,7 @@ namespace JamesonBugTracker.Controllers
             var project = await _context.Project
                 .Include(p => p.Company)
                 .Include(p => p.ProjectPriority)
+                .Include(p => p.Tickets)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (project == null)
             {
@@ -265,7 +266,7 @@ namespace JamesonBugTracker.Controllers
         }
 
         // POST: Projects/Delete/5
-        [HttpPost, ActionName("Delete")]
+        [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ArchiveConfirmed(int id)
         {
@@ -273,7 +274,7 @@ namespace JamesonBugTracker.Controllers
             {
                 return RedirectToAction("DemoError", "Home");
             }
-            var project = await _context.Project.FindAsync(id);
+            var project = await _context.Project.Include(p => p.Tickets).FirstOrDefaultAsync(p=>p.Id==id);
             project.ArchiveDate = DateTime.Now;
             project.Archived = true;
             foreach (var ticket in project.Tickets)
