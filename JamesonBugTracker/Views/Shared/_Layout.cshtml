@@ -12,7 +12,16 @@
     var companyId = User.Identity.GetCompanyId().Value;
     var company = await _companyService.GetCompanyInfoByIdAsync(companyId);
     var unseenCount = (await _notificationService.GetUnseenRecievedNotificationsAsync(userId)).ToList().Count;
-    var notifications = (await _notificationService.GetReceivedNotificationsAsync(userId)).OrderByDescending(n => n.Created).Take(unseenCount > 5 ? unseenCount : 5).ToList();
+    int take;
+    if (unseenCount > 5)
+    {
+        take = unseenCount;
+    }
+    else
+    {
+        take = 5;
+    }
+    var notifications = (await _notificationService.GetReceivedNotificationsAsync(userId)).OrderByDescending(n => n.Created).Take(take).ToList();
 }
 <!DOCTYPE html>
 <html lang="en">
