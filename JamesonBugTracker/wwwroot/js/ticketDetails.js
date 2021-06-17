@@ -82,7 +82,7 @@ function statusButtons(status, num) {
         reopenTicket.show(num)
         closeTicket.hide(num)
     }
-    else if (status == "unassigned" || status == "archived") {
+    else{
         toTesting.hide(num)
         returnTesting.hide(num)
         reopenTicket.hide(num)

@@ -245,7 +245,7 @@ namespace JamesonBugTracker.Controllers
             return View(model);
         }
         // GET: Projects/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Archive(int? id)
         {
             if (id == null)
             {
@@ -267,16 +267,24 @@ namespace JamesonBugTracker.Controllers
         // POST: Projects/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> ArchiveConfirmed(int id)
         {
             if (User.IsInRole("DemoUser"))
             {
                 return RedirectToAction("DemoError", "Home");
             }
             var project = await _context.Project.FindAsync(id);
-            _context.Project.Remove(project);
+            project.ArchiveDate = DateTime.Now;
+            project.Archived = true;
+            foreach (var ticket in project.Tickets)
+            {
+                
+                ticket.ArchiveDate = DateTime.Now;
+                ticket.Archived = true;
+                await _ticketService.SetTicketStatusAsync(ticket.Id, "Archived");
+            }
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Dashboard", "Home");
         }
 
         private bool ProjectExists(int id)
