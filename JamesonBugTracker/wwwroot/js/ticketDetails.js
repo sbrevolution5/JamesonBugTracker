@@ -136,7 +136,7 @@ $(".updateStatus").on("submit", function (e) {
         }
     });
     e.preventDefault();
-    statusOverlay.show()
+    statusOverlay.show(1000)
 
     toastr.info('Updating Ticket Status. Please Wait')
 });
