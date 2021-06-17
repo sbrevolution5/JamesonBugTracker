@@ -180,6 +180,10 @@ namespace JamesonBugTracker.Services
         public async Task<BTUser> GetProjectManagerAsync(int projectId)
         {
             BTUser projectManager = (await GetProjectMembersByRoleAsync(projectId, "ProjectManager")).FirstOrDefault();
+            if (projectManager is null)
+            {
+                projectManager = (await GetProjectMembersByRoleAsync(projectId, "Admin")).FirstOrDefault();
+            }
             return projectManager;
         }
 
