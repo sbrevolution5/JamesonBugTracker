@@ -37,7 +37,7 @@
     <partial name="_LogoutPartial" />
     <div class="wrapper">
         <div class="preloader flex-column justify-content-center align-items-center">
-            <img  src="~/img/Jamesonani.gif" alt="JamesonLogo" height="300" width="438">
+            <img src="~/img/Jamesonani.gif" alt="JamesonLogo" height="300" width="438">
         </div>
         <!-- Navbar -->
         <nav class="main-header navbar navbar-expand navbar-dark">
@@ -177,7 +177,7 @@
                 <nav class="mt-2">
                     <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                         <!-- Add icons to the links using the .nav-icon class
-            with font-awesome or any other icon font library -->
+                        with font-awesome or any other icon font library -->
                         <li class="nav-item menu-open">
                             <a href="#" class="nav-link">
                                 <i class="nav-icon fas fa-ticket-alt"></i>
@@ -206,7 +206,7 @@
                                             <i class="far fa-circle nav-icon"></i>
                                             <p>Unassigned Tickets</p>
                                             @{
-                                                
+
                                                 var unassignedCount = (await _ticketService.GetAllUnassignedTicketsAsync(companyId)).Count;
                                             }
                                             @if (unassignedCount > 0)
@@ -245,8 +245,21 @@
                                         <p>My Projects</p>
                                     </a>
                                 </li>
+
                             </ul>
+
                         </li>
+                        @if (User.IsInRole("Admin") || User.IsInRole("ProjectManager"))
+                        {
+                            <li class="nav-item">
+                                <a asp-controller="Invites" asp-action="Create" class="nav-link">
+                                    <i class="nav-icon far fa-envelope"></i>
+                                    <p>
+                                        New Invite
+                                    </p>
+                                </a>
+                            </li>
+                        }
                     </ul>
                 </nav>
                 <!-- /.sidebar-menu -->

@@ -94,3 +94,6 @@ html {
     width: 7rem;
     object-fit: cover;
 }
+.dataTables_scrollBody {
+    overflow-x: hidden !important;
+}

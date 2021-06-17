@@ -17,7 +17,6 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace JamesonBugTracker.Controllers
 {
-        [Authorize]
     public class InvitesController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -27,10 +26,10 @@ namespace JamesonBugTracker.Controllers
         private readonly IEmailSender _emailService;
         private readonly IBTInviteService _inviteService;
         private readonly IBTCompanyInfoService _companyService;
-        public InvitesController(ApplicationDbContext context, IDataProtector protector, UserManager<BTUser> userManager, IBTProjectService projectService, IEmailSender emailService, IBTInviteService inviteService, IBTCompanyInfoService companyService)
+        public InvitesController(ApplicationDbContext context, IDataProtectionProvider dataProtectionProvider, UserManager<BTUser> userManager, IBTProjectService projectService, IEmailSender emailService, IBTInviteService inviteService, IBTCompanyInfoService companyService)
         {
             _context = context;
-            _protector = protector;
+            _protector = dataProtectionProvider.CreateProtector("JamesonBugTrackerProtector21");
             _userManager = userManager;
             _projectService = projectService;
             _emailService = emailService;
@@ -150,6 +149,7 @@ namespace JamesonBugTracker.Controllers
             ViewData["SenderId"] = new SelectList(_context.Users, "Id", "Id", invite.SenderId);
             return View(invite);
         }
+        [HttpGet]
         public async Task<IActionResult> ProcessInvite(string token, string email)
         {
             if (token == null)

@@ -39,7 +39,8 @@ namespace JamesonBugTracker.Services
                                              .Include(p => p.Tickets)
                                                 .ThenInclude(t => t.History)
                                              .Include(p => p.Tickets)
-                                                .ThenInclude(t => t.Comments).FirstOrDefaultAsync(p => p.Id == projectId);
+                                                .ThenInclude(t => t.Comments)
+                                             .FirstOrDefaultAsync(p => p.Id == projectId);
         }
         public async Task<bool> AddProjectManagerAsync(string userId, int projectId)
         {

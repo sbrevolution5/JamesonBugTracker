@@ -1,21 +1,20 @@
 ﻿@page
 @model RegisterByInviteModel
-@{ Layout = "_LoginLayout";
-                ViewData["Title"] = "RegisterByInvite"; }
+@{ Layout = "/Views/Shared/_LoginLayout.cshtml";
+    ViewData["Title"] = "RegisterByInviteModel"; }
 
 <div id="wrapper">
     <div class="vertical-align-wrap">
         <div class="vertical-align-middle auth-main">
             <div class="auth-box">
                 <div class="top">
-                    @*<img src="/assets/images/logo-white.svg" alt="Lucid">*@
                 </div>
                 <div class="card">
                     <div class="header">
                         <p class="lead">Create an account</p>
                     </div>
                     <div class="body">
-                        <form class="form-auth-small" method="post">
+                        <form class="form-auth-small" method="post" enctype="multipart/form-data">
                             <input hidden asp-for="Input.CompanyId" />
                             <input hidden asp-for="Input.ProjectId" />
                             <div class="form-group">
@@ -34,8 +33,8 @@
                                 <span asp-validation-for="Input.LastName" class="text-danger"></span>
                             </div>
                             <div class="form-group">
-                                <label asp-for="Input.CompanyName" class="control-label"></label>
-                                <input asp-for="Input.CompanyName" class="form-control" disabled />
+                                <label asp-for="Input.Company" class="control-label"></label>
+                                <input asp-for="Input.Company" class="form-control" disabled />
                             </div>
                             <hr />
                             <div class="form-group">
@@ -47,6 +46,14 @@
                                 <label asp-for="Input.ConfirmPassword" class="control-label"></label>
                                 <input asp-for="Input.ConfirmPassword" class="form-control" type="password" placeholder="Confirm Password" />
                                 <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Input.ImageFile"></label>
+                                <div class="custom-file">
+                                    <input asp-for="Input.ImageFile" type="file" class="form-control-file custom-file-input" accept="image/*" />
+                                    <label class="control-label custom-file-label">Choose</label>
+                                </div>
+                                <small class="text-muted"> Image will be scaled to a 128x128 square, and then put in a rounded circular frame. Distortion may happen as a result.</small>
                             </div>
                             <button type="submit" class="btn btn-primary btn-lg btn-block">REGISTER</button>
 
@@ -60,4 +67,11 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script>
+
+        $(".custom-file-input").on("change", function () {
+            var fileName = $(this).val().split("\\").pop();
+            $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+        });
+    </script>
 }
