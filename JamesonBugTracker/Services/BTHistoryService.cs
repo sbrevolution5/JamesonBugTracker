@@ -71,10 +71,10 @@ namespace JamesonBugTracker.Services
                         TicketId = newTicket.Id,
                         Property = "Developer User",
                         OldValue = oldTicket.DeveloperUser?.FullName ?? "Unassigned",
-                        NewValue = newTicket.DeveloperUser?.FullName,
+                        NewValue = newTicket.DeveloperUser?.FullName ?? "Unassigned",
                         Created = DateTime.Now,
                         UserId = userId,
-                        Description = $"Developer User updated from {oldTicket.DeveloperUser?.FullName ?? "Unassigned"} to {newTicket.DeveloperUser?.FullName}"
+                        Description = $"Developer User updated from {oldTicket.DeveloperUser?.FullName} to {newTicket.DeveloperUser?.FullName}"
                     };
                     await _context.TicketHistory.AddAsync(history);
                 }

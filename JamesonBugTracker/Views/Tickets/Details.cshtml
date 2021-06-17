@@ -56,6 +56,9 @@
                     @* Conditional formatting based on status *@
                     <div class="col-12 col-sm-3">
                         <div class="small-box" id="ticketStatusBox">
+                            <div class="overlay" id="statusOverlay">
+                                <i class="fas fa-3x fa-sync-alt"></i>
+                            </div>
                             <div class="inner">
 
                                 <h3>Status:</h3>
@@ -69,7 +72,10 @@
                         </div>
                     </div>
                     <div class="col-12 col-sm-3">
-                        <div class="small-box bg-info">
+                        <div class="small-box bg-primary">
+                            <div class="overlay" id="devOverlay">
+                                <i class="fas fa-3x fa-sync-alt"></i>
+                            </div>
                             <div class="inner">
                                 <h3>Assigned to:</h3>
                                 @if (Model.DeveloperUserId is not null)
@@ -89,36 +95,34 @@
                         </div>
                     </div>
                 </div>
-                @if (Model.TicketStatus.Name == "Development")
-                {
-                    <form asp-action="UpdateStatus">
-                        <input hidden name="ticketId" value="@Model.Id" />
-                        <input hidden name="statusName" value="Testing" />
-                        <button class="btn btn-block btn-warning" type="submit">Update to Testing</button>
-                    </form>
-                }
-                else if (Model.TicketStatus.Name == "Testing")
-                {
-                    <form asp-action="UpdateStatus">
-                        <input hidden name="ticketId" value="@Model.Id" />
-                        <input hidden name="statusName" value="Development" />
-                        <button class="btn btn-block btn-danger" type="submit">Testing Failed: Return to Development</button>
-                    </form>
+                
+                <form asp-action="UpdateStatus" id="toTesting" class="updateStatus">
+
+                    <input hidden name="ticketId" value="@Model.Id" />
+                    <input hidden name="statusName" class="statusName" value="Testing" />
+                    <button class="btn btn-block btn-warning" type="submit">Update to Testing</button>
+                </form>
+                
+                <form asp-action="UpdateStatus" id="returnTesting" class="updateStatus">
+
+                    <input hidden name="ticketId" value="@Model.Id" />
+                    <input hidden name="statusName" class="statusName" value="Development" />
+                    <button class="btn btn-block btn-danger" type="submit">Testing Failed: Return to Development</button>
+                </form>
                     <hr />
-                    <form asp-action="UpdateStatus">
+                    <form asp-action="UpdateStatus" id="closeTicket" class="updateStatus">
+                        
                         <input hidden name="ticketId" value="@Model.Id" />
-                        <input hidden name="statusName" value="Resolved" />
+                        <input hidden name="statusName" class="statusName" value="Resolved" />
                         <button class="btn btn-block btn-success" type="submit">Close Ticket</button>
                     </form>
-                }
-                else if (Model.TicketStatus.Name == "Resolved" && (User.IsInRole("ProjectManager") || User.IsInRole("Admin")))
-                {
-                    <form asp-action="UpdateStatus">
+                    <form asp-action="UpdateStatus" id="reopenTicket" class="updateStatus">
+                        
+
                         <input hidden name="ticketId" value="@Model.Id" />
-                        <input hidden name="statusName" value="Development" />
+                        <input hidden name="statusName" class="statusName" value="Development" />
                         <button class="btn btn-block btn-success" type="submit">Reopen Ticket to Development status</button>
                     </form>
-                }
                 <hr />
                 <div class="row">
                     <div class="col-12">
@@ -141,28 +145,28 @@
                                     <li class="nav-item">
                                         @if (Model.Comments.Count > 0)
                                         {
-                                        <a class="nav-link active" id="custom-tabs-comments-tab" data-toggle="pill" href="#custom-tabs-comments" role="tab" aria-controls="custom-tabs-four-home" aria-selected="true">Comments <i class="far fa-comments"></i> <span class="badge badge-primary" >@Model.Comments.Count</span></a>
-            }
-            else
-            {
-                                    <a class="nav-link disabled" id="custom-tabs-comments-tab" data-toggle="pill" href="#custom-tabs-comments" role="tab" aria-controls="custom-tabs-four-home" aria-selected="true">
-                                        Comments <i class="far fa-comments"></i> <span class="badge badge-secondary">@Model.Comments.Count</span>
-                                    </a>
-            }
-                                        
+                                            <a class="nav-link active" id="custom-tabs-comments-tab" data-toggle="pill" href="#custom-tabs-comments" role="tab" aria-controls="custom-tabs-four-home" aria-selected="true">Comments <i class="far fa-comments"></i> <span class="badge badge-primary">@Model.Comments.Count</span></a>
+                                        }
+                                        else
+                                        {
+                                            <a class="nav-link disabled" id="custom-tabs-comments-tab" data-toggle="pill" href="#custom-tabs-comments" role="tab" aria-controls="custom-tabs-four-home" aria-selected="true">
+                                                Comments <i class="far fa-comments"></i> <span class="badge badge-secondary">@Model.Comments.Count</span>
+                                            </a>
+                                        }
+
                                     </li>
                                     <li class="nav-item">
                                         @if (Model.Comments.Count > 0)
                                         {
 
 
-<a class="nav-link" id="custom-tabs-history-tab" data-toggle="pill" href="#custom-tabs-history" role="tab" aria-controls="custom-tabs-history" aria-selected="false">History <i class="fas fa-history"></i><span class="badge badge-primary">@Model.History.Count</span></a>
-            }
-            else
-            {
-                                    <a class="nav-link active" id="custom-tabs-history-tab" data-toggle="pill" href="#custom-tabs-history" role="tab" aria-controls="custom-tabs-history" aria-selected="false">History <i class="fas fa-history"></i><span class="badge badge-primary">@Model.History.Count</span></a>
-            }
-                                        </li>
+                                            <a class="nav-link" id="custom-tabs-history-tab" data-toggle="pill" href="#custom-tabs-history" role="tab" aria-controls="custom-tabs-history" aria-selected="false">History <i class="fas fa-history"></i><span class="badge badge-primary">@Model.History.Count</span></a>
+                                        }
+                                        else
+                                        {
+                                            <a class="nav-link active" id="custom-tabs-history-tab" data-toggle="pill" href="#custom-tabs-history" role="tab" aria-controls="custom-tabs-history" aria-selected="false">History <i class="fas fa-history"></i><span class="badge badge-primary">@Model.History.Count</span></a>
+                                        }
+                                    </li>
 
                                 </ul>
                             </div>
@@ -348,7 +352,7 @@
                                                                 <div class="timeline-body">
 
                                                                     @*<div class="card">
-                                                                <div class="card-body">*@
+                                                            <div class="card-body">*@
 
                                                                     @*<div class="post">*@
                                                                     <div class="row">
@@ -387,7 +391,7 @@
                                                             </div>
                                                             @*</div>*@
                                                             @*</div>
-                                                        </div>*@
+                                                    </div>*@
                                                         }
                                                         else
                                                         {
@@ -624,6 +628,17 @@
 
 
 @section Scripts{
+    <script>
+        var boolText = "@(User.IsInRole("ProjectManager") || User.IsInRole("Admin"))";
+    if (boolText == "True") {
+
+        var canReopen =true
+    } else {
+        var canReopen = fales
+
+    }
+    var ticketStatus = "@Model.TicketStatus.Name"
+    </script>
     <script src="../../plugins/summernote/summernote-bs4.min.js"></script>
     <script src="~/js/ticketDetails.js"></script>
     <script>
