@@ -323,7 +323,11 @@ namespace JamesonBugTracker.Services
             }
             return allNonProjectUsers;
         }
-
+        private async Task<int?> LookupTicketStatusIdAsync(string statusName)
+        {
+            TicketStatus ticketStatus = await _context.TicketStatus.FirstOrDefaultAsync(t => t.Name == statusName);
+            return ticketStatus.Id;
+        }
         public async Task<List<Project>> GetProjectsWithUnassignedTicketsAsync(int companyId)
         {
             List<Project> companyProjects = await GetAllProjectsByCompanyAsync(companyId);
@@ -332,23 +336,18 @@ namespace JamesonBugTracker.Services
             {
 
                 var allTickets = project.Tickets.ToList();
-                List<Ticket> newTickets = new();
+                int newTickets = 0;
+                int newId = (int)await LookupTicketStatusIdAsync("New");
+                int unId = (int)await LookupTicketStatusIdAsync("Unassigned");
                 foreach (var ticket in allTickets)
                 {
-                    if (ticket.TicketStatus.Name == "New")
+                    
+                    if (ticket.TicketStatusId == newId  || ticket.TicketStatusId == unId)
                     {
-                        newTickets.Add(ticket);
+                        newTickets++;
                     }
                 }
-                List<Ticket> unassignedTickets = new();
-                foreach (var ticket in allTickets)
-                {
-                    if (ticket.TicketStatus.Name == "Unassigned")
-                    {
-                        unassignedTickets.Add(ticket);
-                    }
-                }
-                if (newTickets.Concat(unassignedTickets).ToList().Count > 0)
+                if (newTickets > 0)
                 {
                     results.Add(project);
                 }

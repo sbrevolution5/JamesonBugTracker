@@ -4,7 +4,7 @@
 @inject IBTProjectService _projectService
 @using JamesonBugTracker.Extensions
 @{
-        ViewData["Title"] = "MyTickets";
+        ViewData["Title"] = "Unassigned Tickets";
     var companyId = User.Identity.GetCompanyId().Value;
 }
 @section Header{
@@ -53,7 +53,8 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @foreach (var unassignedTicket in await _ticketService.GetAllUnassignedTicketsByProjectAsync(project.Id, companyId))
+                                            @{ var projMembers = await _projectService.GetSelectListOfProjectMembersWithoutPM(project.Id);}
+                                            @foreach (var unassignedTicket in Model.UnassignedTickets.Where(u=>u.ProjectId == project.Id))
                                             {
                                                 <tr id="row-@unassignedTicket.Id">
                                                     <td><a asp-action="Details" asp-controller="Tickets" asp-route-id="@unassignedTicket.Id">@unassignedTicket.Title</a></td>
@@ -66,7 +67,7 @@
                                                             <input hidden name="ticketId" value="@unassignedTicket.Id" class="unassignedId" />
                                                             <div class="form-group">
                                                                 <label for=""></label>
-                                                                <select required class="form-control" name="userId" id="userSelect-@unassignedTicket.Id" asp-items="await _projectService.GetSelectListOfProjectMembersWithoutPM(project.Id)">
+                                                                <select required class="form-control" name="userId" id="userSelect-@unassignedTicket.Id" asp-items="projMembers">
                                                                     <option value="" hidden>Choose a User</option>
 
                                                                 </select>
