@@ -30,7 +30,8 @@ namespace JamesonBugTracker.Areas.Identity.Pages.Account.Manage
             _fileService = fileService;
             _configuration = configuration;
         }
-
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
         public string Username { get; set; }
 
         [TempData]
@@ -43,7 +44,10 @@ namespace JamesonBugTracker.Areas.Identity.Pages.Account.Manage
 
         public class InputModel
         {
-            
+            [Display(Name ="First Name")]
+            public string FirstName { get; set; }
+            [Display(Name = "Last Name")]
+            public string LastName { get; set; }
             public IFormFile ImageFile { get; set; }
             public byte[] ImageData { get; set; }
             public string ContentType { get; set; }
@@ -63,6 +67,8 @@ namespace JamesonBugTracker.Areas.Identity.Pages.Account.Manage
             ImageContentType = user.AvatarFileContentType;
             Input = new InputModel
             {
+                LastName = user.LastName,
+                FirstName = user.FirstName,
                 PhoneNumber = phoneNumber,
                 ImageData = user.AvatarFileData,
                 ContentType = user.AvatarFileContentType
@@ -113,14 +119,23 @@ namespace JamesonBugTracker.Areas.Identity.Pages.Account.Manage
                     return RedirectToPage();
                 }
             }
+            if (Input.FirstName is not null)
+            {
+                user.FirstName = Input.FirstName;
+                await _userManager.UpdateAsync(user);
+            }
+            if (Input.LastName is not null)
+            {
+                user.LastName = Input.LastName;
+                await _userManager.UpdateAsync(user);
+            }
             if (Input.ImageFile is not null)
             {
 
                 user.AvatarFileData = await _fileService.ConvertFileToByteArrayAsync(Input.ImageFile);
                 user.AvatarFileContentType = Input.ImageFile.ContentType;
                 await _userManager.UpdateAsync(user);
-            }
-            if (user.AvatarFileData is null)
+            }else if (user.AvatarFileData is null)
             {
                 user.AvatarFileData = await _fileService.EncodeFileAsync(_configuration["DefaultUserImage"]);
                 user.AvatarFileContentType = _configuration["DefaultUserImage"].Split('.')[1];

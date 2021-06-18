@@ -15,6 +15,14 @@
         <form id="profile-form" method="post" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
+                <label asp-for="Input.FirstName"></label>
+                <input asp-for="Input.FirstName" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label asp-for="Input.LastName"></label>
+                <input asp-for="Input.LastName" class="form-control" />
+            </div>
+            <div class="form-group">
                 <label asp-for="Username"></label>
                 <input asp-for="Username" class="form-control" disabled />
             </div>
@@ -27,8 +35,8 @@
             {
             <div class="form-group">
                 <img src="@_fileService.ConvertByteArrayToFile(Model.ImageData, Model.ImageContentType)" class="img-fluid comment-img" />
-            </div>}
-
+            </div>
+            }
         <div class="form-group">
             <label asp-for="Input.ImageFile"></label>
             <div class="custom-file">
