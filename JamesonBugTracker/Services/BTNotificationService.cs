@@ -96,7 +96,7 @@ namespace JamesonBugTracker.Services
         }
         public async Task<List<Notification>> GetUnseenRecievedNotificationsAsync(string userId)
         {
-            var recieved = await GetReceivedNotificationsAsync(userId);
+            List <Notification> recieved = await _context.Notification.Where(n => n.RecipientId == userId).AsNoTracking().ToListAsync();
             return recieved.Where(n => n.Viewed == false).ToList();
         }
         public async Task MembersNotificationAsync(Notification notification, List<BTUser> members)
