@@ -106,6 +106,7 @@ namespace JamesonBugTracker.Services
                                                     .Include(t => t.Attachments)
                                                     .Include(t => t.History)
                                                     .Include(t => t.Comments)
+                                                    .Include(t=> t.Project)
                                                     .OrderByDescending(t => t.Updated)
                                                     
                                                  .ToListAsync();

@@ -1,0 +1,74 @@
+﻿@model JamesonBugTracker.Models.Project
+
+@{
+    ViewData["Title"] = "Delete";
+}
+<h1>UnArchive</h1>
+<partial name="_StatusMessage" model="@ViewData["StatusMessage"]" />
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card card-danger">
+            <div class="card-header">
+                <h3 class="card-title">UnArchive Ticket</h3>
+
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                        <i class="fas fa-minus"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="card-body">
+                <dl class="row">
+                    <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.Name)
+                    </dt>
+                    <dd class="col-sm-10">
+                        @Html.DisplayFor(model => model.Name)
+                    </dd>
+                    <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.Description)
+                    </dt>
+                    <dd class="col-sm-10">
+                        @Html.DisplayFor(model => model.Description)
+                    </dd>
+                    <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.StartDate)
+                    </dt>
+                    <dd class="col-sm-10">
+                        @Html.DisplayFor(model => model.StartDate)
+                    </dd>
+                    <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.EndDate)
+                    </dt>
+                    <dd class="col-sm-10">
+                        @Html.DisplayFor(model => model.EndDate)
+                    </dd>
+                    <dt class="col-sm-2">
+                        Tickets
+                    </dt>
+                    <dd class="col-sm-10">
+                        @Model.Tickets.Count()
+                    </dd>
+                </dl>
+                <hr />
+                <h3>Are you sure you want to Unarchive this project and all of its tickets?</h3>
+                <form asp-action="UnArchiveConfirmed">
+                    <input type="hidden" name="id" asp-for="Id" />
+                    <input type="hidden" name="tickets" value="true" />
+                    <input type="submit" value="UnArchive Project And Tickets" class="btn btn-success" /> |
+                    <a asp-action="Details" class=" btn btn-outline-secondary">Back to Details</a>
+                </form>
+                <form asp-action="UnArchiveConfirmed">
+                    <input type="hidden" name="id" asp-for="Id" />
+                    <input type="hidden" name="tickets" value="false" />
+                    <input type="submit" value="UnArchive Only Project" class="btn btn-success" /> |
+                    <a asp-action="Details" class=" btn btn-outline-secondary">Back to Details</a>
+                </form>
+            </div>
+            <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+    </div>
+
+</div>

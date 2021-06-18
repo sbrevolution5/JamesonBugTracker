@@ -16,7 +16,7 @@ using System.IO;
 
 namespace JamesonBugTracker.Controllers
 {
-        [Authorize]
+    [Authorize]
     public class TicketsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -81,6 +81,13 @@ namespace JamesonBugTracker.Controllers
                 SubTicketsArchived = subTicketsArchived
             };
             return View(viewModel);
+        }
+        public async Task<IActionResult> AllArchivedTickets()
+        {
+            int companyId = User.Identity.GetCompanyId().Value;
+            List<Ticket> archivedTickets = await _ticketService.GetArchivedTicketsByCompanyAsync(companyId);
+            
+            return View(archivedTickets);
         }
 
         // GET: Tickets/Details/5
@@ -391,6 +398,54 @@ namespace JamesonBugTracker.Controllers
             await _context.SaveChangesAsync();
             await _ticketService.SetTicketStatusAsync(id, "Archived");
             return RedirectToAction("Dashboard", "Home");
+        }
+        [Authorize(Roles = "Admin,ProjectManager")]
+        public async Task<IActionResult> UnArchive(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var ticket = await _context.Ticket
+                .Include(t => t.DeveloperUser)
+                .Include(t => t.OwnerUser)
+                .Include(t => t.Project)
+                .Include(t => t.TicketPriority)
+                .Include(t => t.TicketStatus)
+                .Include(t => t.TicketType)
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (ticket == null)
+            {
+                return NotFound();
+            }
+            if (ticket.Project.Archived == true)
+            {
+                return RedirectToAction("UnArchive", "Projects", new { id = ticket.ProjectId, fromTicket=true });
+                
+                //TODO redirect to project unarchive, and display message informing user they must unarchive the whole project.
+            }
+
+            return View(ticket);
+        }
+
+
+        // POST: Tickets/Delete/5
+        [HttpPost, ActionName("UnArchive")]
+        [Authorize(Roles = "Admin,ProjectManager")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UnArchiveConfirmed(int id)
+        {
+            if (User.IsInRole("DemoUser"))
+            {
+                return RedirectToAction("DemoError", "Home");
+            }
+            var ticket = await _context.Ticket.FindAsync(id);
+            ticket.ArchiveDate = null;
+            ticket.Archived = false;
+            await _context.SaveChangesAsync();
+            await _ticketService.SetTicketStatusAsync(id, "Development");
+            return RedirectToAction("Details", "Tickets", new { id = ticket.Id});
         }
         [HttpPost]
         //[ValidateAntiForgeryToken]

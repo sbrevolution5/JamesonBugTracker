@@ -17,7 +17,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace JamesonBugTracker.Controllers
 {
-        [Authorize]
+    [Authorize]
     public class ProjectsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -211,7 +211,7 @@ namespace JamesonBugTracker.Controllers
                                                .FirstOrDefault(p => p.Id == id);
             model.Project = project;
             List<BTUser> users = await _companyInfoService.GetAllMembersAsync(companyId);
-            List<string> members = project.Members.Select(m=>m.Id).ToList();  // we can do this because our project eagerly loaded its members
+            List<string> members = project.Members.Select(m => m.Id).ToList();  // we can do this because our project eagerly loaded its members
             model.Users = new MultiSelectList(users, "Id", "FullName", members);
             return View(model);
         }
@@ -235,7 +235,7 @@ namespace JamesonBugTracker.Controllers
                     {
                         await _projectService.AddUserToProjectAsync(id, model.Project.Id);
                     }
-                    return RedirectToAction("Details", "Projects", new {id = model.Project.Id});
+                    return RedirectToAction("Details", "Projects", new { id = model.Project.Id });
                 }
                 else
                 {
@@ -274,18 +274,66 @@ namespace JamesonBugTracker.Controllers
             {
                 return RedirectToAction("DemoError", "Home");
             }
-            var project = await _context.Project.Include(p => p.Tickets).FirstOrDefaultAsync(p=>p.Id==id);
+            var project = await _context.Project.Include(p => p.Tickets).FirstOrDefaultAsync(p => p.Id == id);
             project.ArchiveDate = DateTime.Now;
             project.Archived = true;
             foreach (var ticket in project.Tickets)
             {
-                
+
                 ticket.ArchiveDate = DateTime.Now;
                 ticket.Archived = true;
                 await _ticketService.SetTicketStatusAsync(ticket.Id, "Archived");
             }
             await _context.SaveChangesAsync();
             return RedirectToAction("Dashboard", "Home");
+        }
+        public async Task<IActionResult> UnArchive(int? id, bool fromTicket = false)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+            if (fromTicket)
+            {
+                ViewData["StatusMessage"] = "Error: The project the ticket belongs to is archived.  You must unarchive this project before unarchiving the ticket";
+            }
+            var project = await _context.Project
+                .Include(p => p.Company)
+                .Include(p => p.ProjectPriority)
+                .Include(p => p.Tickets)
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (project == null)
+            {
+                return NotFound();
+            }
+            return View(project);
+        }
+
+        // POST: Projects/Delete/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UnArchiveConfirmed(int id, bool tickets)
+        {
+            if (User.IsInRole("DemoUser"))
+            {
+                return RedirectToAction("DemoError", "Home");
+            }
+            var project = await _context.Project.Include(p => p.Tickets).FirstOrDefaultAsync(p => p.Id == id);
+            project.ArchiveDate = null;
+            project.Archived = false;
+            if (tickets == true)
+            {
+
+                foreach (var ticket in project.Tickets)
+                {
+
+                    ticket.ArchiveDate = null;
+                    ticket.Archived = false;
+                    await _ticketService.SetTicketStatusAsync(ticket.Id, "Development");
+                }
+            }
+            await _context.SaveChangesAsync();
+            return RedirectToAction("Details", new { id = id });
         }
 
         private bool ProjectExists(int id)
