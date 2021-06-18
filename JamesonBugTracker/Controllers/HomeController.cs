@@ -174,7 +174,7 @@ namespace JamesonBugTracker.Controllers
                 tickets = await _ticketService.GetAllTicketsByRoleAsync("Submitter", userId);
 
             }
-            var priorities = _context.TicketPriority.ToList();
+            List<TicketPriority> priorities = _context.TicketPriority.ToList();
             DonutViewModel chartData = new();
             chartData.labels = priorities.Select(t => t.Name).ToArray();
 

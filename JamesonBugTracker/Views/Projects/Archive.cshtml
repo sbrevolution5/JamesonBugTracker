@@ -8,7 +8,7 @@
     <div class="col-md-12">
         <div class="card card-danger">
             <div class="card-header">
-                <h3 class="card-title">Archive Ticket</h3>
+                <h3 class="card-title">Archive Project</h3>
 
                 <div class="card-tools">
                     <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
@@ -54,7 +54,7 @@
                 <form asp-action="ArchiveConfirmed">
                     <input type="hidden" name="id" asp-for="Id" />
                     <input type="submit" value="Archive" class="btn btn-danger" /> |
-                    <a asp-action="Details" class=" btn btn-outline-secondary">Back to Details</a>
+                    <a asp-action="Details" asp-route-id="@Model.Id" class=" btn btn-outline-secondary">Back to Details</a>
                 </form>
             </div>
             <!-- /.card-body -->

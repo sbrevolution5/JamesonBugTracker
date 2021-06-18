@@ -423,9 +423,8 @@ namespace JamesonBugTracker.Controllers
             {
                 TempData["StatusMessage"] = "Error: The project the ticket belongs to is archived.  You must unarchive this project before unarchiving the ticket";
 
-                return RedirectToAction("UnArchive", "Projects", new { id = ticket.ProjectId, fromTicket=true });
-                
-                //TODO redirect to project unarchive, and display message informing user they must unarchive the whole project.
+                return RedirectToAction("UnArchive", "Projects", new { id = ticket.ProjectId});
+
             }
 
             return View(ticket);
