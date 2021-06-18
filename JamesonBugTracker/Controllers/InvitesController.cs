@@ -126,7 +126,7 @@ namespace JamesonBugTracker.Controllers
 
             _context.Invite.Add(model);
             _context.SaveChanges();
-
+            TempData["StatusMessage"] = "Invite sent";
             return RedirectToAction("Dashboard", "Home");
         }
 

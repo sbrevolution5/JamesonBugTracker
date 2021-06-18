@@ -15,8 +15,8 @@
             </div>
             <div class="card-body">
                 <p>User will receive an invite, giving them a link to register.  Once registered, they will automatically be assigned to the selected project and given the role of "submitter".</p>
-                <p>To change user's role, visit the <a asp-controller="UserRoles" asp-action="ManageUserRoles" class="nav-link">Manage User Roles</a> page. </p>
-                <p>To add an existing user to another project, visit the <a asp-controller="Projects" asp-action="All Projects">Project Index</a> and click assign users.  <span class="text-muted">A project manager can also do this</span></p>
+                <p>To change user's role, visit the <a asp-controller="UserRoles" asp-action="ManageUserRoles">Manage User Roles</a> page. </p>
+                <p>To add an existing user to another project, visit the <a asp-controller="Projects" asp-action="All Projects" >Project Index</a> and click assign users.  <span class="text-muted">(A project manager can also do this for projects they manage)</span></p>
                 <form asp-action="Create">
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <div class="form-group">

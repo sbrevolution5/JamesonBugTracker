@@ -641,8 +641,8 @@
     <script src="../../plugins/summernote/summernote-bs4.min.js"></script>
     <script src="~/js/ticketDetails.js"></script>
     <script>
-    //TODO this doesn't work right at all......
 
+        $(window).on("load", function () {
      @if (Model.Comments.Count > 0)
             {
                 @:$('#custom-tabs-comments').tab('show')
@@ -650,8 +650,8 @@
             else
                 {
                     @:$('#custom-tabs-history').tab('show')
-        @:$('#custom-tabs-comments-tab').classlist.toggleClass('disabled')
-     }
+        }
+        });
     </script>
     <script>
         $(function () {

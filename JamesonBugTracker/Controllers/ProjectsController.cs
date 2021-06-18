@@ -287,16 +287,13 @@ namespace JamesonBugTracker.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction("Dashboard", "Home");
         }
-        public async Task<IActionResult> UnArchive(int? id, bool fromTicket = false)
+        public async Task<IActionResult> UnArchive(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
-            if (fromTicket)
-            {
-                ViewData["StatusMessage"] = "Error: The project the ticket belongs to is archived.  You must unarchive this project before unarchiving the ticket";
-            }
+            
             var project = await _context.Project
                 .Include(p => p.Company)
                 .Include(p => p.ProjectPriority)
