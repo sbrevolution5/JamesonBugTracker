@@ -258,11 +258,19 @@
                         </li>
                         @if (User.IsInRole("Admin") || User.IsInRole("ProjectManager"))
                         {
-                            <li class="nav-item">
+                            <li class="nav-item menu-open">
                                 <a asp-controller="Invites" asp-action="Create" class="nav-link">
                                     <i class="nav-icon far fa-envelope"></i>
                                     <p>
                                         New Invite
+                                    </p>
+                                </a>
+                            </li>
+                            <li class="nav-item menu-open">
+                                <a asp-controller="UserRoles" asp-action="ManageUserRoles" class="nav-link">
+                                    <i class="nav-icon far fa-user"></i>
+                                    <p>
+                                        Manage User Roles
                                     </p>
                                 </a>
                             </li>
