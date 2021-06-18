@@ -55,7 +55,7 @@ namespace JamesonBugTracker.Controllers
             return View(notification);
         }
         [HttpPost]
-        public async Task<IActionResult> MarkSeen()
+        public async Task<JsonResult> MarkSeen()
         {
             var userId = _userManager.GetUserId(User);
             var userNotifications = await _notificationService.GetUnseenRecievedNotificationsAsync(userId);
@@ -66,7 +66,8 @@ namespace JamesonBugTracker.Controllers
                 _context.Update(notification);
                 await _context.SaveChangesAsync();
             }
-            return View();
+            var data = new JsonResult(true);
+            return Json(data);
         }
 
         // GET: Notifications/Create
