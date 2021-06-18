@@ -4,90 +4,91 @@
 @inject IBTProjectService _projectService
 @using JamesonBugTracker.Extensions
 @{
+        ViewData["Title"] = "MyTickets";
     var companyId = User.Identity.GetCompanyId().Value;
 }
-@section Header{ 
-    
+@section Header{
+
 }
 <div class="container-fluid">
 
-<div class="card">
-    <div class="card-header">
-        <h5 class="card-title">Unassigned Tickets</h5>
-        <div class="card-tools">
-            <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                <i class="fas fa-minus"></i>
-            </button>
+    <div class="card">
+        <div class="card-header">
+            <h5 class="card-title">Unassigned Tickets</h5>
+            <div class="card-tools">
+                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                    <i class="fas fa-minus"></i>
+                </button>
+            </div>
         </div>
-    </div>
-    <div class="card-body">
+        <div class="card-body">
 
-        <div class="row">
-            <div class="col">
-                @foreach (var project in Model.Projects)
-                {
+            <div class="row">
+                <div class="col">
+                    @foreach (var project in Model.Projects)
+                    {
 
-                    <div class="card card-warning">
-                        <div class="card-header">
-                            <div class="card-title">
-                                @project.Name
+                        <div class="card card-warning">
+                            <div class="card-header">
+                                <div class="card-title">
+                                    @project.Name
+                                </div>
+                                <div class="card-tools">
+                                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                        <i class="fas fa-minus"></i>
+                                    </button>
+                                </div>
                             </div>
-                            <div class="card-tools">
-                                <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                                    <i class="fas fa-minus"></i>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            <div class="table-responsive">
-                                <table id="unassignedTable-@project.Id" class="table dataTable table-striped">
-                                    <thead>
-                                        <tr>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table id="unassignedTable-@project.Id" class="table dataTable table-striped">
+                                        <thead>
+                                            <tr>
 
-                                            <th style="width:25%;">Name</th>
-                                            <th style="width:10%;">Created</th>
-                                            <th style="width:5%;">Submitter</th>
-                                            <th style="width:25%;">Description</th>
-                                            <th></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach (var unassignedTicket in await _ticketService.GetAllUnassignedTicketsByProjectAsync(project.Id, companyId))
-                                        {
-                                            <tr id="row-@unassignedTicket.Id">
-                                                <td><a asp-action="Details" asp-controller="Tickets" asp-route-id="@unassignedTicket.Id">@unassignedTicket.Title</a></td>
-                                                <td>@string.Format("{0:MMM dd yyyy}", unassignedTicket.Created)</td>
-
-                                                <td>@unassignedTicket.OwnerUser?.FullName</td>
-                                                <td>@unassignedTicket.Description</td>
-                                                <td>
-                                                    <form asp-controller="Tickets" asp-action="AssignUser" class="assignForm">
-                                                        <input hidden name="ticketId" value="@unassignedTicket.Id" class="unassignedId" />
-                                                        <div class="form-group">
-                                                            <label for=""></label>
-                                                            <select required class="form-control" name="userId" id="userSelect-@unassignedTicket.Id" asp-items="await _projectService.GetSelectListOfProjectMembersWithoutPM(project.Id)">
-                                                                <option value="" hidden>Choose a User</option>
-
-                                                            </select>
-                                                        </div>
-                                                        <button type="submit" class="btn btn-warning btn-block">Assign User</button>
-                                                    </form>
-                                                </td>
+                                                <th style="width:25%;">Name</th>
+                                                <th style="width:10%;">Created</th>
+                                                <th style="width:5%;">Submitter</th>
+                                                <th style="width:25%;">Description</th>
+                                                <th></th>
                                             </tr>
-                                        }
-                                    </tbody>
-                                </table>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var unassignedTicket in await _ticketService.GetAllUnassignedTicketsByProjectAsync(project.Id, companyId))
+                                            {
+                                                <tr id="row-@unassignedTicket.Id">
+                                                    <td><a asp-action="Details" asp-controller="Tickets" asp-route-id="@unassignedTicket.Id">@unassignedTicket.Title</a></td>
+                                                    <td>@string.Format("{0:MMM dd yyyy}", unassignedTicket.Created)</td>
+
+                                                    <td>@unassignedTicket.OwnerUser?.FullName</td>
+                                                    <td>@unassignedTicket.Description</td>
+                                                    <td>
+                                                        <form asp-controller="Tickets" asp-action="AssignUser" class="assignForm">
+                                                            <input hidden name="ticketId" value="@unassignedTicket.Id" class="unassignedId" />
+                                                            <div class="form-group">
+                                                                <label for=""></label>
+                                                                <select required class="form-control" name="userId" id="userSelect-@unassignedTicket.Id" asp-items="await _projectService.GetSelectListOfProjectMembersWithoutPM(project.Id)">
+                                                                    <option value="" hidden>Choose a User</option>
+
+                                                                </select>
+                                                            </div>
+                                                            <button type="submit" class="btn btn-warning btn-block">Assign User</button>
+                                                        </form>
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <!-- /.table-responsive -->
+
+
                             </div>
-                            <!-- /.table-responsive -->
-
-
                         </div>
-                    </div>
-                }
+                    }
+                </div>
             </div>
         </div>
     </div>
-</div>
 </div>
 
 @section Scripts{
@@ -101,30 +102,30 @@
         </script>
     }
 
-<script>
-    //Used to Submit assignment form without a refresh
+    <script>
+        //Used to Submit assignment form without a refresh
 
-    $(".assignForm").on("submit", function (e) {
+        $(".assignForm").on("submit", function (e) {
 
-        var dataString = $(this).serialize();
-        // get the element Id of the form
-        // alert(dataString); return false;
-        var unassignedId = $(this).children("input").val()
-        var userFullName = $(this).children("div").children("select").children("option").filter(":selected").text()
-        $.ajax({
-            type: "POST",
-            url: "/Tickets/AssignUser",
-            data: dataString,
-            success: function () {
-                var rowId = (`#row-${unassignedId}`)
-                $(rowId)
-                    .addClass("d-none")
-                toastr.success(`${userFullName} assigned to ticket`)
-            }
+            var dataString = $(this).serialize();
+            // get the element Id of the form
+            // alert(dataString); return false;
+            var unassignedId = $(this).children("input").val()
+            var userFullName = $(this).children("div").children("select").children("option").filter(":selected").text()
+            $.ajax({
+                type: "POST",
+                url: "/Tickets/AssignUser",
+                data: dataString,
+                success: function () {
+                    var rowId = (`#row-${unassignedId}`)
+                    $(rowId)
+                        .addClass("d-none")
+                    toastr.success(`${userFullName} assigned to ticket`)
+                }
+            });
+            e.preventDefault();
+            toastr.info('Trying to assign user to ticket. ')
+
         });
-        e.preventDefault();
-        toastr.info('Trying to assign user to ticket. ')
-
-    });
-</script>
+    </script>
 }

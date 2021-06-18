@@ -64,12 +64,12 @@
             <ul class="navbar-nav ml-auto">
                 <!-- Notifications Dropdown Menu -->
                 <li class="nav-item dropdown">
-                    <a class="nav-link" data-toggle="dropdown" href="#">
+                    <a class="nav-link" data-toggle="dropdown" id="notificationButton">
                         <i class="far fa-bell"></i>
                         @if (unseenCount > 0)
                         {
 
-                            <span class="badge badge-danger navbar-badge">@unseenCount</span>
+                            <span class="badge badge-danger navbar-badge" id="unseenBadge">@unseenCount</span>
                         }
                     </a>
                     <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
@@ -98,21 +98,19 @@
                             {
                                 <div class="dropdown-item" id="not-@notification.Id">
                                     <!-- Message Start -->
-                                    <form class="seenForm">
-                                        <div class="media">
-                                            <img src="@_fileService.ConvertByteArrayToFile(notification.Sender.AvatarFileData,notification.Sender.AvatarFileContentType) " alt="User Avatar" class="img-size-50 mr-3 img-circle ">
-                                            <div class="media-body">
-                                                <h3 class="dropdown-item-title">
-                                                    @notification.Sender.FullName
-                                                </h3>
-                                                <input hidden value="@notification.Id" name="id" />
-                                                <span class="float-right text-sm text-danger-"><button type="submit" class="btn btn-link"><i id="seenIcon-@notification.Id" class="fas fa-star"></i></button></span>
-                                                <p class="text-sm">@notification.Message</p>
-                                                <a class="btn btn-sm btn-primary" asp-action="Details" asp-controller="Tickets" asp-route-id="@notification.TicketId">See Ticket</a>
-                                                <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i> @notification.Created</p>
-                                            </div>
+                                    <div class="media">
+                                        <img src="@_fileService.ConvertByteArrayToFile(notification.Sender.AvatarFileData,notification.Sender.AvatarFileContentType) " alt="User Avatar" class="img-size-50 mr-3 img-circle ">
+                                        <div class="media-body">
+                                            <h3 class="dropdown-item-title">
+                                                @notification.Sender.FullName
+                                            </h3>
+                                            <span class="float-right text-sm text-danger-"><button type="submit" class="btn btn-link"><i id="seenIcon-@notification.Id" class="fas fa-star"></i></button></span>
+                                            <p class="text-sm">@notification.Message</p>
+                                            <a class="btn btn-sm btn-primary" asp-action="Details" asp-controller="Tickets" asp-route-id="@notification.TicketId">See Ticket</a>
+                                            <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i> @notification.Created</p>
                                         </div>
-                                    </form>
+                                    </div>
+
                                 </div>
                             }
                             <!-- Message End -->
@@ -322,22 +320,18 @@
             $('[data-toggle="popover"]').popover()
         })
         /*        AJAX for seen button*/
-        $(".seenForm").hover(function (e) {
+        $("#notificationButton").click(function (e) {
 
             var dataString = $(this).serialize();
-            // get the element Id of the form
-            // alert(dataString); return false;
-            var unassignedId = $(this).children("input").val()
 
             $.ajax({
                 type: "POST",
                 url: "/Notifications/MarkSeen",
                 data: dataString,
                 success: function () {
-
+                    $("#unseenBadge").hide(500)
                 }
             });
-            e.preventDefault();
 
         });
     </script>

@@ -65,28 +65,28 @@ statusOverlay.hide()
 devOverlay.hide()
 function statusButtons(status, num) {
     if (status == "Development") {
-        toTesting.show(num)
-        returnTesting.hide(num)
-        reopenTicket.hide(num)
-        closeTicket.hide(num)
+        toTesting.fadeIn(num)
+        returnTesting.fadeOut(num)
+        reopenTicket.fadeOut(num)
+        closeTicket.fadeOut(num)
     }
     else if (status == "Testing") {
-        toTesting.hide(num)
-        returnTesting.show(num)
-        reopenTicket.hide(num)
-        closeTicket.show(num)
+        toTesting.fadeOut(num)
+        returnTesting.fadeIn(num)
+        reopenTicket.fadeOut(num)
+        closeTicket.fadeIn(num)
     }
     else if (status == "Resolved" && canReopen) {
-        toTesting.hide(num)
-        returnTesting.hide(num)
-        reopenTicket.show(num)
-        closeTicket.hide(num)
+        toTesting.fadeOut(num)
+        returnTesting.fadeOut(num)
+        reopenTicket.fadeIn(num)
+        closeTicket.fadeOut(num)
     }
     else{
-        toTesting.hide(num)
-        returnTesting.hide(num)
-        reopenTicket.hide(num)
-        closeTicket.hide(num)
+        toTesting.fadeOut(num)
+        returnTesting.fadeOut(num)
+        reopenTicket.fadeOut(num)
+        closeTicket.fadeOut(num)
     }
 }
 statusButtons(ticketStatus,0)
@@ -104,15 +104,15 @@ $(".assignForm").on("submit", function (e) {
             $("#developerName").text(userFullName)
             $("#ticketStatusText").text("Development")
             ticketStatus = $("#ticketStatusText").text
-            statusOverlay.hide(1000)
-            devOverlay.hide(1000)
+            statusOverlay.fadeOut(600)
+            devOverlay.fadeOut(600)
             ticketStatusBgColor();
-            statusButtons(ticketStatus,1000)
+            statusButtons(ticketStatus,600)
         }
     });
     e.preventDefault();
-    statusOverlay.show(1000)
-    devOverlay.show(1000)
+    statusOverlay.fadeIn(600)
+    devOverlay.fadeIn(600)
     toastr.info('Trying to assign user to ticket. Please Wait')
 
 });
@@ -129,14 +129,14 @@ $(".updateStatus").on("submit", function (e) {
             toastr.success(`Ticket Status was updated`)
             ticketStatus = newStatus
             $("#ticketStatusText").text(ticketStatus)
-            statusOverlay.hide(1000)
+            statusOverlay.fadeOut(600)
 
             ticketStatusBgColor();
-            statusButtons(ticketStatus,1000)
+            statusButtons(ticketStatus,600)
         }
     });
     e.preventDefault();
-    statusOverlay.show(1000)
+    statusOverlay.fadeIn(600)
 
     toastr.info('Updating Ticket Status. Please Wait')
 });

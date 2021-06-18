@@ -13,7 +13,7 @@ using JamesonBugTracker.Services.Interfaces;
 
 namespace JamesonBugTracker.Controllers
 {
-        [Authorize]
+    [Authorize]
     public class NotificationsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -55,18 +55,19 @@ namespace JamesonBugTracker.Controllers
             return View(notification);
         }
         [HttpPost]
-        public async Task<IActionResult> MarkSeen(int? id)
+        public async Task<IActionResult> MarkSeen()
         {
-            if (id is null)
+            var userId = _userManager.GetUserId(User);
+            var userNotifications = await _notificationService.GetUnseenRecievedNotificationsAsync(userId);
+            foreach (var notification in userNotifications)
             {
-                return NotFound();
+                notification.Viewed = true;
+                _context.Update(notification);
             }
-            Notification seenNotification = await _context.Notification.FirstOrDefaultAsync(n => n.Id == id);
-            seenNotification.Viewed = true;
             await _context.SaveChangesAsync();
             return View();
         }
-        
+
         // GET: Notifications/Create
         public IActionResult Create()
         {
@@ -148,7 +149,7 @@ namespace JamesonBugTracker.Controllers
             return View(notification);
         }
 
-       
+
         private bool NotificationExists(int id)
         {
             return _context.Notification.Any(e => e.Id == id);
