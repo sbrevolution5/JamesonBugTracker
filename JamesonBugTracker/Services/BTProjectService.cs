@@ -136,7 +136,7 @@ namespace JamesonBugTracker.Services
                                              .Include(p => p.Tickets)
                                                 .ThenInclude(t => t.Comments)
                                              .Where(p => p.CompanyId == companyId)
-                                             
+
                                              .ToListAsync();
             return projects;
 
@@ -189,7 +189,7 @@ namespace JamesonBugTracker.Services
 
         public async Task<List<BTUser>> GetProjectMembersByRoleAsync(int projectId, string role)
         {
-            Project project = await _context.Project.Include(p=>p.Members).FirstOrDefaultAsync(p=> p.Id==projectId); // Explicit call to _context.Projects....etc.
+            Project project = await _context.Project.Include(p => p.Members).FirstOrDefaultAsync(p => p.Id == projectId); // Explicit call to _context.Projects....etc.
             List<BTUser> membersByRole = new();
             foreach (var user in project.Members)
             {
@@ -336,19 +336,12 @@ namespace JamesonBugTracker.Services
             {
 
                 var allTickets = project.Tickets.ToList();
-                int newTickets = 0;
                 int newId = (int)await LookupTicketStatusIdAsync("New");
                 int unId = (int)await LookupTicketStatusIdAsync("Unassigned");
-                foreach (var ticket in allTickets)
+
+                if (allTickets.Any(t => t.TicketStatusId == newId || t.TicketStatusId == unId))
                 {
-                    
-                    if (ticket.TicketStatusId == newId  || ticket.TicketStatusId == unId)
-                    {
-                        newTickets++;
-                    }
-                }
-                if (newTickets > 0)
-                {
+
                     results.Add(project);
                 }
             }
