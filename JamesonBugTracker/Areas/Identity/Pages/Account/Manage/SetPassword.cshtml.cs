@@ -67,7 +67,10 @@ namespace JamesonBugTracker.Areas.Identity.Pages.Account.Manage
             {
                 return Page();
             }
-
+            if (User.IsInRole("DemoUser"))
+            {
+                return RedirectToAction("DemoError", "Home");
+            }
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {

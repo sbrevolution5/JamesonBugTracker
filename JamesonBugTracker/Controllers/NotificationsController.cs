@@ -59,12 +59,13 @@ namespace JamesonBugTracker.Controllers
         {
             var userId = _userManager.GetUserId(User);
             var userNotifications = await _notificationService.GetUnseenRecievedNotificationsAsync(userId);
+            await _context.SaveChangesAsync();
             foreach (var notification in userNotifications)
             {
                 notification.Viewed = true;
                 _context.Update(notification);
+                await _context.SaveChangesAsync();
             }
-            await _context.SaveChangesAsync();
             return View();
         }
 
