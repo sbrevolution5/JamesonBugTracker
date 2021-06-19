@@ -94,6 +94,7 @@ $(".assignForm").on("submit", function (e) {
 
     var dataString = $(this).serialize();
     var userFullName = $(this).children("div").children("select").children("option").filter(":selected").text()
+    $(".assignBtn").attr("disabled", true)
     $.ajax({
         type: "POST",
         url: "/Tickets/AssignUser",
@@ -107,7 +108,13 @@ $(".assignForm").on("submit", function (e) {
             statusOverlay.fadeOut(600)
             devOverlay.fadeOut(600)
             ticketStatusBgColor();
-            statusButtons("Development",600)
+            statusButtons("Development", 600)
+            $(".assignBtn").attr("disabled", false)
+
+        },
+        error: function (result) {
+            $(".assignBtn").attr("disabled", false)
+
         }
     });
     e.preventDefault();
@@ -120,6 +127,8 @@ $(".updateStatus").on("submit", function (e) {
 
     var dataString = $(this).serialize();
     var newStatus = $(this).children(".statusName")[0].value
+    $(".updateBtn").attr("disabled", true)
+
     $.ajax({
         type: "POST",
         url: "/Tickets/UpdateStatus",
@@ -131,7 +140,14 @@ $(".updateStatus").on("submit", function (e) {
             statusOverlay.fadeOut(600)
 
             ticketStatusBgColor();
-            statusButtons(ticketStatus,600)
+            statusButtons(ticketStatus, 600)
+            $(".updateBtn").attr("disabled", false)
+
+        },
+        error: function (result) {
+            toastr.danger("Something went wrong, status wasn't updated")
+            $(".updateBtn").attr("disabled", false)
+
         }
     });
     e.preventDefault();
