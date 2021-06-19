@@ -131,7 +131,7 @@ namespace JamesonBugTracker.Controllers
                 }
                 _context.Add(project);
                 await _context.SaveChangesAsync();
-                return RedirectToAction("MyProjects");
+                return RedirectToAction("AddMembers",new {id = project.Id});
             }
             ViewData["CompanyId"] = new SelectList(_context.Set<Company>(), "Id", "Name", project.CompanyId);
             ViewData["ProjectPriorityId"] = new SelectList(_context.Set<ProjectPriority>(), "Id", "Id", project.ProjectPriorityId);
