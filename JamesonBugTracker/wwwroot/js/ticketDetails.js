@@ -107,7 +107,7 @@ $(".assignForm").on("submit", function (e) {
             statusOverlay.fadeOut(600)
             devOverlay.fadeOut(600)
             ticketStatusBgColor();
-            statusButtons(ticketStatus,600)
+            statusButtons("Development",600)
         }
     });
     e.preventDefault();
@@ -120,7 +120,6 @@ $(".updateStatus").on("submit", function (e) {
 
     var dataString = $(this).serialize();
     var newStatus = $(this).children(".statusName")[0].value
-    console.log(newStatus)
     $.ajax({
         type: "POST",
         url: "/Tickets/UpdateStatus",

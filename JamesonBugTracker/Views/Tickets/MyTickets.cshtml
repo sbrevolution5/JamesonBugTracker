@@ -52,7 +52,7 @@
                     <td>@ticket.TicketType.Name</td>
                     <td><span class="badge priorityBadge">@ticket.TicketPriority.Name</span></td>
                     <td>@ticket.TicketPriorityId</td>
-                    @if (User.IsInRole("Admin") || User.IsInRole("ProjectManager"))
+                    @if (User.IsInRole("Admin") || User.IsInRole("ProjectManager") || User.IsInRole("Developer"))
                     {
 
                 <td>
@@ -126,7 +126,7 @@
                     <td>@ticket.TicketType.Name</td>
                     <td><span class="badge priorityBadge">@ticket.TicketPriority.Name</span></td>
                     <td>@ticket.TicketPriorityId</td>
-                    @if (User.IsInRole("Admin") || User.IsInRole("ProjectManager"))
+                    @if (User.IsInRole("Admin") || User.IsInRole("ProjectManager") || User.IsInRole("Developer"))
                     {
 
                         <td>

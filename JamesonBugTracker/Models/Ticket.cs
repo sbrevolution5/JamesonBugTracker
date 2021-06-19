@@ -12,7 +12,7 @@ namespace JamesonBugTracker.Models
         public int Id { get; set; }
         
         [Required]
-        [StringLength(50)]
+        [StringLength(75)]
         public string Title { get; set; }
         
         [Required]

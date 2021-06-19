@@ -61,7 +61,7 @@
                                 </a>
                                 <br />
                                 <small>
-                                    @string.Format("{0:MMM dd yyyy}", project.StartDate)
+                                    @string.Format("{0:MMM dd yyyy}", project.StartDate) - @string.Format("{0:MMM dd yyyy}", project.EndDate)
                                 </small>
                             </td>
                             <td>
@@ -89,56 +89,73 @@
                                 <span class="badge priorityBadge">@project.ProjectPriority.Name</span>
                             </td>
                             <td class="project-actions text-right">
-                                <a asp-action="Edit" asp-route-id="@project.Id">
-                                    <i class="fas fa-pencil-alt">
-                                    </i>Edit
-                                </a> |
-                                <a asp-action="Details" asp-route-id="@project.Id">
-                                    <i class="fas fa-folder">
-                                    </i>Details
-                                </a> |
-                                <a asp-action="Archive" asp-route-id="@project.Id">
-                                    <i class="fas fa-trash">
-                                    </i>Archive
-                                </a> |
-                                <a asp-action="AddMembers" asp-route-id="@project.Id">
-                                    <i class="fas fa-user">
-                                    </i>Assign Users
-                                </a>
+                                @if (User.IsInRole("Admin") || User.IsInRole("ProjectManager"))
+                                {
+                                    <a asp-action="Edit" asp-route-id="@project.Id">
+                                        <i class="fas fa-pencil-alt">
+                                        </i>Edit
+                                    </a> <span>|</span>
+                                    <a asp-action="Details" asp-route-id="@project.Id">
 
+                                        <i class="fas fa-folder">
+                                        </i>Details
+                                    </a> <span>|</span>
+
+
+
+                                    <a asp-action="Archive" asp-route-id="@project.Id">
+
+
+
+                                        <i class="fas fa-trash">
+                                        </i>Archive
+                                    </a> <span>|</span>
+                                    <a asp-action="AddMembers" asp-route-id="@project.Id">
+                                        <i class="fas fa-user">
+                                        </i>Assign Users
+                                    </a>
+                                }
+                                else
+                                {
+                                    <a asp-action="Details" asp-route-id="@project.Id">
+
+                                        <i class="fas fa-folder">
+                                        </i>Details
+                                    </a>
+                                }
                             </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
-        <!-- /.card-body -->
-    </div>
-    <!-- /.card -->
+                            </tr>
+                        }
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
 
-</section>
+            </section>
 
-@section Scripts{
-    <script src="~/js/PriorityBadge.js"></script>
-    <script src="~/plugins/datatables/jquery.dataTables.js"></script>
-    <script src="~/plugins/datatables-bs4/js/dataTables.bootstrap4.js"></script>
-    <script>
-        $(document).ready(function () {
-            $('#projectTable').DataTable();
+            @section Scripts{
+                <script src="~/js/PriorityBadge.js"></script>
+                <script src="~/plugins/datatables/jquery.dataTables.js"></script>
+                <script src="~/plugins/datatables-bs4/js/dataTables.bootstrap4.js"></script>
+                <script>
+                    $(document).ready(function () {
+                        $('#projectTable').DataTable();
 
-        });
-    </script>
-    <script>
-        var endDate
-        var startDate
-        var interval
-        var now
-        var width
-        var barElement
-    </script>
-    @foreach (var project in Model)
-    {
-        <script>
+                    });
+                </script>
+                <script>
+                    var endDate
+                    var startDate
+                    var interval
+                    var now
+                    var width
+                    var barElement
+                </script>
+                @foreach (var project in Model)
+                {
+                    <script>
         //TODO Get date from c#
 
         endDate = @project.EndDate.ToUnixTimeSeconds();
@@ -169,6 +186,6 @@
           document.getElementById("progress-percent-@project.Id").innerText = `Project End Date was @string.Format("{0:MMM dd yyyy}", project.EndDate)`
 
     }
-        </script>
-    }
-}
+                    </script>
+                }
+            }

@@ -64,7 +64,7 @@
                                 </a>
                                 <br />
                                 <small>
-                                    @string.Format("{0:MMM dd yyyy}", project.StartDate)
+                                    @string.Format("{0:MMM dd yyyy}", project.StartDate) - @string.Format("{0:MMM dd yyyy}", project.EndDate)
                                 </small>
                             </td>
                             <td>
@@ -92,23 +92,40 @@
                                 <span id="ticketPriorityText" class="badge priorityBadge">@project.ProjectPriority.Name</span>
                             </td>
                             <td class="project-actions text-right">
-                                <a asp-action="Edit" asp-route-id="@project.Id">
-                                    <i class="fas fa-pencil-alt">
-                                    </i>Edit
-                                </a> |
-                                <a asp-action="Details" asp-route-id="@project.Id">
-                                    <i class="fas fa-folder">
-                                    </i>Details
-                                </a> |
-                                <a asp-action="Archive" asp-route-id="@project.Id">
-                                    <i class="fas fa-trash">
-                                    </i>Archive
-                                </a> |
-                                <a asp-action="AddMembers" asp-route-id="@project.Id">
-                                    <i class="fas fa-user">
-                                    </i>Assign Users
-                                </a>
+                                @if (User.IsInRole("Admin") || User.IsInRole("ProjectManager"))
+                                {
+                                    <a asp-action="Edit" asp-route-id="@project.Id">
+                                        <i class="fas fa-pencil-alt">
+                                        </i>Edit
+                                    </a> <span>|</span>
+                                    <a asp-action="Details" asp-route-id="@project.Id">
 
+                                        <i class="fas fa-folder">
+                                        </i>Details
+                                    </a> <span>|</span>
+
+
+
+                                    <a asp-action="Archive" asp-route-id="@project.Id">
+
+
+
+                                        <i class="fas fa-trash">
+                                        </i>Archive
+                                    </a> <span>|</span>
+                                    <a asp-action="AddMembers" asp-route-id="@project.Id">
+                                        <i class="fas fa-user">
+                                        </i>Assign Users
+                                    </a>
+                                }
+                                else
+                                {
+                                    <a asp-action="Details" asp-route-id="@project.Id">
+
+                                        <i class="fas fa-folder">
+                                        </i>Details
+                                    </a>
+                                }
                             </td>
                         </tr>
                     }

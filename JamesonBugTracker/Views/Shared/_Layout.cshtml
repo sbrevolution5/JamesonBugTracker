@@ -266,6 +266,10 @@
                                     </p>
                                 </a>
                             </li>
+                        }
+                        @if (User.IsInRole("Admin"))
+                        {
+
                             <li class="nav-item menu-open">
                                 <a asp-controller="UserRoles" asp-action="ManageUserRoles" class="nav-link">
                                     <i class="nav-icon far fa-user"></i>

@@ -110,6 +110,7 @@ namespace JamesonBugTracker.Controllers
                 .Include(t => t.Comments)
                 .ThenInclude(c => c.User)
                 .Include(t => t.History)
+                .ThenInclude(h=>h.User)
                 .FirstOrDefaultAsync(m => m.Id == id);
             ViewData["AssignUsers"] = new SelectList(await _projectService.GetMembersWithoutPMAsync(ticket.ProjectId), "Id", "FullName", ticket.DeveloperUserId);
             if (ticket.Project.CompanyId != companyId)
@@ -223,6 +224,8 @@ namespace JamesonBugTracker.Controllers
         }
 
         // GET: Tickets/Edit/5
+        [Authorize(Roles = "Admin,ProjectManager,Developer")]
+
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -397,6 +400,7 @@ namespace JamesonBugTracker.Controllers
             ticket.Archived = true;
             await _context.SaveChangesAsync();
             await _ticketService.SetTicketStatusAsync(id, "Archived");
+            TempData["StatusMessage"] = $"{ticket.Title} was successfully archived";
             return RedirectToAction("Dashboard", "Home");
         }
         [Authorize(Roles = "Admin,ProjectManager")]
@@ -449,6 +453,8 @@ namespace JamesonBugTracker.Controllers
             return RedirectToAction("Details", "Tickets", new { id = ticket.Id});
         }
         [HttpPost]
+        [Authorize(Roles = "Admin,ProjectManager")]
+
         //[ValidateAntiForgeryToken]
         public async Task<IActionResult> AssignUser(string userId, int ticketId, bool db = false)
         {
@@ -506,6 +512,7 @@ namespace JamesonBugTracker.Controllers
             }
             return RedirectToAction("Details", new { id = ticketId });
         }
+        [Authorize(Roles = "Admin,ProjectManager")]
         public async Task<IActionResult> UnassignUser(int ticketId)
         {
 

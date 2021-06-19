@@ -99,6 +99,8 @@ namespace JamesonBugTracker.Controllers
         }
 
         // GET: Projects/Create
+        [Authorize(Roles = "Admin,ProjectManager")]
+
         public IActionResult Create()
         {
 
@@ -111,6 +113,7 @@ namespace JamesonBugTracker.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin,ProjectManager")]
         public async Task<IActionResult> Create([Bind("Id,Name,Description,StartDate,EndDate,ProjectPriorityId")] Project project, IFormFile customFile)
         {
             if (ModelState.IsValid)
@@ -136,6 +139,8 @@ namespace JamesonBugTracker.Controllers
         }
 
         // GET: Projects/Edit/5
+        [Authorize(Roles = "Admin,ProjectManager")]
+
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -158,6 +163,8 @@ namespace JamesonBugTracker.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin,ProjectManager")]
+
         public async Task<IActionResult> Edit(int id, [Bind("Id,CompanyId,Name,Description,StartDate,EndDate,ArchiveDate,Archived,ImageFileName,ImageFileData,ImageFileContentType,ProjectPriorityId")] Project project, IFormFile customFile)
         {
             if (id != project.Id)
@@ -245,6 +252,8 @@ namespace JamesonBugTracker.Controllers
             return View(model);
         }
         // GET: Projects/Delete/5
+        [Authorize(Roles = "Admin,ProjectManager")]
+
         public async Task<IActionResult> Archive(int? id)
         {
             if (id == null)
@@ -268,6 +277,8 @@ namespace JamesonBugTracker.Controllers
         // POST: Projects/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin,ProjectManager")]
+
         public async Task<IActionResult> ArchiveConfirmed(int id)
         {
             if (User.IsInRole("DemoUser"))
@@ -285,8 +296,11 @@ namespace JamesonBugTracker.Controllers
                 await _ticketService.SetTicketStatusAsync(ticket.Id, "Archived");
             }
             await _context.SaveChangesAsync();
+            TempData["StatusMessage"] = $"{project.Name} was successfully archived";
             return RedirectToAction("Dashboard", "Home");
         }
+        [Authorize(Roles = "Admin,ProjectManager")]
+
         public async Task<IActionResult> UnArchive(int? id)
         {
             if (id == null)
@@ -309,6 +323,8 @@ namespace JamesonBugTracker.Controllers
         // POST: Projects/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin,ProjectManager")]
+
         public async Task<IActionResult> UnArchiveConfirmed(int id, bool tickets)
         {
             if (User.IsInRole("DemoUser"))
