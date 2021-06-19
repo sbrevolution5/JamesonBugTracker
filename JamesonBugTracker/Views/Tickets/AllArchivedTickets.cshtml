@@ -34,7 +34,7 @@
                         <td>@ticket.Title</td>
                         <td>@string.Format("{0:MMM dd yyyy}", ticket.Created)</td>
                         <td>@(ticket.Created.ToUnixTimeSeconds())</td>
-                        <td>@string.Format("{0:MM/dd/yyyy hh:mm tt}", ticket.ArchiveDate)</td>
+                        <td>@string.Format("{0:MMM dd yyyy hh:mm tt}", ticket.ArchiveDate)</td>
                         @if (ticket.ArchiveDate is not null)
                         {
 

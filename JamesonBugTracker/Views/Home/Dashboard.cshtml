@@ -321,7 +321,7 @@
                                                             <td>@string.Format("{0:MMM dd yyyy}", ticket.Created)</td>
                                                             <td>@(ticket.Created.ToUnixTimeSeconds())</td>
 
-                                                            <td>@string.Format("{0:MM/dd/yyyy hh:mm tt}", ticket.Updated)</td>
+                                                            <td>@string.Format("{0:MMM dd yyyy hh:mm tt}", ticket.Updated)</td>
                                                             @if (ticket.Updated is not null)
                                                             {
 
@@ -480,7 +480,7 @@
                                                             <td><a asp-action="Details" asp-controller="Tickets" asp-route-id="@ticket.Id">@ticket.Title</a></td>
                                                             <td>@string.Format("{0:MMM dd yyyy}", ticket.Created)</td>
                                                             <td>@(ticket.Created.ToUnixTimeSeconds())</td>
-                                                            <td>@string.Format("{0:MM/dd/yyyy hh:mm tt}", ticket.Updated)</td>
+                                                            <td>@string.Format("{0:MMM dd yyyy hh:mm tt}", ticket.Updated)</td>
                                                             @if (ticket.Updated is not null)
                                                             {
 

@@ -36,7 +36,7 @@
                     <td>@ticket.Title</td>
                     <td>@string.Format("{0:MMM dd yyyy}", ticket.Created)</td>
                     <td>@(ticket.Created.ToUnixTimeSeconds())</td>
-                    <td>@string.Format("{0:MM/dd/yyyy hh:mm tt}", ticket.Updated)</td>
+                    <td>@string.Format("{0:MMM dd yyyy hh:mm tt}", ticket.Updated)</td>
                     @if (ticket.Updated is not null)
                     {
 
@@ -110,7 +110,7 @@
                     <td>@ticket.Title</td>
                     <td>@string.Format("{0:MMM dd yyyy}", ticket.Created)</td>
                     <td>@(ticket.Created.ToUnixTimeSeconds())</td>
-                    <td>@string.Format("{0:MM/dd/yyyy hh:mm tt}", ticket.Updated)</td>
+                    <td>@string.Format("{0:MMM dd yyyy hh:mm tt}", ticket.Updated)</td>
                     @if (ticket.Updated is not null)
                     {
 
@@ -185,7 +185,7 @@
                     <td>@ticket.Title</td>
                     <td>@string.Format("{0:MMM dd yyyy}", ticket.Created)</td>
                     <td>@(ticket.Created.ToUnixTimeSeconds())</td>
-                    <td>@string.Format("{0:MM/dd/yyyy hh:mm tt}", ticket.Updated)</td>
+                    <td>@string.Format("{0:MMM dd yyyy hh:mm tt}", ticket.Updated)</td>
                     @if (ticket.Updated is not null)
                     {
 
