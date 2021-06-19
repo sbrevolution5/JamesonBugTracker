@@ -1,5 +1,6 @@
 ﻿@model JamesonBugTracker.Models.ViewModels.ProjectDetailsViewModel
 @using JamesonBugTracker.Services.Interfaces
+@using Microsoft.AspNetCore.Identity
 @inject IBTProjectService _projectService
 @{
     ViewData["Title"] = $"{Model.Project.Name} - Details";
@@ -7,6 +8,7 @@
 }
 @inject IBTFileService _fileService
 @inject IBTTicketService _ticketService
+@inject UserManager<BTUser> _userManager
 
 @section Header{
     <link href="~/plugins/chart.js/Chart.css" rel="stylesheet" />
@@ -59,19 +61,26 @@
                         <div class="row">
                             <div class="col-8">
 
-                        <strong><i class="fas fa-book mr-1"></i> @member.FullName</strong>
-                        <p class="text-muted">
-                            <span class="users-list-date">@((await _ticketService.GetAllTicketsByRoleAsync("Submitter", member.Id)).Count) Submitted</span>
-                            <span class="users-list-date">@((await _ticketService.GetAllDeveloperTicketsByResolvedAsync(member.Id, false)).Count) Open Tickets</span>
-                        </p>
+                                <strong><i class="fas fa-book mr-1"></i> @member.FullName</strong>
+                                <p class="text-muted">
+                                    <span class="users-list-date">@((await _ticketService.GetAllTicketsByRoleAsync("Submitter", member.Id)).Count) Submitted</span>
+                                    <span class="users-list-date">@((await _ticketService.GetAllDeveloperTicketsByResolvedAsync(member.Id, false)).Count) Open Tickets</span>
+                                </p>
                             </div>
                             <div class="col-4">
 
-                        <img src="@_fileService.GetUserAvatar(member)" class="img-circle img-fluid sm-sq-img"/>
+                                <img src="@_fileService.GetUserAvatar(member)" class="img-circle img-fluid sm-sq-img" />
                             </div>
 
                         </div>
                         <hr>
+                    }
+                    @if ((User.IsInRole("ProjectManager") && projectManager.Id == _userManager.GetUserId(User)) || User.IsInRole("Admin"))
+                    {
+                        <a asp-action="AddMembers" asp-route-id="@Model.Project.Id" class="btn btn-block btn-primary">
+                            <i class="fas fa-user mr-2">
+                            </i>Assign Users
+                        </a>
                     }
 
                 </div>

@@ -7,7 +7,7 @@
     <h2> Assign Users </h2>
 
     <div class="row">
-        <div class="col-md-4">
+        <div class="col">
             <div class="panel panel-green margin-bottom-40">
                 <div class="panel-heading">
                     <h3 class="panel-title"> @Model.Project.Name</h3>
@@ -32,6 +32,15 @@
                 <div class="form-group">
                     <div class="col-lg-offset-2 col-lg-10">
                         <input type="submit" class="btn btn-success" value="Assign Users" />
+        <a asp-action="AllProjects" class="btn btn-secondary">
+            Back to All Projects
+        </a>
+        <a asp-action="MyProjects" class="btn btn-secondary">
+            Back to My Projects
+        </a>
+        <a asp-action="Details" asp-route-id="@Model.Project.Id" class="btn btn-secondary">
+            Back to Project Details
+        </a>
                     </div>
                 </div>
             </form>
@@ -39,8 +48,5 @@
 
         </div>
         <!--End Hover Rows-->
-    </div>
-    <div>
-        @Html.ActionLink("Back to List", "AllProjects")
     </div>
 </div>
