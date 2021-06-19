@@ -6,12 +6,14 @@
 
 <h1>All Tickets</h1>
 
-<p>
-    <a asp-action="Create" class="btn btn-block btn-success">Create New</a>
-</p>
+
 <div class="m-3">
 
     <div class="card p-1 m-1">
+        <div class="card-header mb-3">
+
+    <a asp-action="Create" class="btn btn-block btn-success ">Create New</a>
+        </div>
 
         <table id="ticketTable" class="table dataTable table-striped">
             <thead>
@@ -28,6 +30,7 @@
                     <th>Type</th>
                     <th>Priority</th>
                     <th>Priority Hidden</th>
+                    <th>Status</th>
                     <th>Project</th>
                     <th></th>
                 </tr>
@@ -55,6 +58,7 @@
                         <td>@ticket.TicketType.Name</td>
                         <td><span class="badge priorityBadge">@ticket.TicketPriority.Name</span></td>
                         <td>@ticket.TicketPriorityId</td>
+                        <td>@ticket.TicketStatus.Name</td>
                         <td><a asp-action="Details" asp-controller="Projects" asp-route-id="@ticket.ProjectId">@ticket.Project.Name</a></td>
                         @if (User.IsInRole("Admin") || User.IsInRole("ProjectManager"))
                         {
@@ -86,8 +90,11 @@
                 }
             </tbody>
         </table>
-    </div>
+        <div class="card-footer">
+
     <a class="btn btn-block btn-secondary" asp-action="AllArchivedTickets">View All Archived Tickets</a>
+        </div>
+    </div>
 </div>
     
 @section Scripts{ 
@@ -102,7 +109,7 @@
                 { "orderData": 2, targets: [1] },
                 { "orderData": 4, targets: [3] },
                 { "orderData": 10, targets: [9] },
-                { "searchable": false, "targets": 12 },
+                { "searchable": false, "targets": 13 },
                 { targets: '_all', visible: true }
             ]
         });

@@ -83,6 +83,11 @@ namespace JamesonBugTracker.Controllers
 
                 var userId = _userManager.GetUserId(User);
                 var oldTicket = await _ticketService.GetOneTicketNotTrackedAsync(ticketComment.TicketId);
+                if ((User.IsInRole("Developer") && userId != oldTicket.DeveloperUserId) || (User.IsInRole("Submitter") && userId != oldTicket.OwnerUserId))
+                {
+                    TempData["StatusMessage"] = "Error:  You cannot comment on a ticket that you did not submit or are not developing!";
+                    return RedirectToAction("Details", new { id = oldTicket.Id });
+                }
                 BTUser projectManager = await _projectService.GetProjectManagerAsync(oldTicket.ProjectId);
                 ticketComment.UserId = userId;
                 ticketComment.Created = DateTime.Now;

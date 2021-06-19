@@ -6,11 +6,14 @@
     <link href="~/plugins/datatables-rowreorder/css/rowReorder.bootstrap4.css" rel="stylesheet" />
 }
 <div class="container-fluid">
-    <p>
-        <a asp-action="Create" class="btn btn-success btn-block">Create New Ticket</a>
-    </p>
+    
     <h1> My Active Development Tickets</h1>
     <div class="card p-2">
+        <div class="card-header mb-3">
+
+            <a asp-action="Create" class="btn btn-block btn-success ">Create New</a>
+        </div>
+
         <table id="ticketTable" class="table dataTable table-striped">
             <thead>
                 <tr>
@@ -32,59 +35,63 @@
             <tbody>
                 @foreach (var ticket in Model.DevTicketsUnresolved)
                 {
-                <tr>
-                    <td>@ticket.Title</td>
-                    <td>@string.Format("{0:MMM dd yyyy}", ticket.Created)</td>
-                    <td>@(ticket.Created.ToUnixTimeSeconds())</td>
-                    <td>@string.Format("{0:MMM dd yyyy hh:mm tt}", ticket.Updated)</td>
-                    @if (ticket.Updated is not null)
-                    {
+                    <tr>
+                        <td>@ticket.Title</td>
+                        <td>@string.Format("{0:MMM dd yyyy}", ticket.Created)</td>
+                        <td>@(ticket.Created.ToUnixTimeSeconds())</td>
+                        <td>@string.Format("{0:MMM dd yyyy hh:mm tt}", ticket.Updated)</td>
+                        @if (ticket.Updated is not null)
+                        {
 
-                        <td>@(ticket.Updated.Value.ToUnixTimeSeconds())</td>
-                    }
-                    else
-                    {
-                        <td></td>
-                    }
-                    <td>@ticket.OwnerUser?.FullName</td>
-                    <td>@ticket.Description</td>
-                    <td>@ticket.TicketStatus.Name</td>
-                    <td>@ticket.TicketType.Name</td>
-                    <td><span class="badge priorityBadge">@ticket.TicketPriority.Name</span></td>
-                    <td>@ticket.TicketPriorityId</td>
-                    @if (User.IsInRole("Admin") || User.IsInRole("ProjectManager") || User.IsInRole("Developer"))
-                    {
+                            <td>@(ticket.Updated.Value.ToUnixTimeSeconds())</td>
+                        }
+                        else
+                        {
+                            <td></td>
+                        }
+                        <td>@ticket.OwnerUser?.FullName</td>
+                        <td>@ticket.Description</td>
+                        <td>@ticket.TicketStatus.Name</td>
+                        <td>@ticket.TicketType.Name</td>
+                        <td><span class="badge priorityBadge">@ticket.TicketPriority.Name</span></td>
+                        <td>@ticket.TicketPriorityId</td>
+                        @if (User.IsInRole("Admin") || User.IsInRole("ProjectManager") || User.IsInRole("Developer"))
+                        {
 
-                <td>
-                    <div class="btn-group">
-                        <a asp-action="Details" asp-route-id="@ticket.Id" class="btn btn-default">Details</a>
-                        <button type="button" class="btn btn-default dropdown-toggle dropdown-icon" data-toggle="dropdown">
-                            <span class="sr-only">Toggle Dropdown</span>
-                        </button>
-                        <div class="dropdown-menu bg-warning" role="menu">
-                            <a class="dropdown-item bg-warning" asp-action="Edit" asp-route-id="@ticket.Id">Edit</a>
-                            <a class="dropdown-item bg-danger" asp-action="Archive" asp-route-id="@ticket.Id">Archive</a>
-                            
-                        </div>
-                    </div>
-                    
+                            <td>
+                                <div class="btn-group">
+                                    <a asp-action="Details" asp-route-id="@ticket.Id" class="btn btn-default">Details</a>
+                                    <button type="button" class="btn btn-default dropdown-toggle dropdown-icon" data-toggle="dropdown">
+                                        <span class="sr-only">Toggle Dropdown</span>
+                                    </button>
+                                    <div class="dropdown-menu bg-warning" role="menu">
+                                        <a class="dropdown-item bg-warning" asp-action="Edit" asp-route-id="@ticket.Id">Edit</a>
+                                        <a class="dropdown-item bg-danger" asp-action="Archive" asp-route-id="@ticket.Id">Archive</a>
 
-                </td>
-                    }
-                    else
-                    {
-                        <td>
-                            <a asp-action="Details" asp-route-id="@ticket.Id" class="btn btn-default">Details</a>
+                                    </div>
+                                </div>
 
-                        </td>
-                    }
-                </tr>
+
+                            </td>
+                        }
+                        else
+                        {
+                            <td>
+                                <a asp-action="Details" asp-route-id="@ticket.Id" class="btn btn-default">Details</a>
+
+                            </td>
+                        }
+                    </tr>
                 }
             </tbody>
         </table>
     </div>
     <h1> My Submitted Tickets</h1>
     <div class="card p-2">
+        <div class="card-header mb-3">
+
+            <a asp-action="Create" class="btn btn-block btn-success ">Create New</a>
+        </div>
         <table id="submittedTable" class="table dataTable table-striped">
             <thead>
                 <tr>
@@ -106,53 +113,53 @@
             <tbody>
                 @foreach (var ticket in Model.SubmittedTickets)
                 {
-                <tr>
-                    <td>@ticket.Title</td>
-                    <td>@string.Format("{0:MMM dd yyyy}", ticket.Created)</td>
-                    <td>@(ticket.Created.ToUnixTimeSeconds())</td>
-                    <td>@string.Format("{0:MMM dd yyyy hh:mm tt}", ticket.Updated)</td>
-                    @if (ticket.Updated is not null)
-                    {
+                    <tr>
+                        <td>@ticket.Title</td>
+                        <td>@string.Format("{0:MMM dd yyyy}", ticket.Created)</td>
+                        <td>@(ticket.Created.ToUnixTimeSeconds())</td>
+                        <td>@string.Format("{0:MMM dd yyyy hh:mm tt}", ticket.Updated)</td>
+                        @if (ticket.Updated is not null)
+                        {
 
-                        <td>@(ticket.Updated.Value.ToUnixTimeSeconds())</td>
-                    }
-                    else
-                    {
-                        <td></td>
-                    }
-                    <td>@ticket.DeveloperUser?.FullName</td>
-                    <td>@ticket.Description</td>
-                    <td>@ticket.TicketStatus.Name</td>
-                    <td>@ticket.TicketType.Name</td>
-                    <td><span class="badge priorityBadge">@ticket.TicketPriority.Name</span></td>
-                    <td>@ticket.TicketPriorityId</td>
-                    @if (User.IsInRole("Admin") || User.IsInRole("ProjectManager") || User.IsInRole("Developer"))
-                    {
+                            <td>@(ticket.Updated.Value.ToUnixTimeSeconds())</td>
+                        }
+                        else
+                        {
+                            <td></td>
+                        }
+                        <td>@ticket.DeveloperUser?.FullName</td>
+                        <td>@ticket.Description</td>
+                        <td>@ticket.TicketStatus.Name</td>
+                        <td>@ticket.TicketType.Name</td>
+                        <td><span class="badge priorityBadge">@ticket.TicketPriority.Name</span></td>
+                        <td>@ticket.TicketPriorityId</td>
+                        @if (User.IsInRole("Admin") || User.IsInRole("ProjectManager") || User.IsInRole("Developer"))
+                        {
 
-                        <td>
-                            <div class="btn-group">
-                                <a asp-action="Details" asp-route-id="@ticket.Id" class="btn btn-default">Details</a>
-                                <button type="button" class="btn btn-default dropdown-toggle dropdown-icon" data-toggle="dropdown">
-                                    <span class="sr-only">Toggle Dropdown</span>
-                                </button>
-                                <div class="dropdown-menu bg-warning" role="menu">
-                                    <a class="dropdown-item bg-warning" asp-action="Edit" asp-route-id="@ticket.Id">Edit</a>
-                                    <a class="dropdown-item bg-danger" asp-action="Archive" asp-route-id="@ticket.Id">Archive</a>
+                            <td>
+                                <div class="btn-group">
+                                    <a asp-action="Details" asp-route-id="@ticket.Id" class="btn btn-default">Details</a>
+                                    <button type="button" class="btn btn-default dropdown-toggle dropdown-icon" data-toggle="dropdown">
+                                        <span class="sr-only">Toggle Dropdown</span>
+                                    </button>
+                                    <div class="dropdown-menu bg-warning" role="menu">
+                                        <a class="dropdown-item bg-warning" asp-action="Edit" asp-route-id="@ticket.Id">Edit</a>
+                                        <a class="dropdown-item bg-danger" asp-action="Archive" asp-route-id="@ticket.Id">Archive</a>
 
+                                    </div>
                                 </div>
-                            </div>
 
 
-                        </td>
-                    }
-                    else
-                    {
-                        <td>
-                            <a asp-action="Details" asp-route-id="@ticket.Id" class="btn btn-default">Details</a>
+                            </td>
+                        }
+                        else
+                        {
+                            <td>
+                                <a asp-action="Details" asp-route-id="@ticket.Id" class="btn btn-default">Details</a>
 
-                        </td>
-                    }
-                </tr>
+                            </td>
+                        }
+                    </tr>
                 }
             </tbody>
         </table>
@@ -160,6 +167,10 @@
 
     <h1> My Resolved Development Tickets</h1>
     <div class="card p-2">
+        <div class="card-header mb-3">
+
+            <a asp-action="Create" class="btn btn-block btn-success ">Create New</a>
+        </div>
         <table id="resolvedTable" class="table dataTable table-striped">
             <thead>
                 <tr>
@@ -181,53 +192,53 @@
             <tbody>
                 @foreach (var ticket in Model.DevTicketsResolved)
                 {
-                <tr>
-                    <td>@ticket.Title</td>
-                    <td>@string.Format("{0:MMM dd yyyy}", ticket.Created)</td>
-                    <td>@(ticket.Created.ToUnixTimeSeconds())</td>
-                    <td>@string.Format("{0:MMM dd yyyy hh:mm tt}", ticket.Updated)</td>
-                    @if (ticket.Updated is not null)
-                    {
+                    <tr>
+                        <td>@ticket.Title</td>
+                        <td>@string.Format("{0:MMM dd yyyy}", ticket.Created)</td>
+                        <td>@(ticket.Created.ToUnixTimeSeconds())</td>
+                        <td>@string.Format("{0:MMM dd yyyy hh:mm tt}", ticket.Updated)</td>
+                        @if (ticket.Updated is not null)
+                        {
 
-                        <td>@(ticket.Updated.Value.ToUnixTimeSeconds())</td>
-                    }
-                    else
-                    {
-                        <td></td>
-                    }
-                    <td>@ticket.OwnerUser?.FullName</td>
-                    <td>@ticket.Description</td>
-                    <td>@ticket.TicketStatus.Name</td>
-                    <td>@ticket.TicketType.Name</td>
-                    <td><span class="badge priorityBadge">@ticket.TicketPriority.Name</span></td>
-                    <td>@ticket.TicketPriorityId</td>
-                    @if (User.IsInRole("Admin") || User.IsInRole("ProjectManager"))
-                    {
+                            <td>@(ticket.Updated.Value.ToUnixTimeSeconds())</td>
+                        }
+                        else
+                        {
+                            <td></td>
+                        }
+                        <td>@ticket.OwnerUser?.FullName</td>
+                        <td>@ticket.Description</td>
+                        <td>@ticket.TicketStatus.Name</td>
+                        <td>@ticket.TicketType.Name</td>
+                        <td><span class="badge priorityBadge">@ticket.TicketPriority.Name</span></td>
+                        <td>@ticket.TicketPriorityId</td>
+                        @if (User.IsInRole("Admin") || User.IsInRole("ProjectManager"))
+                        {
 
-                        <td>
-                            <div class="btn-group">
-                                <a asp-action="Details" asp-route-id="@ticket.Id" class="btn btn-default">Details</a>
-                                <button type="button" class="btn btn-default dropdown-toggle dropdown-icon" data-toggle="dropdown">
-                                    <span class="sr-only">Toggle Dropdown</span>
-                                </button>
-                                <div class="dropdown-menu bg-warning" role="menu">
-                                    <a class="dropdown-item bg-warning" asp-action="Edit" asp-route-id="@ticket.Id">Edit</a>
-                                    <a class="dropdown-item bg-danger" asp-action="Archive" asp-route-id="@ticket.Id">Archive</a>
+                            <td>
+                                <div class="btn-group">
+                                    <a asp-action="Details" asp-route-id="@ticket.Id" class="btn btn-default">Details</a>
+                                    <button type="button" class="btn btn-default dropdown-toggle dropdown-icon" data-toggle="dropdown">
+                                        <span class="sr-only">Toggle Dropdown</span>
+                                    </button>
+                                    <div class="dropdown-menu bg-warning" role="menu">
+                                        <a class="dropdown-item bg-warning" asp-action="Edit" asp-route-id="@ticket.Id">Edit</a>
+                                        <a class="dropdown-item bg-danger" asp-action="Archive" asp-route-id="@ticket.Id">Archive</a>
 
+                                    </div>
                                 </div>
-                            </div>
 
 
-                        </td>
-                    }
-                    else
-                    {
-                        <td>
-                            <a asp-action="Details" asp-route-id="@ticket.Id" class="btn btn-default">Details</a>
+                            </td>
+                        }
+                        else
+                        {
+                            <td>
+                                <a asp-action="Details" asp-route-id="@ticket.Id" class="btn btn-default">Details</a>
 
-                        </td>
-                    }
-                </tr>
+                            </td>
+                        }
+                    </tr>
                 }
             </tbody>
         </table>
