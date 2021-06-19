@@ -23,6 +23,8 @@ namespace JamesonBugTracker.Models
 
         [DataType(DataType.Date)]
         public DateTimeOffset? Updated { get; set; }
+        [DataType(DataType.Date)]
+        public DateTimeOffset? Completed { get; set; }
 
         [DisplayName("Date Archived")]
         [DataType(DataType.Date)]

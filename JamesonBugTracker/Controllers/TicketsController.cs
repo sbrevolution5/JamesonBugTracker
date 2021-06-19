@@ -115,7 +115,6 @@ namespace JamesonBugTracker.Controllers
             ViewData["AssignUsers"] = new SelectList(await _projectService.GetMembersWithoutPMAsync(ticket.ProjectId), "Id", "FullName", ticket.DeveloperUserId);
             if (ticket.Project.CompanyId != companyId)
             {
-                //DONT LET THEM IN?
                 return NotFound();
             }
             if (ticket == null)
@@ -239,6 +238,11 @@ namespace JamesonBugTracker.Controllers
             }
             BTUser user = await _userManager.GetUserAsync(User);
             int companyId = User.Identity.GetCompanyId().Value;
+            if ((User.IsInRole("Developer") && user.Id != ticket.DeveloperUserId )|| (User.IsInRole("Submitter") && user.Id != ticket.OwnerUserId))
+            {
+                TempData["StatusMessage"] = "Error:  You cannot edit a ticket that you did not submit or are not developing!";
+                return RedirectToAction("Details", new { id = ticket.Id });
+            }
             if (User.IsInRole("Admin"))
             {
                 ViewData["ProjectId"] = new SelectList(await _projectService.GetAllProjectsByCompanyAsync(companyId), "Id", "Name");
@@ -559,6 +563,12 @@ namespace JamesonBugTracker.Controllers
                 await _ticketService.SetTicketStatusAsync(ticketId, statusName);
                 Ticket newTicket = await _ticketService.GetOneTicketNotTrackedAsync(ticketId);
                 await _historyService.AddHistoryAsync(oldTicket, newTicket, currentUser.Id);
+                if (statusName == "Resolved")
+                {
+                    Ticket ticket = await _context.Ticket.Where(t => t.Id == ticketId).FirstOrDefaultAsync();
+                    ticket.Completed = DateTime.Now;
+                    await _context.SaveChangesAsync();
+                }
 
             }
             catch { throw; }
