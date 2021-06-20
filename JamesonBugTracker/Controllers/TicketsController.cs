@@ -130,6 +130,11 @@ namespace JamesonBugTracker.Controllers
             BTUser user = await _userManager.GetUserAsync(User);
             int companyId = User.Identity.GetCompanyId().Value;
             Ticket ticket = new();
+            if (user.Projects.Count == 0)
+            {
+                TempData["StatusMessage"] = "Error: You aren't assigned to any projects, please contact an Admin or project Administrator to ensure you are assigned before creating tickets";
+                return RedirectToAction("Dashboard", "Home");
+            }
             if (User.IsInRole("Admin"))
             {
                 ViewData["ProjectId"] = new SelectList(await _projectService.GetAllProjectsByCompanyAsync(companyId), "Id", "Name");
