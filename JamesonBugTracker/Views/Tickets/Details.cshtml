@@ -11,6 +11,16 @@
 @section Header{
     <link rel="stylesheet" href="~/plugins/summernote/summernote-bs4.min.css">
 }
+<partial name="_StatusMessage" model="@TempData["StatusMessage"]" />
+@if (Model.Archived)
+{
+
+    <div class="alert alert-warning alert-dismissible" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h5><i class="icon fas fa-archive"></i>Archived</h5>
+        This project was Archived on @string.Format($"MMM dd yyyy", Model.ArchiveDate)
+    </div>
+}
 <!-- Default box -->
 <div class="card mt-3 shadow-sm">
     <div class="card-header">
@@ -459,8 +469,6 @@
                 </div>
                 <div class="card">
                     <div class="card-header">
-
-                        @* TODO: icon based on ticket type? *@
                         <h3 class="text-primary">
                             @if (Model.TicketType.Name == "Maintenance")
                             {

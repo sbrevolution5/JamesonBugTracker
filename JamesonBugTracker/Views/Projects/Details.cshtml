@@ -14,6 +14,16 @@
     <link href="~/plugins/chart.js/Chart.css" rel="stylesheet" />
 }
 <div class="container-fluid">
+    <partial name="_StatusMessage" model="@TempData["StatusMessage"]" />
+    @if (Model.Project.Archived)
+    {
+
+        <div class="alert alert-warning alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h5><i class="icon fas fa-archive"></i>Archived</h5>
+            This project was Archived on @string.Format($"MMM dd yyyy", Model.Project.ArchiveDate)
+        </div>
+    }
     <div class="row">
         <div class="col-md-3">
 
