@@ -127,10 +127,10 @@ namespace JamesonBugTracker.Controllers
         // GET: Tickets/Create
         public async Task<IActionResult> Create(int? id, bool db = false)
         {
-            BTUser user = await _userManager.GetUserAsync(User);
+            BTUser user = await _context.Users.Include(u=>u.Projects).FirstOrDefaultAsync(u=> u.Id == _userManager.GetUserId(User));
             int companyId = User.Identity.GetCompanyId().Value;
             Ticket ticket = new();
-            if (user.Projects.Count == 0)
+            if (user.Projects.Count == 0 && !User.IsInRole("Admin") && !User.IsInRole("ProjectManager"))
             {
                 TempData["StatusMessage"] = "Error: You aren't assigned to any projects, please contact an Admin or Project Manager to ensure you are assigned before creating tickets";
                 return RedirectToAction("Dashboard", "Home");

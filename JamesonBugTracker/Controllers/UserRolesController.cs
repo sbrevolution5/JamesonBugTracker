@@ -37,13 +37,6 @@ namespace JamesonBugTracker.Controllers
             List<ManageUserRolesViewModel> model = new();
             int companyId = User.Identity.GetCompanyId().Value;
             List<BTUser> users = await _companyInfoService.GetAllMembersAsync(companyId);
-            Company company = await _companyInfoService.GetCompanyInfoByIdAsync(companyId);
-            if (company.AdminId is null && User.IsInRole("Admin"))
-            {
-                var userId = _userManager.GetUserId(User);
-                company.AdminId = userId;
-                await _context.SaveChangesAsync();
-            }
             foreach (var user in users)
             {
                 ManageUserRolesViewModel vm = new();

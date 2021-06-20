@@ -138,7 +138,6 @@ namespace JamesonBugTracker.Areas.Identity.Pages.Account
                 {
                     await _roleService.AddUserToRoleAsync(user, "Admin");
                     _logger.LogInformation("User created a new account with password.");
-                    newCompany.AdminId = user.Id;
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
                     var callbackUrl = Url.Page(
