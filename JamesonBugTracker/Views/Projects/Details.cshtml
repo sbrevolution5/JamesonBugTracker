@@ -21,7 +21,7 @@
         <div class="alert alert-warning alert-dismissible" role="alert">
             <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
             <h5><i class="icon fas fa-archive"></i>Archived</h5>
-            This project was Archived on @string.Format($"MMM dd yyyy", Model.Project.ArchiveDate)
+            This project was Archived on @string.Format("{0:MMM dd yyyy}", Model.Project.ArchiveDate)
         </div>
     }
     <div class="row">
@@ -53,6 +53,20 @@
                     </ul>
 
                     <a asp-controller="Tickets" asp-action="Create" asp-route-id="@Model.Project.Id" asp-route-db="true" class="btn btn-primary btn-block"><b>Add Ticket</b></a>
+                    @if ((User.IsInRole("ProjectManager") && _userManager.GetUserId(User) == projectManager.Id) || User.IsInRole("Admin"))
+                    {
+                        @if (Model.Project.Archived == true)
+                        {
+
+                            <a class="btn btn-success btn-block" asp-action="UnArchive" asp-route-id="@Model.Project.Id"><i class="icon fas fa-archive"></i>Unarchive</a>
+                        }
+                        else
+                        {
+                            <a class="btn btn-danger btn-block" asp-action="Archive" asp-route-id="@Model.Project.Id"><i class="icon fas fa-archive"></i>Archive</a>
+
+                        }
+                        <a class="btn btn-warning btn-block" asp-action="Edit" asp-route-id="@Model.Project.Id"><i class="icon fas fa-edit"></i>Edit</a>
+                    }
                 </div>
                 <!-- /.card-body -->
             </div>

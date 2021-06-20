@@ -228,7 +228,7 @@ namespace JamesonBugTracker.Controllers
         }
 
         // GET: Tickets/Edit/5
-        [Authorize(Roles = "Admin,ProjectManager,Developer")]
+        [Authorize(Roles = "Admin,ProjectManager,Developer,Submitter")]
 
         public async Task<IActionResult> Edit(int? id)
         {

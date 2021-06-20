@@ -18,7 +18,7 @@
     <div class="alert alert-warning alert-dismissible" role="alert">
         <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <h5><i class="icon fas fa-archive"></i>Archived</h5>
-        This project was Archived on @string.Format($"MMM dd yyyy", Model.ArchiveDate)
+        This project was Archived on @string.Format("{0:MMM dd yyyy}", Model.ArchiveDate)
     </div>
 }
 <!-- Default box -->
@@ -28,11 +28,20 @@
         <div class="nav-links text-right">
             @if (User.IsInRole("ProjectManager") || User.IsInRole("Admin"))
             {
+                @if (Model.Archived == true)
+                {
 
-                <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> <span>|</span>
-            }
-            <a asp-action="MyTickets">My Tickets</a> |
-            <a asp-action="AllTickets">All Tickets</a>
+                    <a class="btn btn-success btn-block" asp-action="UnArchive" asp-route-id="@Model.Id"><i class="icon fas fa-archive"></i>Unarchive</a>
+                }
+                else
+                {
+                    <a class="btn btn-danger btn-block" asp-action="Archive" asp-route-id="@Model.Id"><i class="icon fas fa-archive"></i>Archive</a>
+
+                }
+            <a class="btn btn-warning" asp-action="Edit" asp-route-id="@Model.Id"><i class="icon fas fa-edit"></i>Edit</a>
+        }
+            <a class="btn btn-secondary" asp-action="MyTickets">My Tickets</a>
+            <a class="btn btn-secondary" asp-action="AllTickets">All Tickets</a>
         </div>
     </div>
     <div class="card-body">

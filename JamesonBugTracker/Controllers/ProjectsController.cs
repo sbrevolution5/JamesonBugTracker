@@ -53,7 +53,13 @@ namespace JamesonBugTracker.Controllers
         public async Task<IActionResult> AllProjects()
         {
             int companyId = User.Identity.GetCompanyId().Value;
-            var companyProjects = await _companyInfoService.GetAllProjectsAsync(companyId);
+            var companyProjects = await _projectService.GetAllUnarchivedProjectsByCompanyAsync(companyId);
+            return View(companyProjects);
+        }
+        public async Task<IActionResult> ArchivedProjects()
+        {
+            int companyId = User.Identity.GetCompanyId().Value;
+            var companyProjects = await _projectService.GetArchivedProjectsByCompanyAsync(companyId);
             return View(companyProjects);
         }
 
