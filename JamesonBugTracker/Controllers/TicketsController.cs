@@ -211,7 +211,7 @@ namespace JamesonBugTracker.Controllers
             BTUser user = await _userManager.GetUserAsync(User);
             if (User.IsInRole("Admin"))
             {
-                ViewData["ProjectId"] = new SelectList(await _projectService.GetAllProjectsByCompanyAsync(companyId), "Id", "Name");
+                ViewData["ProjectId"] = new SelectList(await _projectService.GetAllUnarchivedProjectsByCompanyAsync(companyId), "Id", "Name");
             }
             else
             {
