@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace JamesonBugTracker.Controllers
 {
-        [Authorize]
+    [Authorize]
     public class TicketCommentsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -86,7 +86,12 @@ namespace JamesonBugTracker.Controllers
                 if ((User.IsInRole("Developer") && userId != oldTicket.DeveloperUserId) || (User.IsInRole("Submitter") && userId != oldTicket.OwnerUserId))
                 {
                     TempData["StatusMessage"] = "Error:  You cannot comment on a ticket that you did not submit or are not developing!";
-                    return RedirectToAction("Details","Tickets", new { id = oldTicket.Id });
+                    return RedirectToAction("Details", "Tickets", new { id = oldTicket.Id });
+                }
+                else if (User.IsInRole("ProjectManager") && (await _projectService.GetProjectManagerAsync(oldTicket.ProjectId)).Id != userId)
+                {
+                    TempData["StatusMessage"] = "Error:  You cannot comment on a ticket that is not a part of your project.";
+                    return RedirectToAction("Details", "Tickets", new { id = oldTicket.Id });
                 }
                 BTUser projectManager = await _projectService.GetProjectManagerAsync(oldTicket.ProjectId);
                 ticketComment.UserId = userId;
