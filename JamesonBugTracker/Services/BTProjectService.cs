@@ -116,7 +116,7 @@ namespace JamesonBugTracker.Services
         public async Task<List<Project>> GetAllProjectsByCompanyAsync(int companyId)
         {
             List<Project> projects = new();
-            projects = await _context.Project
+            projects = await _context.Project.Include(p=>p.ProjectPriority)
                                              .Include(p => p.Company)
                                              .Include(p => p.Members)
                                              .Include(p => p.Tickets)

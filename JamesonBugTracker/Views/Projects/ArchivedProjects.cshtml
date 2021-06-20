@@ -18,8 +18,8 @@
         <a asp-action="Create" class="btn btn-success">Create New</a>
     </p>
 }
-<section class="content">
 
+<section class="content">
     <!-- Default box -->
     <div class="card p-2">
         <div class="card-header">
@@ -124,16 +124,17 @@
                                     </a>
                                 }
                             </td>
-                            </tr>
-                        }
-                            </tbody>
-                        </table>
-                    </div>
-                    <!-- /.card-body -->
-                </div>
-                <!-- /.card -->
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <!-- /.card-body -->
+    </div>
+    <!-- /.card -->
+    <a class="btn btn-secondary btn-block" asp-action="AllProjects">Back to All Projects</a>
 
-            </section>
+</section>
 
             @section Scripts{
                 <script src="~/js/PriorityBadge.js"></script>
