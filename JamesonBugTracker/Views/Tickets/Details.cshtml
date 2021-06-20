@@ -24,21 +24,21 @@
 <!-- Default box -->
 <div class="card mt-3 shadow-sm">
     <div class="card-header">
-        <h3 class="card-title">@Model.Title</h3>
+        <h3 class="card-title role-text">@Model.Title</h3>
         <div class="nav-links text-right">
             @if (User.IsInRole("ProjectManager") || User.IsInRole("Admin"))
             {
                 @if (Model.Archived == true)
                 {
 
-                    <a class="btn btn-success" asp-action="UnArchive" asp-route-id="@Model.Id"><i class="icon fas fa-archive"></i>Unarchive</a>
+                    <a class="btn btn-success" asp-action="UnArchive" asp-route-id="@Model.Id"><i class="fas fa-archive mr-1"></i>Unarchive</a>
                 }
                 else
                 {
-                    <a class="btn btn-danger" asp-action="Archive" asp-route-id="@Model.Id"><i class="icon fas fa-archive"></i>Archive</a>
+                    <a class="btn btn-danger" asp-action="Archive" asp-route-id="@Model.Id"><i class="fas fa-archive mr-1"></i>Archive</a>
 
                 }
-            <a class="btn btn-warning" asp-action="Edit" asp-route-id="@Model.Id"><i class="icon fas fa-edit"></i>Edit</a>
+            <a class="btn btn-warning" asp-action="Edit" asp-route-id="@Model.Id"><i class="fas fa-edit mr-1"></i>Edit</a>
         }
             <a class="btn btn-secondary" asp-action="MyTickets">My Tickets</a>
             <a class="btn btn-secondary" asp-action="AllTickets">All Tickets</a>
