@@ -31,11 +31,11 @@
                 @if (Model.Archived == true)
                 {
 
-                    <a class="btn btn-success btn-block" asp-action="UnArchive" asp-route-id="@Model.Id"><i class="icon fas fa-archive"></i>Unarchive</a>
+                    <a class="btn btn-success" asp-action="UnArchive" asp-route-id="@Model.Id"><i class="icon fas fa-archive"></i>Unarchive</a>
                 }
                 else
                 {
-                    <a class="btn btn-danger btn-block" asp-action="Archive" asp-route-id="@Model.Id"><i class="icon fas fa-archive"></i>Archive</a>
+                    <a class="btn btn-danger" asp-action="Archive" asp-route-id="@Model.Id"><i class="icon fas fa-archive"></i>Archive</a>
 
                 }
             <a class="btn btn-warning" asp-action="Edit" asp-route-id="@Model.Id"><i class="icon fas fa-edit"></i>Edit</a>
