@@ -132,7 +132,7 @@ namespace JamesonBugTracker.Controllers
             Ticket ticket = new();
             if (user.Projects.Count == 0)
             {
-                TempData["StatusMessage"] = "Error: You aren't assigned to any projects, please contact an Admin or project Administrator to ensure you are assigned before creating tickets";
+                TempData["StatusMessage"] = "Error: You aren't assigned to any projects, please contact an Admin or Project Manager to ensure you are assigned before creating tickets";
                 return RedirectToAction("Dashboard", "Home");
             }
             if (User.IsInRole("Admin"))

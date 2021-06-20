@@ -133,15 +133,12 @@ namespace JamesonBugTracker.Areas.Identity.Pages.Account
                     AvatarFileData = Input.ImageFile is null ? await _fileService.EncodeFileAsync(_configuration["DefaultUserImage"]) : await _fileService.ConvertFileToByteArrayAsync(Input.ImageFile),
                     CompanyId = newCompany.Id
                 };
-                //List<string> roles = new();
-                //roles.Add("")
-                //await _roleService.RemoveUserFromRolesAsync(user, roles);
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
                 {
                     await _roleService.AddUserToRoleAsync(user, "Admin");
                     _logger.LogInformation("User created a new account with password.");
-
+                    newCompany.AdminId = user.Id;
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
                     var callbackUrl = Url.Page(

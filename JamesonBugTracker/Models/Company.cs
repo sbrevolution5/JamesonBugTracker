@@ -33,8 +33,9 @@ namespace JamesonBugTracker.Models
 
         [DisplayName("File Extension")]
         public string ImageFileContentType { get; set; }
-
+        public string AdminId { get; set; }
         // Navigation 
+        public virtual BTUser Admin  { get; set; }
         public virtual ICollection<Project> Projects { get; set; } = new HashSet<Project>();
         public virtual ICollection<BTUser> Members { get; set; } = new HashSet<BTUser>();
         public virtual ICollection<Invite> Invites { get; set; } = new HashSet<Invite>();
