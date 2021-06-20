@@ -22,6 +22,7 @@ namespace JamesonBugTracker.Services.Interfaces
         public Task<List<Project>> GetAllProjectsByCompanyAsync(int companyId);
 
         public Task<List<Project>> GetArchivedProjectsByCompanyAsync(int companyId);
+        public Task<List<Project>> GetAllUnarchivedProjectsByCompanyAsync(int companyId);
 
         public Task<List<Project>> GetAllProjectsByPriorityAsync(int companyId, string priorityName);
 

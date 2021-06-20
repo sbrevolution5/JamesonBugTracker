@@ -141,6 +141,12 @@ namespace JamesonBugTracker.Services
             return projects;
 
         }
+        public async Task<List<Project>> GetAllUnarchivedProjectsByCompanyAsync(int companyId)
+        {
+            List<Project> companyProjects = await GetAllProjectsByCompanyAsync(companyId);
+            var unarchived = companyProjects.Where(p => !p.Archived);
+            return unarchived;
+        }
 
         public async Task<List<Project>> GetAllProjectsByPriorityAsync(int companyId, string priorityName)
         {
