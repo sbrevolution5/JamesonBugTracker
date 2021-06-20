@@ -52,7 +52,7 @@ namespace JamesonBugTracker.Controllers
         public async Task<IActionResult> AllTickets()
         {
             int companyId = User.Identity.GetCompanyId().Value;
-            var allTickets = await _companyInfoService.GetAllTicketsAsync(companyId);
+            var allTickets = (await _companyInfoService.GetAllTicketsAsync(companyId)).Where(t=>!t.Archived);
             return View(allTickets);
         }
         // GET: Tickets/MyTickets
