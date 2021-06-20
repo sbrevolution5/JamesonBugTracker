@@ -51,8 +51,16 @@
                     <div class="col-12 col-sm-3">
                         <div class="small-box bg-primary">
                             <div class="inner">
-                                <h3>Owner:</h3>
+                                <h3>Submitter:</h3>
+                                @if (Model.OwnerUser is not null)
+                                {
+
                                 <p>@Model.OwnerUser?.FullName</p>
+                                }
+            else
+            {
+                <p> Seeded ticket</p>
+            }
                             </div>
                             <div class="icon">
                                 <i class="fas fa-user-plus"></i>
