@@ -86,7 +86,7 @@ namespace JamesonBugTracker.Controllers
                 if ((User.IsInRole("Developer") && userId != oldTicket.DeveloperUserId) || (User.IsInRole("Submitter") && userId != oldTicket.OwnerUserId))
                 {
                     TempData["StatusMessage"] = "Error:  You cannot comment on a ticket that you did not submit or are not developing!";
-                    return RedirectToAction("Details", new { id = oldTicket.Id });
+                    return RedirectToAction("Details","Tickets", new { id = oldTicket.Id });
                 }
                 BTUser projectManager = await _projectService.GetProjectManagerAsync(oldTicket.ProjectId);
                 ticketComment.UserId = userId;

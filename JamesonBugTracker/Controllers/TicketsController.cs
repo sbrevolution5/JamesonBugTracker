@@ -238,6 +238,11 @@ namespace JamesonBugTracker.Controllers
             }
             BTUser user = await _userManager.GetUserAsync(User);
             int companyId = User.Identity.GetCompanyId().Value;
+            if (User.IsInRole("ProjectManager") && (await _projectService.GetProjectManagerAsync(ticket.ProjectId)).Id != user.Id)
+            {
+                TempData["StatusMessage"] = "Error:  You cannot edit a ticket that is not a part of your project.";
+                return RedirectToAction("Details", new { id = ticket.Id });
+            }
             if ((User.IsInRole("Developer") && user.Id != ticket.DeveloperUserId )|| (User.IsInRole("Submitter") && user.Id != ticket.OwnerUserId))
             {
                 TempData["StatusMessage"] = "Error:  You cannot edit a ticket that you did not submit or are not developing!";
