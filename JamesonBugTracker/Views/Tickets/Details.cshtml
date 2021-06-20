@@ -447,7 +447,6 @@
                         <i class="far fa-sticky-note"></i>
                     </div>
                 </div>
-                @* Javascript needed, check contents of one of the spans, then toggle class of this element based on that*@
                 <div class="small-box" id="ticketPriorityBox">
                     <div class="inner">
 
@@ -462,7 +461,27 @@
                     <div class="card-header">
 
                         @* TODO: icon based on ticket type? *@
-                        <h3 class="text-primary"><i class="fas fa-bug"></i>@Model.Title</h3>
+                        <h3 class="text-primary">
+                            @if (Model.TicketType.Name == "Maintenance")
+                            {
+                                <i class="fas fa-bug mr-2"></i>
+                            }
+                            else if (Model.TicketType.Name == "UI")
+                            {
+                                <i class="fas fa-ruler-combined mr-2"></i>
+                            }
+                            else if (Model.TicketType.Name == "New Development")
+                            {
+                                <i class="fas fa-plus mr-2"></i>
+                            }
+                            else if (Model.TicketType.Name == "Runtime")
+                            {
+                                <i class="fas fa-terminal mr-2"></i>
+                            }
+
+
+                            @Model.Title
+                        </h3>
                         <p class="text-muted">@Model.Description</p>
                     </div>
                     <div class="card-body">
