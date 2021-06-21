@@ -182,6 +182,19 @@ namespace JamesonBugTracker.Services
             }
             return nonPMUsers;
         }
+        public async Task<List<BTUser>> GetAssignableMembersAsync(int projectId)
+        {
+            Project project = await GetProjectByIdAsync(projectId);
+            List<BTUser> assignableUsers = new();
+            foreach (var user in project.Members)
+            {
+                if (!await _rolesService.IsUserInRoleAsync(user, "Submitter"))
+                {
+                    assignableUsers.Add(user);
+                }
+            }
+            return assignableUsers;
+        }
 
         public async Task<BTUser> GetProjectManagerAsync(int projectId)
         {

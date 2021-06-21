@@ -112,7 +112,7 @@ namespace JamesonBugTracker.Controllers
                 .Include(t => t.History)
                 .ThenInclude(h=>h.User)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            ViewData["AssignUsers"] = new SelectList(await _projectService.GetMembersWithoutPMAsync(ticket.ProjectId), "Id", "FullName", ticket.DeveloperUserId);
+            ViewData["AssignUsers"] = new SelectList(await _projectService.GetAssignableMembersAsync(ticket.ProjectId), "Id", "FullName", ticket.DeveloperUserId);
             if (ticket.Project.CompanyId != companyId)
             {
                 return NotFound();
@@ -209,7 +209,7 @@ namespace JamesonBugTracker.Controllers
                     return RedirectToAction("Details", "Projects", new { id = ticket.ProjectId });
                 }
                 else
-                {
+                {                   
                     return RedirectToAction("Details", new { id = ticket.Id });
                 }
             }

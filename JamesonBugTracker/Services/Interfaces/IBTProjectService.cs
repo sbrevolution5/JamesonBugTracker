@@ -32,7 +32,7 @@ namespace JamesonBugTracker.Services.Interfaces
         public Task<bool> AddProjectManagerAsync(string userId, int projectId);
 
         public Task RemoveProjectManagerAsync(int projectId);
-
+        public Task<List<BTUser>> GetAssignableMembersAsync(int projectId);
         public Task<List<BTUser>> GetMembersWithoutPMAsync(int projectId);
         public Task<List<Project>> GetProjectsWithUnassignedTicketsAsync(int companyId);
 
