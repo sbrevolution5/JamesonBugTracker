@@ -3,6 +3,9 @@
 @{
     ViewData["Title"] = Model.Name + " Details";
 }
+@using Microsoft.AspNetCore.Identity
+@inject IBTProjectService _projectService
+@inject UserManager<BTUser> _userManager
 @inject IBTFileService _fileService
 @inject IBTTicketService _ticketService
 <div class="content-header">
@@ -35,55 +38,19 @@
                              src="@_fileService.ConvertByteArrayToFile(Model.ImageFileData,Model.ImageFileContentType)"
                              alt="Project Icon">
                     </div>
-
                     <h3 class="profile-username text-center">@Model.Name</h3>
+                    <hr />
 
                     <p class="text-muted ">@Model.Description</p>
 
-                    <ul class="list-group list-group-unbordered mb-3">
-                        <li class="list-group-item">
-                            @* <b>Start Date</b> <a class="float-right">@string.Format("{0:MMM dd yyyy}", Model.Project.StartDate)</a>*@
-                        </li>
-                        <li class="list-group-item">
-                            @*<b>End Date</b> <a class="float-right">@string.Format("{0:MMM dd yyyy}", Model.Project.EndDate)</a>*@
-                        </li>
-                        <li class="list-group-item">
-                            @*<b>Priority</b> <a class="float-right">@Model.Project.ProjectPriority.Name</a>*@
-                        </li>
-                    </ul>
-
-                    <a asp-controller="Projects" asp-action="Create" class="btn btn-primary btn-block"><b>Add Project</b></a>
+                    <hr />
+                    <a asp-controller="Projects" asp-action="Create" class="btn btn-primary btn-block mb-2"><b><i class="fas fa-flask mr-1"></i>Add Project</b></a>
+                    <a asp-controller="Invites" asp-action="Create" class="btn btn-primary btn-block"><b><i class="far fa-envelope mr-1"></i>Send New Invite</b></a>
                 </div>
                 <!-- /.card-body -->
             </div>
             <!-- /.card -->
             <!-- About Me Box -->
-            <div class="card card-primary">
-                <div class="card-header">
-                    <h3 class="card-title">Members</h3>
-                </div>
-                <!-- /.card-header -->
-                <div class="card-body">
-                    @*<strong>Project Manager: @projectManager?.FullName</strong>
-                        <hr />
-                        @foreach (var member in Model.Project.Members)
-                        {
-                            <strong><i class="fas fa-book mr-1"></i> @member.FullName</strong>
-
-                            <p class="text-muted">
-                                Number of tickets assigned, number of tickets submitted
-                            </p>
-
-                            <hr>
-                        }*@
-
-                </div>
-                <!-- /.card-body -->
-            </div>
-            <!-- /.card -->
-        </div>
-        <!-- /.col -->
-        <div class="col-md-9">
             <!--Members area-->
             <div class="card">
                 <div class="card-header">
@@ -103,7 +70,7 @@
                         {
                             <li>
                                 <img src="@_fileService.ConvertByteArrayToFile(member.AvatarFileData, member.AvatarFileContentType)" class="member-img" style="" alt="User Image">
-                                <a class="users-list-name" href="#">@member.FullName</a>
+                                <p class="users-list-name">@member.FullName</p>
                                 <span class="users-list-date">@((await _ticketService.GetAllTicketsByRoleAsync("Submitter", member.Id)).Count) Submitted</span>
                                 <span class="users-list-date">@((await _ticketService.GetAllDeveloperTicketsByResolvedAsync(member.Id, false)).Count) Open Tickets</span>
                             </li>
@@ -112,12 +79,13 @@
                     <!-- /.users-list -->
                 </div>
                 <!-- /.card-body -->
-                <div class="card-footer text-center">
-                    <a href="javascript:">View All Users</a>
-                </div>
+                
                 <!-- /.card-footer -->
             </div>
             <!--/.card -->
+        </div>
+        <!-- /.col -->
+        <div class="col-md-9">
             <!--Ticket Table-->
             <div class="card p-2">
                 <div class="card-header">
@@ -154,7 +122,7 @@
                             {
                                 <tr>
                                     <td>
-                                        <a>
+                                        <a asp-controller="Projects" asp-action="Details" asp-route-id="@project.Id">
                                             @project.Name
                                         </a>
                                         <br />
@@ -187,22 +155,42 @@
                                         <span class="badge priorityBadge">@project.ProjectPriority.Name</span>
                                     </td>
                                     <td class="project-actions text-right">
-                                        <a asp-action="Edit" asp-route-id="@project.Id">
-                                            <i class="fas fa-pencil-alt">
-                                            </i>Edit
-                                        </a> |
-                                        <a asp-action="Details" asp-route-id="@project.Id">
-                                            <i class="fas fa-folder">
-                                            </i>Details
-                                        </a> |
-                                        <a asp-action="Delete" asp-route-id="@project.Id">
-                                            <i class="fas fa-trash">
-                                            </i>Delete
-                                        </a> |
-                                        <a asp-action="AddMembers" asp-route-id="@project.Id">
-                                            <i class="fas fa-user">
-                                            </i>Assign Users
-                                        </a>
+                                        @if (User.IsInRole("Admin") || (User.IsInRole("ProjectManager") && (await _projectService.GetProjectManagerAsync(project.Id)).Id == _userManager.GetUserId(User)))
+                                        {
+                                            <div class="btn-group">
+                                                <a asp-action="Details" asp-route-id="@project.Id" class="btn btn-default">
+                                                    <i class="fas fa-folder mr-1">
+                                                    </i>Details
+                                                </a>
+                                                <button type="button" class="btn btn-default dropdown-toggle dropdown-icon" data-toggle="dropdown">
+                                                    <span class="sr-only">Toggle Dropdown</span>
+                                                </button>
+                                                <div class="dropdown-menu bg-warning" role="menu">
+                                                    <a class="dropdown-item" asp-action="AddMembers" asp-route-id="@project.Id">
+                                                        <i class="fas fa-user mr-1">
+                                                        </i>Assign Users
+                                                    </a>
+                                                    <a class="dropdown-item bg-warning" asp-action="Edit" asp-route-id="@project.Id">
+                                                        <i class="fas fa-pencil-alt mr-1">
+                                                        </i>Edit
+                                                    </a>
+                                                    <a class="dropdown-item bg-danger" asp-action="Archive" asp-route-id="@project.Id">
+                                                        <i class="fas fa-archive mr-1">
+                                                        </i>Archive
+                                                    </a>
+
+                                                </div>
+                                            </div>
+
+                                        }
+                                        else
+                                        {
+                                            <a asp-action="Details" asp-route-id="@project.Id" class="btn">
+
+                                                <i class="fas fa-folder">
+                                                </i>Details
+                                            </a>
+                                        }
 
                                     </td>
                                 </tr>
@@ -213,6 +201,7 @@
                 <!-- /.card-body -->
             </div>
             <!-- /.card -->
+            
             <!-- /.card -->
             <!-- /.card -->
         </div>
@@ -243,7 +232,7 @@
     @foreach (var project in Model.Projects)
     {
         <script>
-        //TODO Get date from c#
+
 
         endDate = @project.EndDate.ToUnixTimeSeconds();
         startDate = @project.StartDate.ToUnixTimeSeconds();

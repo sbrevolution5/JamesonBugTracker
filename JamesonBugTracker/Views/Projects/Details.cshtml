@@ -42,13 +42,13 @@
 
                     <ul class="list-group list-group-unbordered mb-3">
                         <li class="list-group-item">
-                            <b>Start Date</b> <a class="float-right">@string.Format("{0:MMM dd yyyy}", Model.Project.StartDate)</a>
+                            <b>Start Date</b> <p class="float-right">@string.Format("{0:MMM dd yyyy}", Model.Project.StartDate)</p>
                         </li>
                         <li class="list-group-item">
-                            <b>End Date</b> <a class="float-right">@string.Format("{0:MMM dd yyyy}", Model.Project.EndDate)</a>
+                            <b>End Date</b> <p class="float-right">@string.Format("{0:MMM dd yyyy}", Model.Project.EndDate)</p>
                         </li>
                         <li class="list-group-item">
-                            <b>Priority</b> <a class="float-right">@Model.Project.ProjectPriority.Name</a>
+                            <b>Priority</b> <p class="float-right">@Model.Project.ProjectPriority.Name</p>
                         </li>
                     </ul>
 
@@ -121,7 +121,7 @@
                     <!-- DONUT CHART Type -->
                     <div class="card shadow elevation-1">
                         <div class="card-header">
-                            <h3 class="card-title">Ticket Types</h3>
+                            <h3 class="card-title"><i class="fas fa-chart-pie mr-1"></i>Ticket Types</h3>
 
                             <div class="card-tools">
                                 <button type="button" class="btn btn-tool" data-card-widget="collapse">
@@ -142,7 +142,7 @@
 
                     <div class="card shadow elevation-1">
                         <div class="card-header">
-                            <h3 class="card-title">Ticket Status</h3>
+                            <h3 class="card-title"><i class="fas fa-chart-pie mr-1"></i>Ticket Status</h3>
 
                             <div class="card-tools">
                                 <button type="button" class="btn btn-tool" data-card-widget="collapse">
@@ -163,7 +163,7 @@
 
                     <div class="card shadow elevation-1">
                         <div class="card-header">
-                            <h3 class="card-title">Ticket Priority</h3>
+                            <h3 class="card-title"><i class="fas fa-chart-pie mr-1"></i>Ticket Priority</h3>
 
                             <div class="card-tools">
                                 <button type="button" class="btn btn-tool" data-card-widget="collapse">
@@ -184,6 +184,11 @@
             <div class="card">
                 <div class="card-header p-2">
                     <h4 class="card-title"> Open Tickets</h4>
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                    </div>
                 </div><!-- /.card-header -->
                 <div class="card-body">
                     <table id="ticketTable" class="table dataTable">
