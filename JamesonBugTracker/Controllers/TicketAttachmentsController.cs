@@ -21,13 +21,15 @@ namespace JamesonBugTracker.Controllers
         private readonly UserManager<BTUser> _userManager;
         private readonly IBTTicketService _ticketService;
         private readonly IBTHistoryService _historyService;
+        private readonly IBTProjectService _projectService;
 
-        public TicketAttachmentsController(ApplicationDbContext context, UserManager<BTUser> userManager, IBTTicketService ticketService, IBTHistoryService historyService)
+        public TicketAttachmentsController(ApplicationDbContext context, UserManager<BTUser> userManager, IBTTicketService ticketService, IBTHistoryService historyService, IBTProjectService projectService)
         {
             _context = context;
             _userManager = userManager;
             _ticketService = ticketService;
             _historyService = historyService;
+            _projectService = projectService;
         }
 
         // GET: TicketAttachments
@@ -76,6 +78,15 @@ namespace JamesonBugTracker.Controllers
             {
                 BTUser currentUser = await _userManager.GetUserAsync(User);
                 int ticketId = ticketAttachment.TicketId;
+                Ticket ticket = await _context.Ticket.FirstOrDefaultAsync(t => t.Id == ticketId);
+                if ((User.IsInRole("ProjectManager") && currentUser.Id != (await _projectService.GetProjectManagerAsync(ticket.ProjectId)).Id) || 
+                    (User.IsInRole("Developer") && currentUser.Id != ticket.DeveloperUserId) || 
+                    (User.IsInRole("Submitter") && currentUser.Id != ticket.OwnerUserId)
+                    )
+                {
+                    TempData["StatusMessage"] = "Error: You aren't authorized to put an attachment on this ticket";
+                    return RedirectToAction("Details", "Tickets", new { id = ticketId });
+                }
                 Ticket oldTicket = await _ticketService.GetOneTicketNotTrackedAsync(ticketId);
                 MemoryStream ms = new MemoryStream();
                 await ticketAttachment.FormFile.CopyToAsync(ms);
