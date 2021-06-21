@@ -528,30 +528,28 @@
                     </div>
                     <!-- /.col -->
                 </div>
-                @if (Model.DeveloperUserId is not null && (User.IsInRole("ProjectManager") && _userManager.GetUserId(User) != (await _projectService.GetProjectManagerAsync(Model.ProjectId)).Id) || User.IsInRole("Admin"))
+                @if ((User.IsInRole("ProjectManager") && _userManager.GetUserId(User) == (await _projectService.GetProjectManagerAsync(Model.ProjectId)).Id) || User.IsInRole("Admin"))
                 {
-                    <form asp-action="AssignUser" class="assignForm">
+                    <form asp-action="AssignUser" class="assignForm" id="reassign">
                         <input hidden name="ticketId" value="@Model.Id" />
                         <div class="form-group pt-0">
                             <label for=""></label>
-                            <select required class="form-control" asp-for="DeveloperUserId" name="userId" id="" asp-items="ViewBag.AssignUsers">
+                            <select required class="form-control" asp-for="DeveloperUserId" name="userId" id="reassignSelect" asp-items="ViewBag.AssignUsers">
                                 <option value="" hidden>Choose a new User</option>
 
                             </select>
                         </div>
                         <button type="submit" class="assignBtn btn btn-primary btn-block">Reassign User</button>
                     </form>
-                    <form asp-action="UnassignUser">
+                    <form asp-action="UnassignUser" id="unassign" class="unassignForm">
                         <input hidden name="ticketId" value="@Model.Id" />
                         <button type="submit" class="assignBtn btn btn-danger btn-block">Unassign User</button>
 
                     </form>
 
-                }
-                else if ((User.IsInRole("ProjectManager") && _userManager.GetUserId(User) != (await _projectService.GetProjectManagerAsync(Model.ProjectId)).Id) || User.IsInRole("Admin"))
-                {
+                
 
-                    <form asp-action="AssignUser" class="assignForm">
+                    <form asp-action="AssignUser" class="assignForm" id="assign">
                         <input hidden name="ticketId" value="@Model.Id" />
                         <div class="form-group">
                             <label for=""></label>
@@ -563,6 +561,7 @@
                         <button type="submit" class="assignBtn btn btn-primary btn-block">Assign User</button>
                     </form>
                 }
+                
                 <h5 class="mt-5 text-muted">Ticket Attachments</h5>
                 @foreach (TicketAttachment item in Model.Attachments)
                 {
@@ -678,6 +677,15 @@
             @:$(".assignForm").remove()
             
         }
+        @if (Model.DeveloperUserId is not null)
+        {
+        @:$("#assign").hide()
+                }
+                else
+                {
+                    @:$("#unassign").hide()
+                    @:$("#reassign").hide()
+                }
         var boolText = "@(User.IsInRole("ProjectManager") || User.IsInRole("Admin"))";
         if (boolText == "True") {
 

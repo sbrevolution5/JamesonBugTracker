@@ -94,13 +94,21 @@ $(".assignForm").on("submit", function (e) {
 
     var dataString = $(this).serialize();
     var userFullName = $(this).children("div").children("select").children("option").filter(":selected").text()
+    var formId = $(this).attr('id')
+    console.log(formId)
     $(".assignBtn").attr("disabled", true)
     $.ajax({
         type: "POST",
         url: "/Tickets/AssignUser",
         data: dataString,
         success: function (result) {
-            
+            // if it was assign, fade out this button add in reassign/remove
+            $(`#reassignSelect option:contains(${userFullName})`).prop('selected', true)
+            if (formId == "assign") {
+                $("#assign").fadeOut(600)
+                $("#reassign").fadeIn(600)
+                $("#unassign").fadeIn(600)
+            }
             toastr.success(`${userFullName} assigned to ticket`)
             $("#developerName").text(userFullName)
             $("#ticketStatusText").text("Development")
@@ -121,6 +129,42 @@ $(".assignForm").on("submit", function (e) {
     statusOverlay.fadeIn(600)
     devOverlay.fadeIn(600)
     toastr.info('Trying to assign user to ticket. Please Wait')
+
+});
+$(".unassignForm").on("submit", function (e) {
+
+    var dataString = $(this).serialize();
+    $(".assignBtn").attr("disabled", true)
+    $.ajax({
+        type: "POST",
+        url: "/Tickets/UnassignUser",
+        data: dataString,
+        success: function (result) {
+            
+                $("#assign").fadeIn(600)
+                $("#reassign").fadeOut(600)
+                $("#unassign").fadeOut(600)
+
+            toastr.success(`Developer removed from ticket`)
+            $("#ticketStatusText").text("Unassigned")
+            $("#developerName").text("Unassigned")
+            ticketStatus = $("#ticketStatusText").text
+            statusOverlay.fadeOut(600)
+            devOverlay.fadeOut(600)
+            ticketStatusBgColor();
+            statusButtons("Unassigned", 600)
+            $(".assignBtn").attr("disabled", false)
+
+        },
+        error: function (result) {
+            $(".assignBtn").attr("disabled", false)
+
+        }
+    });
+    e.preventDefault();
+    statusOverlay.fadeIn(600)
+    devOverlay.fadeIn(600)
+    toastr.info('Trying to unassign user to ticket. Please Wait')
 
 });
 $(".updateStatus").on("submit", function (e) {
