@@ -220,7 +220,12 @@ namespace JamesonBugTracker.Services
             return false;
         }
 
-
+        public async Task<List<Project>> ListUserUnarchivedProjectsAsync(string userId)
+        {
+            var userProjects = await ListUserProjectsAsync(userId);
+            var unarchived = userProjects.Where(p => !p.Archived).ToList();
+            return unarchived;
+        }
         public async Task<List<Project>> ListUserProjectsAsync(string userId)
         {
             var projectList = (await _context.Users.Include(u => u.Projects)

@@ -137,11 +137,11 @@ namespace JamesonBugTracker.Controllers
             }
             if (User.IsInRole("Admin"))
             {
-                ViewData["ProjectId"] = new SelectList(await _projectService.GetAllProjectsByCompanyAsync(companyId), "Id", "Name");
+                ViewData["ProjectId"] = new SelectList(await _projectService.GetAllUnarchivedProjectsByCompanyAsync(companyId), "Id", "Name");
             }
             else
             {
-                ViewData["ProjectId"] = new SelectList(await _projectService.ListUserProjectsAsync(user.Id), "Id", "Name");
+                ViewData["ProjectId"] = new SelectList(await _projectService.ListUserUnarchivedProjectsAsync(user.Id), "Id", "Name");
             }
             if (id is not null)
             {
