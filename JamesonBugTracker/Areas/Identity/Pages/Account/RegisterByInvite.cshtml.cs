@@ -173,7 +173,7 @@ namespace JamesonBugTracker.Areas.Identity.Pages.Account
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
             }
-
+            ViewData["CompanyName"] = Input.Company;
             // If we got this far, something failed, redisplay form
             return Page();
         }
