@@ -230,7 +230,7 @@ namespace JamesonBugTracker.Controllers
             List<string> colors = new();
             foreach (TicketType type in types)
             {
-                howManyTickets.Add(tickets.Where(t => t.TicketStatusId == type.Id).Count());
+                howManyTickets.Add(tickets.Where(t => t.TicketTypeId == type.Id).Count());
 
             //Antonio's Random Colors
                 //    // This code will randomly select a color for each element of the data 
@@ -268,7 +268,7 @@ namespace JamesonBugTracker.Controllers
             //Antonio's Random Colors
             foreach (TicketType type in types)
             {
-                howManyTickets.Add(tickets.Where(t => t.TicketStatusId == type.Id).Count());
+                howManyTickets.Add(tickets.Where(t => t.TicketTypeId == type.Id).Count());
 
                 //    // This code will randomly select a color for each element of the data 
                 //    Color randomColor = Color.FromArgb(rnd.Next(256), rnd.Next(256), rnd.Next(256));
