@@ -498,6 +498,10 @@ namespace JamesonBugTracker.Controllers
                     {
 
                         await _notificationService.EmailNotificationAsync(notification, notification.Title);
+                    }else
+                    {
+                        notification.Viewed = true;
+                        await _context.SaveChangesAsync();
                     }
                     notification = new()
                     {

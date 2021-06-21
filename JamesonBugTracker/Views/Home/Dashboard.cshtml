@@ -166,6 +166,9 @@
                                                                 <canvas id="projTypeChart-@project.Id" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
                                                             </div>
                                                             <!-- /.card-body -->
+                                                            <div class="overlay dark" id="projTypeChart-@project.Id-overlay">
+                                                                <i class="fas fa-2x fa-sync-alt"></i>
+                                                            </div>
                                                         </div>
                                                         <!-- /.card -->
                                                     </div>
@@ -187,6 +190,9 @@
                                                                 <canvas id="projStatusChart-@project.Id" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
                                                             </div>
                                                             <!-- /.card-body -->
+                                                            <div class="overlay dark" id="projStatusChart-@project.Id-overlay">
+                                                                <i class="fas fa-2x fa-sync-alt"></i>
+                                                            </div>
                                                         </div>
                                                         <!-- /.card -->
                                                     </div>
@@ -208,6 +214,9 @@
                                                                 <canvas id="projPriorityChart-@project.Id" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
                                                             </div>
                                                             <!-- /.card-body -->
+                                                            <div class="overlay dark" id="projPriorityChart-@project.Id-overlay">
+                                                                <i class="fas fa-2x fa-sync-alt"></i>
+                                                            </div>
                                                         </div>
                                                         <!-- /.card -->
                                                     </div>
@@ -420,6 +429,9 @@
                                             </div>
                                         </div>
                                     </div><!-- /.card-body -->
+                                    <div class="overlay dark" id="devChart-overlay">
+                                        <i class="fas fa-2x fa-sync-alt"></i>
+                                    </div>
                                 </div>
                                 <a class="my-2 btn btn-block btn-primary" asp-controller="Tickets" asp-action="MyTickets"> View My Tickets</a>
                                 @if (User.IsInRole("ProjectManager") || User.IsInRole("Admin"))
@@ -580,6 +592,9 @@
                                             </div>
                                         </div>
                                     </div><!-- /.card-body -->
+                                    <div class="overlay dark" id="subChart-overlay">
+                                        <i class="fas fa-2x fa-sync-alt"></i>
+                                    </div>
                                 </div>
                                 <a class="my-2 btn btn-block btn-primary" asp-controller="Tickets" asp-action="MyTickets"> View My Tickets</a>
                                 @if (User.IsInRole("ProjectManager") || User.IsInRole("Admin"))
@@ -750,50 +765,63 @@
         }
 
         function charts(){
-            chartWithAjax("/Home/ProjChartMethod", { dev: true }, "#devProjChart")
-        chartWithAjax("/Home/StatusChartMethod", { dev: true }, "#devStatusChart")
-        chartWithAjax("/Home/TypeChartMethod", { dev: true }, "#devTypeChart")
-        chartWithAjax("/Home/PriorityChartMethod", { dev: true }, "#devPriorityChart")
-        chartWithAjax("/Home/ProjChartMethod", { dev: false }, "#subProjChart")
-        chartWithAjax("/Home/StatusChartMethod", { dev: false }, "#subStatusChart")
-        chartWithAjax("/Home/TypeChartMethod", { dev: false }, "#subTypeChart")
-        chartWithAjax("/Home/PriorityChartMethod", { dev: false }, "#subPriorityChart")
+            @foreach (var project in Model.Projects)
+            {
+                @:$("#projStatusChart-@project.Id-overlay").show(300)
+                @:$("#projTypeChart-@project.Id-overlay").show(300)
+                @:$("#projPriorityChart-@project.Id-overlay").show(300)
+            }
+            $("#devChart-overlay").show(300)
+            $("#subChart-overlay").show(300)
         @foreach (var project in Model.Projects)
             {
 
 
                 @:chartWithAjax("/Home/ProjStatusChartMethod", { projId: @project.Id }, "#projStatusChart-@project.Id")
+            @:$("#projStatusChart-@project.Id-overlay").hide(300)
                     @:chartWithAjax("/Home/ProjTypeChartMethod", { projId: @project.Id }, "#projTypeChart-@project.Id")
+                @:$("#projTypeChart-@project.Id-overlay").hide(300)
                     @:chartWithAjax("/Home/ProjPriorityChartMethod", { projId: @project.Id }, "#projPriorityChart-@project.Id")
-    
+                @:$("#projPriorityChart-@project.Id-overlay").hide(300)
+
 }
+            chartWithAjax("/Home/ProjChartMethod", { dev: true }, "#devProjChart")
+            chartWithAjax("/Home/StatusChartMethod", { dev: true }, "#devStatusChart")
+            chartWithAjax("/Home/TypeChartMethod", { dev: true }, "#devTypeChart")
+            chartWithAjax("/Home/PriorityChartMethod", { dev: true }, "#devPriorityChart")
+            $("#devChart-overlay").hide(300)
+            chartWithAjax("/Home/ProjChartMethod", { dev: false }, "#subProjChart")
+            chartWithAjax("/Home/StatusChartMethod", { dev: false }, "#subStatusChart")
+            chartWithAjax("/Home/TypeChartMethod", { dev: false }, "#subTypeChart")
+            chartWithAjax("/Home/PriorityChartMethod", { dev: false }, "#subPriorityChart")
+            $("#subChart-overlay").hide(300)
 
 }
 
     </script>
 
 
-<script>
-
-
-</script>
-<script src="~/js/chartBasics.js"></script>
-
-
-<script>
-</script>
-<script>
-            var endDate
-            var startDate
-            var interval
-            var now
-            var width
-    var barElement
-    var bgElement
-</script>
-@foreach (var project in Model.Projects)
-{
     <script>
+
+
+    </script>
+    <script src="~/js/chartBasics.js"></script>
+
+
+    <script>
+    </script>
+    <script>
+        var endDate
+        var startDate
+        var interval
+        var now
+        var width
+        var barElement
+        var bgElement
+    </script>
+    @foreach (var project in Model.Projects)
+    {
+        <script>
 
 
         endDate = @project.EndDate.ToUnixTimeSeconds();
@@ -822,6 +850,6 @@
           document.getElementById("progress-description-@project.Id").innerText = `Project End Date was @string.Format("{0:MMM dd yyyy}", project.EndDate)`
 
     }
-    </script>
-}
+        </script>
+    }
 }
