@@ -90,7 +90,7 @@
                                             <span class="float-right text-sm text-danger-"><i class="far fa-star"></i></span>
                                             <p class="text-sm">@notification.Message</p>
                                             <a class="btn btn-sm btn-primary" asp-action="Details" asp-controller="Tickets" asp-route-id="@notification.TicketId">See Ticket</a>
-                                            <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i> @notification.Created</p>
+                                            <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i> @string.Format("{0: MMM dd yyyy, hh:mm tt}", notification.Created)</p>
                                         </div>
                                     </div>
                                 </div>
@@ -112,7 +112,7 @@
 
                                             <a class="btn btn-sm btn-primary" asp-action="Details" asp-controller="Tickets" asp-route-id="@notification.TicketId">See Ticket</a>
                                             }
-                                            <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i> @notification.Created</p>
+                                            <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i> @string.Format($"{0: MMM dd yyyy, hh:mm tt}",notification.Created)</p>
                                         </div>
                                     </div>
 

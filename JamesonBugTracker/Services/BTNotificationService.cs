@@ -120,6 +120,10 @@ namespace JamesonBugTracker.Services
         public async Task SaveNotificationAsync(Notification notification)
         {
             try{
+                if (String.IsNullOrEmpty(notification.RecipientId))
+                {
+                    return;
+                }
                 await _context.AddAsync(notification);
                 await _context.SaveChangesAsync();
             }
