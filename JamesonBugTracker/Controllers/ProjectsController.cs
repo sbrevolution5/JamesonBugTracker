@@ -159,7 +159,7 @@ namespace JamesonBugTracker.Controllers
             {
                 return NotFound();
             }
-            ViewData["ProjectPriorityId"] = new SelectList(_context.Set<ProjectPriority>().OrderBy(t => t.Id), "Id", "Id", project.ProjectPriorityId);
+            ViewData["ProjectPriorityId"] = new SelectList(_context.Set<ProjectPriority>().OrderBy(t => t.Id), "Id", "Name", project.ProjectPriorityId);
             return View(project);
         }
 
