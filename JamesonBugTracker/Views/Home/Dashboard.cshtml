@@ -767,34 +767,34 @@
         function charts(){
             @foreach (var project in Model.Projects)
             {
-                @:$("#projStatusChart-@project.Id-overlay").show(300)
-                @:$("#projTypeChart-@project.Id-overlay").show(300)
-                @:$("#projPriorityChart-@project.Id-overlay").show(300)
+                @:$("#projStatusChart-@project.Id-overlay").fadeIn(300)
+                @:$("#projTypeChart-@project.Id-overlay").fadeIn(300)
+                @:$("#projPriorityChart-@project.Id-overlay").fadeIn(300)
             }
-            $("#devChart-overlay").show(300)
-            $("#subChart-overlay").show(300)
+            $("#devChart-overlay").fadeIn(300)
+            $("#subChart-overlay").fadeIn(300)
         @foreach (var project in Model.Projects)
             {
 
 
                 @:chartWithAjax("/Home/ProjStatusChartMethod", { projId: @project.Id }, "#projStatusChart-@project.Id")
-            @:$("#projStatusChart-@project.Id-overlay").hide(300)
+            @:$("#projStatusChart-@project.Id-overlay").fadeOut(300)
                     @:chartWithAjax("/Home/ProjTypeChartMethod", { projId: @project.Id }, "#projTypeChart-@project.Id")
-                @:$("#projTypeChart-@project.Id-overlay").hide(300)
+                @:$("#projTypeChart-@project.Id-overlay").fadeOut(300)
                     @:chartWithAjax("/Home/ProjPriorityChartMethod", { projId: @project.Id }, "#projPriorityChart-@project.Id")
-                @:$("#projPriorityChart-@project.Id-overlay").hide(300)
+                @:$("#projPriorityChart-@project.Id-overlay").fadeOut(300)
 
 }
             chartWithAjax("/Home/ProjChartMethod", { dev: true }, "#devProjChart")
             chartWithAjax("/Home/StatusChartMethod", { dev: true }, "#devStatusChart")
             chartWithAjax("/Home/TypeChartMethod", { dev: true }, "#devTypeChart")
             chartWithAjax("/Home/PriorityChartMethod", { dev: true }, "#devPriorityChart")
-            $("#devChart-overlay").hide(300)
+            $("#devChart-overlay").fadeOut(300)
             chartWithAjax("/Home/ProjChartMethod", { dev: false }, "#subProjChart")
             chartWithAjax("/Home/StatusChartMethod", { dev: false }, "#subStatusChart")
             chartWithAjax("/Home/TypeChartMethod", { dev: false }, "#subTypeChart")
             chartWithAjax("/Home/PriorityChartMethod", { dev: false }, "#subPriorityChart")
-            $("#subChart-overlay").hide(300)
+            $("#subChart-overlay").fadeOut(300)
 
 }
 
