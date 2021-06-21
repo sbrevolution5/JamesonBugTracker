@@ -69,7 +69,7 @@ namespace JamesonBugTracker.Controllers
         public async Task<IActionResult> MyProjects()
         {
             var userId = _userManager.GetUserId(User);
-            var userProjects = await _projectService.ListUserProjectsAsync(userId);
+            var userProjects = await _projectService.ListUserUnarchivedProjectsAsync(userId);
             return View(userProjects);
         }
 

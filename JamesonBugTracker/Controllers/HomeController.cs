@@ -50,7 +50,7 @@ namespace JamesonBugTracker.Controllers
 
             DashboardViewModel viewModel = new()
             {
-                Projects = await _projectService.GetAllProjectsByCompanyAsync(companyId),
+                Projects = await _projectService.GetAllUnarchivedProjectsByCompanyAsync(companyId),
                 UnresolvedDevelopmentTickets = await _ticketService.GetAllDeveloperTicketsByResolvedAsync(userId, false),
                 DevelopmentTickets = await _ticketService.GetAllTicketsByRoleAsync("Developer", userId),
                 SubmittedTickets = await _ticketService.GetAllTicketsByRoleAsync("Submitter", userId),

@@ -118,6 +118,7 @@ $(".assignForm").on("submit", function (e) {
             ticketStatusBgColor();
             statusButtons("Development", 600)
             $(".assignBtn").attr("disabled", false)
+            $("#newHistory").fadeIn(600);
 
         },
         error: function (result) {
@@ -154,6 +155,7 @@ $(".unassignForm").on("submit", function (e) {
             ticketStatusBgColor();
             statusButtons("Unassigned", 600)
             $(".assignBtn").attr("disabled", false)
+            $("#newHistory").fadeIn(600);
 
         },
         error: function (result) {
@@ -186,6 +188,7 @@ $(".updateStatus").on("submit", function (e) {
             ticketStatusBgColor();
             statusButtons(ticketStatus, 600)
             $(".updateBtn").attr("disabled", false)
+            $("#newHistory").fadeIn(600);
 
         },
         error: function (result) {

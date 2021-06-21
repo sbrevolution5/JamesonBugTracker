@@ -197,7 +197,7 @@
                                 </ul>
                             </div>
                             <div class="card-body">
-                                <div class="tab-content" id="custom-tabs-tabContent">
+                                <div class="tab-content" id="custom-tabs-tabContent" style="max-height:50vh; overflow:auto;">
                                     <div class="tab-pane fade" id="custom-tabs-comments" role="tabpanel" aria-labelledby="custom-tabs-comments-tab">
                                         @*<h4>Ticket Comments</h4>*@
                                         @*<hr />*@
@@ -236,7 +236,11 @@
                                         <!-- The time line -->
                                         @if (Model.History.Count > 0)
                                         {
-
+                                            <div class="row">
+                                                <div class="col text-center">
+                                                    <div class="badge badge-danger" id="newHistory">New History, Reload to see!</div>
+                                                </div>
+                                            </div>
                                             <div class="timeline">
                                                 @{
                                                     DateTime? today = Model.History?.OrderByDescending(h => h.Created).FirstOrDefault().Created.Date;
@@ -298,7 +302,7 @@
                                                             <i class="far fa-file bg-maroon"></i>
                                                             var attachment = Model.Attachments.Where(a => a.Id == historyItem.AttachmentId).FirstOrDefault();
                                                             <div class="timeline-item">
-                                                                <span class="time"><i class="fas fa-clock"></i> @string.Format("{0:hh:mm tt}", historyItem.Created)</span>
+                                                                <span class="time"><i class="fas fa-clock"></i> @string.Format("{0:hh:mm tt}", historyItem.Created.ToLocalTime())</span>
                                                                 <h3 class="timeline-header">
                                                                     @historyItem.User.FullName <span>|</span>
                                                                     @if (Model.DeveloperUserId == historyItem.UserId)
@@ -689,7 +693,8 @@
         } else {
             var canReopen = false
 
-    }
+        }
+        $("#newHistory").hide();
         var ticketStatus = "@Model.TicketStatus.Name"
         </script>
     
