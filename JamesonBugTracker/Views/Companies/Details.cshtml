@@ -69,7 +69,7 @@
                         @foreach (var member in Model.Members)
                         {
                             <li>
-                                <img src="@_fileService.ConvertByteArrayToFile(member.AvatarFileData, member.AvatarFileContentType)" class="member-img" style="" alt="User Image">
+                                <img src="@_fileService.ConvertByteArrayToFile(member.AvatarFileData, member.AvatarFileContentType)" class="member-img-sm" style="" alt="User Image">
                                 <p class="users-list-name">@member.FullName</p>
                                 <span class="users-list-date">@((await _ticketService.GetAllTicketsByRoleAsync("Submitter", member.Id)).Count) Submitted</span>
                                 <span class="users-list-date">@((await _ticketService.GetAllDeveloperTicketsByResolvedAsync(member.Id, false)).Count) Open Tickets</span>

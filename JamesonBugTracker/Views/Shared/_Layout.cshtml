@@ -82,7 +82,7 @@
                                 <div class="dropdown-item" id="not-@notification.Id">
                                     <!-- Message Start -->
                                     <div class="media">
-                                        <img src="@_fileService.ConvertByteArrayToFile(notification.Sender.AvatarFileData,notification.Sender.AvatarFileContentType) " alt="User Avatar" class="img-size-50 mr-3 img-circle ">
+                                        <img src="@_fileService.ConvertByteArrayToFile(notification.Sender.AvatarFileData,notification.Sender.AvatarFileContentType) " alt="User Avatar" class="img-size-50 mr-3 img-circle member-img-sm">
                                         <div class="media-body">
                                             <h3 class="dropdown-item-title">
                                                 @notification.Sender.FullName
@@ -100,14 +100,18 @@
                                 <div class="dropdown-item" id="not-@notification.Id">
                                     <!-- Message Start -->
                                     <div class="media">
-                                        <img src="@_fileService.ConvertByteArrayToFile(notification.Sender.AvatarFileData,notification.Sender.AvatarFileContentType) " alt="User Avatar" class="img-size-50 mr-3 img-circle ">
+                                        <img src="@_fileService.ConvertByteArrayToFile(notification.Sender.AvatarFileData,notification.Sender.AvatarFileContentType) " alt="User Avatar" class="img-size-50 mr-3 img-circle member-img-sm">
                                         <div class="media-body">
                                             <h3 class="dropdown-item-title">
                                                 @notification.Sender.FullName
                                             </h3>
                                             <span class="float-right text-sm text-danger-"><button type="submit" class="btn btn-link"><i id="seenIcon-@notification.Id" class="fas fa-star"></i></button></span>
                                             <p class="text-sm">@notification.Message</p>
+                                            @if (notification.TicketId is not null)
+                                            {
+
                                             <a class="btn btn-sm btn-primary" asp-action="Details" asp-controller="Tickets" asp-route-id="@notification.TicketId">See Ticket</a>
+                                            }
                                             <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i> @notification.Created</p>
                                         </div>
                                     </div>

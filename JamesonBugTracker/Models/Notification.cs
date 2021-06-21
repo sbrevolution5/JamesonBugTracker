@@ -20,7 +20,7 @@ namespace JamesonBugTracker.Models
         public DateTimeOffset Created { get; set; }
         
         [DisplayName("Ticket")]
-        public int TicketId { get; set; }
+        public int? TicketId { get; set; }
 
         [DisplayName("Recipient")]
         public string RecipientId { get; set; }

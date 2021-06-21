@@ -27,9 +27,10 @@ namespace JamesonBugTracker.Controllers
         private readonly IBTTicketService _ticketService;
         private readonly IBTFileService _fileService;
         private readonly IConfiguration _configuration;
+        private readonly IBTNotificationService _notificationService;
 
 
-        public ProjectsController(ApplicationDbContext context, IBTProjectService projectService, UserManager<BTUser> userManager, IBTCompanyInfoService companyInfoService, IBTTicketService ticketService, IBTFileService fileService, IConfiguration configuration)
+        public ProjectsController(ApplicationDbContext context, IBTProjectService projectService, UserManager<BTUser> userManager, IBTCompanyInfoService companyInfoService, IBTTicketService ticketService, IBTFileService fileService, IConfiguration configuration, IBTNotificationService notificationService)
         {
             _context = context;
             _projectService = projectService;
@@ -38,6 +39,7 @@ namespace JamesonBugTracker.Controllers
             _ticketService = ticketService;
             _fileService = fileService;
             _configuration = configuration;
+            _notificationService = notificationService;
         }
 
         // GET: Projects
@@ -235,6 +237,7 @@ namespace JamesonBugTracker.Controllers
             {
                 if (model.SelectedUsers != null)
                 {
+                    var senderId = _userManager.GetUserId(User);
                     //Get list of all project members, but without the project manager. 
                     //these will be removed from project, We do not want to ever remove project manager.
                     List<string> memberIds = (await _projectService.GetMembersWithoutPMAsync(model.Project.Id)).Select(m => m.Id).ToList();
@@ -244,8 +247,20 @@ namespace JamesonBugTracker.Controllers
                     }
                     foreach (string id in model.SelectedUsers)
                     {
+                        if (!memberIds.Any(i=>i == id))
+                        {
+                            Notification notification = new()
+                            {
+                                Created = DateTime.Now,
+                                Message = $"assigned you to project: {model.Project.Name}",
+                                SenderId = senderId,
+                                RecipientId = id
+                            };
+                            await _notificationService.SaveNotificationAsync(notification);
+                        }
                         await _projectService.AddUserToProjectAsync(id, model.Project.Id);
                     }
+                    
                     return RedirectToAction("Details", "Projects", new { id = model.Project.Id });
                 }
                 else

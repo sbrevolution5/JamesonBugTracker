@@ -297,7 +297,7 @@ namespace JamesonBugTracker.Controllers
                     notification = new()
                     {
                         TicketId = ticket.Id,
-                        Title = $"Ticket modified on project - {ticket.Project.Name}", //TODO FIX BACK TO INTERPOLATED
+                        Title = $"Ticket modified on project - {ticket.Project.Name}", 
                         Message = $"Ticket: [{ticket.Id}]:{ticket.Title} updated by {currentUser?.FullName}",
                         Created = DateTime.Now,
                         SenderId = currentUser?.Id,
