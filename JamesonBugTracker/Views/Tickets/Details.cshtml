@@ -140,7 +140,7 @@
 
                     <input hidden name="ticketId" value="@Model.Id" />
                     <input hidden name="statusName" class="statusName" value="Resolved" />
-                    <button class="updateBtn btn btn-block btn-success" type="submit">Close Ticket</button>
+                    <button class="updateBtn btn btn-block btn-success mt-2" type="submit">Close Ticket</button>
                 </form>
                 <form asp-action="UpdateStatus" id="reopenTicket" class="updateStatus">
 
@@ -528,7 +528,7 @@
                     </div>
                     <!-- /.col -->
                 </div>
-                @if (Model.DeveloperUserId is not null && (User.IsInRole("ProjectManager") || User.IsInRole("Admin")))
+                @if (Model.DeveloperUserId is not null && (User.IsInRole("ProjectManager") && _userManager.GetUserId(User) != (await _projectService.GetProjectManagerAsync(Model.ProjectId)).Id) || User.IsInRole("Admin"))
                 {
                     <form asp-action="AssignUser" class="assignForm">
                         <input hidden name="ticketId" value="@Model.Id" />
@@ -548,7 +548,7 @@
                     </form>
 
                 }
-                else if (User.IsInRole("ProjectManager") || User.IsInRole("Admin"))
+                else if ((User.IsInRole("ProjectManager") && _userManager.GetUserId(User) != (await _projectService.GetProjectManagerAsync(Model.ProjectId)).Id) || User.IsInRole("Admin"))
                 {
 
                     <form asp-action="AssignUser" class="assignForm">
@@ -671,22 +671,32 @@
 
 @section Scripts{
     <script>
+        @if (User.IsInRole("Submitter") || (_userManager.GetUserId(User)!= Model.DeveloperUserId && User.IsInRole("Developer")) || (User.IsInRole("ProjectManager") && _userManager.GetUserId(User) != (await _projectService.GetProjectManagerAsync(Model.ProjectId)).Id))
+        {
+            @:$(".assignBtn").attr("disabled", true)
+            @:$(".updateBtn").remove()
+            @:$(".assignForm").remove()
+            
+        }
         var boolText = "@(User.IsInRole("ProjectManager") || User.IsInRole("Admin"))";
-    if (boolText == "True") {
+        if (boolText == "True") {
 
-        var canReopen =true
-    } else {
-        var canReopen = false
+            var canReopen =true
+        } else {
+            var canReopen = false
 
     }
-    var ticketStatus = "@Model.TicketStatus.Name"
-    </script>
-    <script src="../../plugins/summernote/summernote-bs4.min.js"></script>
-    <script src="~/js/ticketDetails.js"></script>
-    <script>
+        var ticketStatus = "@Model.TicketStatus.Name"
+        </script>
+    
+        <script src="../../plugins/summernote/summernote-bs4.min.js"></script>
+    
+        <script src="~/js/ticketDetails.js"></script>
+    
+        <script>
 
         $(window).on("load", function () {
-     @if (Model.Comments.Count > 0)
+            @if (Model.Comments.Count > 0)
             {
                 @:$('#custom-tabs-comments').tab('show')
             }

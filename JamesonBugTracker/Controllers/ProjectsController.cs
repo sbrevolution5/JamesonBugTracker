@@ -99,7 +99,8 @@ namespace JamesonBugTracker.Controllers
             {
                 Project = project,
                 OpenTickets = await _ticketService.GetProjectTicketsNotResolvedOrArchivedAsync(project.CompanyId, project.Id),
-                ResolvedTickets = await _ticketService.GetProjectTicketsByStatusAsync("Resolved", project.CompanyId, project.Id)
+                ResolvedTickets = await _ticketService.GetProjectTicketsByStatusAsync("Resolved", project.CompanyId, project.Id),
+                ArchivedTickets = await _ticketService.GetProjectTicketsByStatusAsync("Archived", project.CompanyId, project.Id)
             };
             return View(viewModel);
         }
@@ -110,7 +111,7 @@ namespace JamesonBugTracker.Controllers
         public IActionResult Create()
         {
 
-            ViewData["ProjectPriorityId"] = new SelectList(_context.Set<ProjectPriority>(), "Id", "Name");
+            ViewData["ProjectPriorityId"] = new SelectList(_context.Set<ProjectPriority>().OrderBy(t => t.Id), "Id", "Name");
             return View();
         }
 
@@ -139,8 +140,7 @@ namespace JamesonBugTracker.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction("AddMembers",new {id = project.Id});
             }
-            ViewData["CompanyId"] = new SelectList(_context.Set<Company>(), "Id", "Name", project.CompanyId);
-            ViewData["ProjectPriorityId"] = new SelectList(_context.Set<ProjectPriority>(), "Id", "Id", project.ProjectPriorityId);
+            ViewData["ProjectPriorityId"] = new SelectList(_context.Set<ProjectPriority>().OrderBy(t => t.Id), "Id", "Id", project.ProjectPriorityId);
             return View(project);
         }
 
@@ -159,8 +159,7 @@ namespace JamesonBugTracker.Controllers
             {
                 return NotFound();
             }
-            ViewData["CompanyId"] = new SelectList(_context.Set<Company>(), "Id", "Name", project.CompanyId);
-            ViewData["ProjectPriorityId"] = new SelectList(_context.Set<ProjectPriority>(), "Id", "Id", project.ProjectPriorityId);
+            ViewData["ProjectPriorityId"] = new SelectList(_context.Set<ProjectPriority>().OrderBy(t => t.Id), "Id", "Id", project.ProjectPriorityId);
             return View(project);
         }
 
@@ -208,8 +207,7 @@ namespace JamesonBugTracker.Controllers
                 }
                 return RedirectToAction("MyProjects");
             }
-            ViewData["CompanyId"] = new SelectList(_context.Set<Company>(), "Id", "Name", project.CompanyId);
-            ViewData["ProjectPriorityId"] = new SelectList(_context.Set<ProjectPriority>(), "Id", "Id", project.ProjectPriorityId);
+            ViewData["ProjectPriorityId"] = new SelectList(_context.Set<ProjectPriority>().OrderBy(t => t.Id), "Id", "Id", project.ProjectPriorityId);
             return View(project);
         }
 

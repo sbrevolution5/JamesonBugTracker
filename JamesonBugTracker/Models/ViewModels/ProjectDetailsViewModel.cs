@@ -10,5 +10,6 @@ namespace JamesonBugTracker.Models.ViewModels
         public Project Project { get; set; }
         public List<Ticket> OpenTickets { get; set; }
         public List<Ticket> ResolvedTickets { get; set; }
+        public List<Ticket> ArchivedTickets { get; set; }
     }
 }

@@ -62,26 +62,7 @@
 
             <!-- Right navbar links -->
             <ul class="navbar-nav ml-auto">
-                <li class="nav-item role-text" >
-                    <p>
-                        You are @if (User.IsInRole("Admin"))
-                        {
-                            @: an Administrator
-                        }
-                        else if (User.IsInRole("ProjectManager"))
-                        {
-                            @: a Project Manager
-                        }
-                        else if (User.IsInRole("Developer"))
-                        {
-                            @: a Developer
-                        }
-                        else if (User.IsInRole("Submitter"))
-                        {
-                            @: a Submitter
-                        }
-                    </p>
-                </li>
+
                 <!-- Notifications Dropdown Menu -->
                 <li class="nav-item dropdown">
                     <a class="nav-link" data-toggle="dropdown" id="notificationButton">
@@ -173,24 +154,45 @@
                             <img src="@_fileService.ConvertByteArrayToFile(btUser.AvatarFileData, btUser.AvatarFileContentType)" class="img-circle elevation-2" alt="User Image" style="height:2.1rem">
                         </div>
                         <div class="info">
-                            <a asp-area="Identity" asp-page="/Account/Manage/Index" class="d-block">@btUser.FullName</a>
+                            <div class="row">
+                                <div class="col">
+
+                                    <a asp-area="Identity" asp-page="/Account/Manage/Index" >
+                                        @btUser.FullName
+                                    </a>
+                            </div>
+                            @*<div class="row">
+                                <div class="col">
+                                    <div class="badge">
+
+                                    @if (User.IsInRole("Admin"))
+                                    {
+                                        @:Administrator
+                                    }
+                                    else if (User.IsInRole("ProjectManager"))
+                                    {
+                                        @:Project Manager
+                                    }
+                                    else if (User.IsInRole("Developer"))
+                                    {
+                                        @:Developer
+                                    }
+                                    else if (User.IsInRole("Submitter"))
+                                    {
+                                        @:Submitter
+                                    }
+                                    </div>
+                                </div>
+                            </div>*@
                         </div>
-                        <div class="info ml-2">
-                            <a href="javascript:document.getElementById('logoutForm').submit();"><i class="fas fa-sign-out-alt"></i></a>
-                        </div>
+
                     </div>
-                }
-                else
-                {
-                    <div class="user-panel mt-3 pb-3 mb-3 d-flex">
-                        <div class="image">
-                            <img src="~/dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
-                        </div>
-                        <div class="info">
-                            <a class="d-block" asp-area="Identity" asp-page="/Account/Login">Log In</a>
-                        </div>
+                    <div class="info ml-2">
+                        <a href="javascript:document.getElementById('logoutForm').submit();"><i class="fas fa-sign-out-alt"></i></a>
                     </div>
-                }
+                </div>
+            }
+
                 <!--Company Panel-->
                 <div class="user-panel mt-3 pb-3 mb-3 d-flex">
                     <div class="image">
