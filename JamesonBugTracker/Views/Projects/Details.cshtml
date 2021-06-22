@@ -79,6 +79,13 @@
                 <!-- /.card-header -->
                 <div class="card-body">
                     <strong>Project Manager: @projectManager?.FullName</strong>
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <a class="btn btn-warning btn-block" asp-action="AddManager" asp-route-id="@Model.Project.Id">
+                            <i class="fas fa-user mr-1">
+                            </i>Assign Manager
+                        </a>
+                    }
                     <hr />
                     @foreach (var member in Model.Project.Members)
                     {

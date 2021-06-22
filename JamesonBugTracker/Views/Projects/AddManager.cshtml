@@ -22,12 +22,12 @@
                 </select>
                 <span asp-validation-for="NewManagerId" class="text-danger"></span>
             </div>
-            <button type="submit" class="btn btn-success">Save</button>
-        </form>
-        <form asp-action="RemoveManager">
-            <input type="hidden" name="id" value="@project.Id"/>
-            <input type="submit" value="Remove Manager" class="btn btn-danger" /> |
-            <a asp-action="Details" class=" btn btn-outline-secondary">Back to Details</a>
+            <button type="submit" class="btn btn-success mb-3">Save</button>
         </form>
     </div>
 </div>
+        <form asp-action="RemoveManager">
+            <input type="hidden" name="id" value="@project.Id"/>
+            <input type="submit" value="Remove Manager" class="btn btn-danger" /> |
+            <a asp-action="Details" asp-route-id="@project.Id" class=" btn btn-outline-secondary">Back to Details</a>
+        </form>
