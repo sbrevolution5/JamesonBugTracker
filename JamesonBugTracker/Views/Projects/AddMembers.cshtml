@@ -3,6 +3,10 @@
 @{
     ViewData["Title"] = "AddMembers";
 }
+@section Header{
+    <link rel="stylesheet" type="text/css" href="~/plugins//bootstrap4-duallistbox/bootstrap-duallistbox.min.css">
+
+}
 <div class="container">
     <h2> Assign Users </h2>
 
@@ -26,7 +30,7 @@
                 <div class="col-12">
                     <div class="form-group">
                         <label asp-for="@Model.Users" class="control-label">Assign team members for Project: @Model.Project.Name</label>
-                        <select asp-for="@Model.SelectedUsers" class="form-control" asp-items="@Model.Users" multiple="multiple"></select>
+                        <select asp-for="@Model.SelectedUsers" asp-items="@Model.Users" class="duallistbox" multiple="multiple"></select>
                     </div>
                 </div>
                 <div class="form-group">
@@ -50,3 +54,11 @@
         <!--End Hover Rows-->
     </div>
 </div>
+@section Scripts{
+    <script src="~/plugins/bootstrap4-duallistbox/jquery.bootstrap-duallistbox.min.js"></script>
+    <script>
+
+
+            $(".duallistbox").bootstrapDualListbox()
+</script>
+}

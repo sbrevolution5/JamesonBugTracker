@@ -245,8 +245,10 @@ namespace JamesonBugTracker.Controllers
                     {
                         await _projectService.RemoveUserFromProjectAsync(id, model.Project.Id);
                     }
+
                     foreach (string id in model.SelectedUsers)
                     {
+                    //for each selected user not in original list
                         if (!memberIds.Any(i=>i == id))
                         {
                             Notification notification = new()

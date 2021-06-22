@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<JamesonBugTracker.Models.ViewModels.ManageUserRolesViewModel>
 
 <div class="row">
-<h6>Warning:</h6>
+    <h6>Warning:</h6>
     <p>If the user is an admin, do not assign any other roles to them.  They already have all privileges, and will be recognized as acting Project Manager when there is no explicit project manager.  </p>
     @foreach (var member in Model)
     {
@@ -18,7 +18,7 @@
             <div class="col-12">
                 <div class="form-group">
                     <label asp-for="@member.Roles" class="control-label">Roles for @member.BTUser.FullName</label>
-                    <select asp-for="@member.SelectedRoles" class="form-control" asp-items="@member.Roles" multiple="multiple"></select>
+                    <select asp-for="@member.SelectedRoles" class="form-control" asp-items="@member.Roles"></select>
                 </div>
             </div>
             <hr />
