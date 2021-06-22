@@ -11,7 +11,7 @@
 @using Microsoft.AspNetCore.Identity
 @using JamesonBugTracker.Services.Interfaces
 @inject IBTFileService _fileService
-@inject IBTProjectService _projectService 
+@inject IBTProjectService _projectService
 @inject UserManager<BTUser> _userManager
 
 <h1>My Projects</h1>
@@ -97,33 +97,46 @@
                             <td class="project-actions text-right">
                                 @if (User.IsInRole("Admin") || (User.IsInRole("ProjectManager") && (await _projectService.GetProjectManagerAsync(project.Id)).Id == _userManager.GetUserId(User)))
                                 {
-                                <div class="btn-group">
-                                    <a asp-action="Details" asp-route-id="@project.Id" class="btn btn-default"><i class="fas fa-folder mr-1">
-</i>Details</a>
-                                    <button type="button" class="btn btn-default dropdown-toggle dropdown-icon" data-toggle="dropdown">
-                                        <span class="sr-only">Toggle Dropdown</span>
-                                    </button>
-                                    <div class="dropdown-menu bg-warning" role="menu">
-                                        <a class="dropdown-item" asp-action="AddMembers" asp-route-id="@project.Id">
-                                            <i class="fas fa-user mr-1">
-                                            </i>Assign Users
+                                    <div class="btn-group">
+                                        <a asp-action="Details" asp-route-id="@project.Id" class="btn btn-default">
+                                            <i class="fas fa-folder mr-1">
+                                            </i>Details
                                         </a>
-                                        <a class="dropdown-item bg-warning" asp-action="Edit" asp-route-id="@project.Id"><i class="fas fa-pencil-alt mr-1">
-</i>Edit</a>
-                                        <a class="dropdown-item bg-danger" asp-action="Archive" asp-route-id="@project.Id"><i class="fas fa-archive mr-1">
-</i>Archive</a>
+                                        <button type="button" class="btn btn-default dropdown-toggle dropdown-icon" data-toggle="dropdown">
+                                            <span class="sr-only">Toggle Dropdown</span>
+                                        </button>
+                                        <div class="dropdown-menu bg-warning" role="menu">
+                                            <a class="dropdown-item" asp-action="AddMembers" asp-route-id="@project.Id">
+                                                <i class="fas fa-user mr-1">
+                                                </i>Assign Users
+                                            </a>
+                                            @if (User.IsInRole("Admin"))
+                                            {
+                                                <a class="dropdown-item" asp-action="AddManager" asp-route-id="@project.Id">
+                                                    <i class="fas fa-user mr-1">
+                                                    </i>Assign Manager
+                                                </a>
+                                            }
+                                            <a class="dropdown-item bg-warning" asp-action="Edit" asp-route-id="@project.Id">
+                                                <i class="fas fa-pencil-alt mr-1">
+                                                </i>Edit
+                                            </a>
+                                            <a class="dropdown-item bg-danger" asp-action="Archive" asp-route-id="@project.Id">
+                                                <i class="fas fa-archive mr-1">
+                                                </i>Archive
+                                            </a>
 
+                                        </div>
                                     </div>
-                                </div>
-                                
+
                                 }
                                 else
                                 {
-                                <a asp-action="Details" asp-route-id="@project.Id" class="btn">
+                                    <a asp-action="Details" asp-route-id="@project.Id" class="btn">
 
-                                    <i class="fas fa-folder">
-                                    </i>Details
-                                </a>
+                                        <i class="fas fa-folder">
+                                        </i>Details
+                                    </a>
                                 }
                             </td>
                         </tr>
@@ -141,7 +154,6 @@
     <script src="~/js/PriorityBadge.js"></script>
     <script src="~/plugins/datatables/jquery.dataTables.js"></script>
     <script src="~/plugins/datatables-bs4/js/dataTables.bootstrap4.js"></script>
-    <script src="~/js/MyProjects.js"></script>
     <script>
         var endDate
         var startDate

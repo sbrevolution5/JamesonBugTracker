@@ -110,9 +110,9 @@
                                             @if (notification.TicketId is not null)
                                             {
 
-                                            <a class="btn btn-sm btn-primary" asp-action="Details" asp-controller="Tickets" asp-route-id="@notification.TicketId">See Ticket</a>
+                                                <a class="btn btn-sm btn-primary" asp-action="Details" asp-controller="Tickets" asp-route-id="@notification.TicketId">See Ticket</a>
                                             }
-                                            <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i> @string.Format($"{0: MMM dd yyyy, hh:mm tt}",notification.Created)</p>
+                                            <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i> @string.Format($"{0: MMM dd yyyy, hh:mm tt}", notification.Created)</p>
                                         </div>
                                     </div>
 
@@ -155,47 +155,61 @@
 
                     <div class="user-panel mt-3 pb-3 mb-3 d-flex">
                         <div class="image">
-                            <img src="@_fileService.ConvertByteArrayToFile(btUser.AvatarFileData, btUser.AvatarFileContentType)" class="img-circle elevation-2" alt="User Image" style="height:2.1rem">
-                        </div>
-                        <div class="info">
                             <div class="row">
                                 <div class="col">
 
-                                    <a asp-area="Identity" asp-page="/Account/Manage/Index" >
-                                        @btUser.FullName
-                                    </a>
+                                    <img src="@_fileService.ConvertByteArrayToFile(btUser.AvatarFileData, btUser.AvatarFileContentType)" class="img-circle elevation-2" alt="User Image" style="height:4.1rem;width:4.1rem;">
+                                </div>
                             </div>
-                            @*<div class="row">
-                                <div class="col">
-                                    <div class="badge">
+                        </div>
+                        <div class="info">
+                            <div class="row">
+                                <div class="col-8">
+                                    <div class="row">
+                                        <div class="col">
 
-                                    @if (User.IsInRole("Admin"))
-                                    {
-                                        @:Administrator
-                                    }
-                                    else if (User.IsInRole("ProjectManager"))
-                                    {
-                                        @:Project Manager
-                                    }
-                                    else if (User.IsInRole("Developer"))
-                                    {
-                                        @:Developer
-                                    }
-                                    else if (User.IsInRole("Submitter"))
-                                    {
-                                        @:Submitter
-                                    }
+                                            <a asp-area="Identity" asp-page="/Account/Manage/Index">
+                                                @btUser.FullName
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col">
+
+                                            <span class="badge badge-primary">
+
+                                                @if (User.IsInRole("Admin"))
+                                                {
+                                                    @:Administrator
+                                                }
+                                                else if (User.IsInRole("ProjectManager"))
+                                                {
+                                                    @:Project Manager
+                                                }
+                                                else if (User.IsInRole("Developer"))
+                                                {
+                                                    @:Developer
+                                                }
+                                                else if (User.IsInRole("Submitter"))
+                                                {
+                                                    @:Submitter
+                                                }
+                                            </span>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>*@
-                        </div>
+                                <div class="col-4">
+                                    <div class="ml-2">
+                                        <a href="javascript:document.getElementById('logoutForm').submit();"><i class="fas fa-sign-out-alt"></i></a>
+                                    </div>
 
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="info ml-2">
-                        <a href="javascript:document.getElementById('logoutForm').submit();"><i class="fas fa-sign-out-alt"></i></a>
-                    </div>
-                </div>
-            }
+
+
+                }
 
                 <!--Company Panel-->
                 <div class="user-panel mt-3 pb-3 mb-3 d-flex">

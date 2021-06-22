@@ -1,0 +1,33 @@
+﻿@model JamesonBugTracker.Models.ViewModels.ProjectManagerViewModel
+@using JamesonBugTracker.Data
+@inject ApplicationDbContext _context 
+@{
+    ViewData["Title"] = "Assign Project Manager";
+    Project project = await _context.Project.FindAsync(Model.ProjectId);
+
+}
+
+<div class="card">
+    <div class="card-header">
+        <h4 class="card-title">Assign Manager for @project.Name</h4>
+
+    </div>
+    <div class="card-body">
+        <form asp-action="AddManager" asp-controller="Projects" method="post">
+            <input type="hidden" value="@Model.ProjectId" asp-for="ProjectId" />
+            <div class="form-group">
+                <label for="">Project Manager</label>
+                <select class="form-control" id="" asp-for="NewManagerId" asp-items="Model.Managers">
+                    <option hidden value="">Select a New Project Manager</option>
+                </select>
+                <span asp-validation-for="NewManagerId" class="text-danger"></span>
+            </div>
+            <button type="submit" class="btn btn-success">Save</button>
+        </form>
+        <form asp-action="RemoveManager">
+            <input type="hidden" name="id" value="@project.Id"/>
+            <input type="submit" value="Remove Manager" class="btn btn-danger" /> |
+            <a asp-action="Details" class=" btn btn-outline-secondary">Back to Details</a>
+        </form>
+    </div>
+</div>

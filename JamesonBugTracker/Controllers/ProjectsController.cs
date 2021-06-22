@@ -140,7 +140,7 @@ namespace JamesonBugTracker.Controllers
                 }
                 _context.Add(project);
                 await _context.SaveChangesAsync();
-                return RedirectToAction("AddMembers",new {id = project.Id});
+                return RedirectToAction("AddMembers", new { id = project.Id });
             }
             ViewData["ProjectPriorityId"] = new SelectList(_context.Set<ProjectPriority>().OrderBy(t => t.Id), "Id", "Id", project.ProjectPriorityId);
             return View(project);
@@ -213,7 +213,7 @@ namespace JamesonBugTracker.Controllers
             return View(project);
         }
 
-        //[Authorize(Roles = "Admin,ProjectManager")]
+        [Authorize(Roles = "Admin,ProjectManager")]
         [HttpGet]
         public async Task<IActionResult> AddMembers(int id)
         {
@@ -222,6 +222,11 @@ namespace JamesonBugTracker.Controllers
             ProjectMembersViewModel model = new();
             var project = (await _projectService.GetAllProjectsByCompanyAsync(companyId))
                                                .FirstOrDefault(p => p.Id == id);
+            if (User.IsInRole("ProjectManager") && (await _projectService.GetProjectManagerAsync(id)).Id != _userManager.GetUserId(User))
+            {
+                TempData["StatusMessage"] = "Error: You are not the project manager for this project";
+                return RedirectToAction("Details", new { id = id });
+            }
             model.Project = project;
             List<BTUser> users = await _companyInfoService.GetAllMembersAsync(companyId);
             List<string> members = project.Members.Select(m => m.Id).ToList();  // we can do this because our project eagerly loaded its members
@@ -248,8 +253,8 @@ namespace JamesonBugTracker.Controllers
 
                     foreach (string id in model.SelectedUsers)
                     {
-                    //for each selected user not in original list
-                        if (!memberIds.Any(i=>i == id))
+                        //for each selected user not in original list
+                        if (!memberIds.Any(i => i == id))
                         {
                             Notification notification = new()
                             {
@@ -262,13 +267,82 @@ namespace JamesonBugTracker.Controllers
                         }
                         await _projectService.AddUserToProjectAsync(id, model.Project.Id);
                     }
-                    
+
                     return RedirectToAction("Details", "Projects", new { id = model.Project.Id });
                 }
                 else
                 {
                     //send an error message to user, that they didnt'  select anyone
                 }
+            }
+            return View(model);
+        }
+        [HttpPost]
+        [Authorize(Roles ="Admin")]
+        public async Task<IActionResult> RemoveManager(int id)
+        {
+            await _projectService.RemoveProjectManagerAsync(id);
+            return RedirectToAction("Details", new { id = id });
+        }
+        [HttpGet]
+        [Authorize(Roles = "Admin")]
+            public async Task<IActionResult> AddManager(int id)
+        {
+            //We extended Identity 
+            int companyId = User.Identity.GetCompanyId().Value;
+            ProjectManagerViewModel model = new();
+            var project = (await _projectService.GetAllProjectsByCompanyAsync(companyId))
+                                               .FirstOrDefault(p => p.Id == id);
+
+            model.ProjectId = id;
+            List<BTUser> users = await _companyInfoService.GetMembersInRoleAsync("ProjectManager", companyId);
+            List<string> members = project.Members.Select(m => m.Id).ToList();  // we can do this because our project eagerly loaded its members
+            model.Managers = new SelectList(users, "Id", "FullName", (await _projectService.GetProjectManagerAsync(project.Id)).Id);
+            return View(model);
+        }
+        //POST: AddManager
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddManager(int id, [Bind("ProjectId,NewManagerId,Managers")] ProjectManagerViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var oldManager = await _projectService.GetProjectManagerAsync(id);
+                    await _projectService.RemoveProjectManagerAsync(model.ProjectId);
+                Project project = await _context.Project.FindAsync(id);
+                    await _projectService.AddProjectManagerAsync(model.NewManagerId, model.ProjectId);
+                if (model.NewManagerId != null && model.NewManagerId != oldManager.Id)
+                {
+                    var senderId = _userManager.GetUserId(User);
+                    //for each selected user not in original list
+                    Notification notification = new()
+                    {
+                        Created = DateTime.Now,
+                        Message = $"You are now managing project: {project.Name}",
+                        SenderId = senderId,
+                        RecipientId = model.NewManagerId
+                    };
+                    await _notificationService.SaveNotificationAsync(notification);
+                    if (oldManager.Id != _userManager.GetUserId(User))
+                    {
+
+                        notification = new()
+                        {
+                            Created = DateTime.Now,
+                            Message = $"You are no longer managing project: {project.Name}",
+                            SenderId = senderId,
+                            RecipientId = oldManager.Id
+                        };
+                        await _notificationService.SaveNotificationAsync(notification);
+                    }
+                    await _projectService.AddUserToProjectAsync(model.NewManagerId, model.ProjectId);
+
+                }
+                else
+                {
+                    //send an error message to user, that they didnt'  select anyone
+                }
+                    return RedirectToAction("Details", "Projects", new { id = model.ProjectId });
             }
             return View(model);
         }
@@ -328,7 +402,7 @@ namespace JamesonBugTracker.Controllers
             {
                 return NotFound();
             }
-            
+
             var project = await _context.Project
                 .Include(p => p.Company)
                 .Include(p => p.ProjectPriority)

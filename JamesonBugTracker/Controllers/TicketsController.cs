@@ -261,9 +261,8 @@ namespace JamesonBugTracker.Controllers
             {
                 ViewData["ProjectId"] = new SelectList((await _projectService.ListUserProjectsAsync(user.Id)).Where(p=>!p.Archived), "Id", "Name");
             }
-            ViewData["TicketPriorityId"] = new SelectList(_context.Set<TicketPriority>(), "Id", "Name");
-            ViewData["TicketStatusId"] = new SelectList(_context.Set<TicketStatus>(), "Id", "Name");
-            ViewData["TicketTypeId"] = new SelectList(_context.Set<TicketType>(), "Id", "Name");
+            ViewData["TicketPriorityId"] = new SelectList(_context.Set<TicketPriority>().OrderBy(t => t.Id), "Id", "Name", ticket.TicketPriorityId);
+            ViewData["TicketTypeId"] = new SelectList(_context.Set<TicketType>().OrderBy(t => t.Name), "Id", "Name",ticket.TicketTypeId);
             return View(ticket);
         }
 
@@ -355,9 +354,8 @@ namespace JamesonBugTracker.Controllers
 
             }
             ViewData["ProjectId"] = new SelectList(_context.Project, "Id", "Description", ticket.ProjectId);
-            ViewData["TicketPriorityId"] = new SelectList(_context.Set<TicketPriority>(), "Id", "Id", ticket.TicketPriorityId);
-            ViewData["TicketStatusId"] = new SelectList(_context.Set<TicketStatus>(), "Id", "Id", ticket.TicketStatusId);
-            ViewData["TicketTypeId"] = new SelectList(_context.Set<TicketType>(), "Id", "Id", ticket.TicketTypeId);
+            ViewData["TicketPriorityId"] = new SelectList(_context.Set<TicketPriority>().OrderBy(t => t.Id), "Id", "Name",ticket.TicketPriorityId);
+            ViewData["TicketTypeId"] = new SelectList(_context.Set<TicketType>().OrderBy(t => t.Name), "Id", "Name",ticket.TicketTypeId);
             return View(ticket);
         }
         [Authorize(Roles = "Admin,ProjectManager")]
