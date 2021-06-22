@@ -201,7 +201,8 @@ namespace JamesonBugTracker.Controllers
                 }
                 else
                 {
-                    await _notificationService.AdminsNotificationAsync(notification, companyId);
+                    Notification notificationNew = await _context.Notification.Include(n => n.Recipient).Include(n => n.Sender).FirstOrDefaultAsync(n=> n.Id == notification.Id);
+                    await _notificationService.AdminsNotificationAsync(notificationNew, companyId);
                 }
                 #endregion
                 if (db == true)

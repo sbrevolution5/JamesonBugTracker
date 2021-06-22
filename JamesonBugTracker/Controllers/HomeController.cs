@@ -51,13 +51,18 @@ namespace JamesonBugTracker.Controllers
             DashboardViewModel viewModel = new()
             {
                 Projects = await _projectService.GetAllUnarchivedProjectsByCompanyAsync(companyId),
-                UnresolvedDevelopmentTickets = await _ticketService.GetAllDeveloperTicketsByResolvedAsync(userId, false),
-                DevelopmentTickets = await _ticketService.GetAllTicketsByRoleAsync("Developer", userId),
+                
                 SubmittedTickets = await _ticketService.GetAllTicketsByRoleAsync("Submitter", userId),
                 Members = await _companyInfoService.GetAllMembersAsync(companyId),
                 CurrentUser = await _userManager.GetUserAsync(User),
                 UnassignedTickets = await _ticketService.GetAllUnassignedTicketsAsync(companyId),
             };
+            viewModel.UnresolvedDevelopmentTickets = await _ticketService.GetAllDeveloperTicketsByResolvedAsync(userId, false);
+            if (User.IsInRole("Admin") || viewModel.UnresolvedDevelopmentTickets.Count == 0)
+            {
+                viewModel.UnresolvedDevelopmentTickets= (await _companyInfoService.GetAllTicketsAsync(companyId)).Where(t => !t.Archived).ToList();
+            }
+            viewModel.DevelopmentTickets = await _ticketService.GetAllTicketsByRoleAsync("Developer", userId);
             return View(viewModel);
         }
         
