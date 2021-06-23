@@ -48,14 +48,15 @@ namespace JamesonBugTracker.Controllers
             string userId = _userManager.GetUserId(User);
             int companyId = User.Identity.GetCompanyId().Value;
 
+            List<Ticket> companyTickets = await _companyInfoService.GetAllTicketsAsync(companyId);
+            List<Project> companyProjects = await _companyInfoService.GetAllProjectsAsync(companyId);
             DashboardViewModel viewModel = new()
             {
-                Projects = await _projectService.GetAllUnarchivedProjectsByCompanyAsync(companyId),
-                
+                Projects = companyProjects.Where(p=>!p.Archived).ToList(),
                 SubmittedTickets = await _ticketService.GetAllTicketsByRoleAsync("Submitter", userId),
                 Members = await _companyInfoService.GetAllMembersAsync(companyId),
                 CurrentUser = await _userManager.GetUserAsync(User),
-                UnassignedTickets = await _ticketService.GetAllUnassignedTicketsAsync(companyId),
+                UnassignedTickets = companyTickets.Where(p=>p.DeveloperUserId == null).ToList(),
             };
             viewModel.UnresolvedDevelopmentTickets = await _ticketService.GetAllDeveloperTicketsByResolvedAsync(userId, false);
             if (viewModel.UnresolvedDevelopmentTickets.Count == 0)
