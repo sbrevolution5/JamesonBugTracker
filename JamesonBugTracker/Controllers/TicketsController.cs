@@ -165,8 +165,8 @@ namespace JamesonBugTracker.Controllers
             {
                 BTUser btUser = await _userManager.GetUserAsync(User);
                 ticket.OwnerUserId = btUser.Id;
-                ticket.Created = DateTime.Now;
-                ticket.Updated = DateTime.Now;
+                ticket.Created = DateTime.UtcNow.ToLocalTime();
+                ticket.Updated = DateTime.UtcNow.ToLocalTime();
                 ticket.TicketStatusId = (await _ticketService.LookupTicketStatusIdAsync("New")).Value;
                 await _context.AddAsync(ticket);
                 await _context.SaveChangesAsync();
