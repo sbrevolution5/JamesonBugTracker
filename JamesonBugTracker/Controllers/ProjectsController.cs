@@ -305,6 +305,10 @@ namespace JamesonBugTracker.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddManager(int id, [Bind("ProjectId,NewManagerId,Managers")] ProjectManagerViewModel model)
         {
+            if (User.IsInRole("DemoUser"))
+            {
+                return RedirectToAction("DemoError", "Home");
+            }
             if (ModelState.IsValid)
             {
                 var oldManager = await _projectService.GetProjectManagerAsync(id);
