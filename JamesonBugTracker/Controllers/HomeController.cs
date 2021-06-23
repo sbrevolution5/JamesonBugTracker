@@ -127,6 +127,10 @@ namespace JamesonBugTracker.Controllers
             if (dev)
             {
                 tickets = await _ticketService.GetAllDeveloperTicketsByResolvedAsync(userId, false);
+                if (tickets.Count == 0)
+                {
+                    tickets = (await _companyInfoService.GetAllTicketsAsync(companyId)).Where(t => !t.Archived).ToList();
+                }
             }
             else
             {
@@ -174,6 +178,10 @@ namespace JamesonBugTracker.Controllers
             {
 
                 tickets = await _ticketService.GetAllDeveloperTicketsByResolvedAsync(userId, false);
+                if (tickets.Count == 0)
+                {
+                    tickets = (await _companyInfoService.GetAllTicketsAsync(companyId)).Where(t => !t.Archived).ToList();
+                }
             }
             else
             {
@@ -221,6 +229,10 @@ namespace JamesonBugTracker.Controllers
             {
 
                 tickets = await _ticketService.GetAllDeveloperTicketsByResolvedAsync(userId, false);
+                if (tickets.Count == 0)
+                {
+                    tickets = (await _companyInfoService.GetAllTicketsAsync(companyId)).Where(t => !t.Archived).ToList();
+                }
             }
             else
             {
