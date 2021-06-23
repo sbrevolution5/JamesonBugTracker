@@ -1,17 +1,21 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @using JamesonBugTracker.Services.Interfaces
 @using JamesonBugTracker.Extensions
+@using JamesonBugTracker.Data
+@using Microsoft.EntityFrameworkCore
 @inject SignInManager<BTUser> SignInManager
 @inject UserManager<BTUser> UserManager
 @inject IBTFileService _fileService
 @inject IBTNotificationService _notificationService
 @inject IBTTicketService _ticketService
 @inject IBTCompanyInfoService _companyService
+@inject ApplicationDbContext _context
 @{
     var userId = UserManager.GetUserId(User);
     var companyId = User.Identity.GetCompanyId().Value;
-    var company = await _companyService.GetCompanyInfoByIdAsync(companyId);
-    var unseenCount = (await _notificationService.GetUnseenRecievedNotificationsAsync(userId)).ToList().Count;
+    var company = await _context.Company.FirstOrDefaultAsync(c=> c.Id == companyId);
+    var notifications = (await _notificationService.GetReceivedNotificationsAsync(userId)).OrderByDescending(n => n.Created).ToList(); 
+    var unseenCount = notifications.Where(n=>!n.Viewed).Count();
     int take;
     if (unseenCount > 5)
     {
@@ -21,7 +25,7 @@
     {
         take = 5;
     }
-    var notifications = (await _notificationService.GetReceivedNotificationsAsync(userId)).OrderByDescending(n => n.Created).Take(take).ToList();
+
 }
 <!DOCTYPE html>
 <html lang="en">

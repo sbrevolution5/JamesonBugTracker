@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -126,15 +127,12 @@ namespace JamesonBugTracker.Controllers
             List<Ticket> tickets;
             if (dev)
             {
-                tickets = await _ticketService.GetAllDeveloperTicketsByResolvedAsync(userId, false);
-                if (tickets.Count == 0)
-                {
-                    tickets = (await _companyInfoService.GetAllTicketsAsync(companyId)).Where(t => !t.Archived).ToList();
-                }
+
+                tickets = await _context.Ticket.Where(t => t.DeveloperUserId == userId && !t.Archived).ToListAsync();
             }
             else
             {
-                tickets = await _ticketService.GetAllTicketsByRoleAsync("Submitter", userId);
+                tickets = await _context.Ticket.Where(t => t.OwnerUserId == userId && !t.Archived).ToListAsync();
 
             }
             var statuses = _context.TicketStatus.ToList();
@@ -177,15 +175,11 @@ namespace JamesonBugTracker.Controllers
             if (dev)
             {
 
-                tickets = await _ticketService.GetAllDeveloperTicketsByResolvedAsync(userId, false);
-                if (tickets.Count == 0)
-                {
-                    tickets = (await _companyInfoService.GetAllTicketsAsync(companyId)).Where(t => !t.Archived).ToList();
-                }
+                tickets = await _context.Ticket.Where(t => t.DeveloperUserId == userId && !t.Archived).ToListAsync();
             }
             else
             {
-                tickets = await _ticketService.GetAllTicketsByRoleAsync("Submitter", userId);
+                tickets = await _context.Ticket.Where(t => t.OwnerUserId == userId && !t.Archived).ToListAsync();
 
             }
             List<TicketPriority> priorities = _context.TicketPriority.ToList();
@@ -228,15 +222,11 @@ namespace JamesonBugTracker.Controllers
             if (dev)
             {
 
-                tickets = await _ticketService.GetAllDeveloperTicketsByResolvedAsync(userId, false);
-                if (tickets.Count == 0)
-                {
-                    tickets = (await _companyInfoService.GetAllTicketsAsync(companyId)).Where(t => !t.Archived).ToList();
-                }
+                tickets = await _context.Ticket.Where(t => t.DeveloperUserId == userId && !t.Archived).ToListAsync();
             }
             else
             {
-                tickets = await _ticketService.GetAllTicketsByRoleAsync("Submitter", userId);
+                tickets = await _context.Ticket.Where(t => t.OwnerUserId == userId && !t.Archived).ToListAsync();
 
             }
             var types = _context.TicketType.ToList();
@@ -272,7 +262,6 @@ namespace JamesonBugTracker.Controllers
         [HttpPost]
         public async Task<JsonResult> ProjTypeChartMethod(int projId)
         {
-            //bool dev, int userId
             int companyId = User.Identity.GetCompanyId().Value;
             string userId = _userManager.GetUserId(User);
             List<Ticket> tickets = await _ticketService.GetAllTicketsByProjectAsync(projId);
@@ -309,7 +298,6 @@ namespace JamesonBugTracker.Controllers
         [HttpPost]
         public async Task<JsonResult> ProjStatusChartMethod(int projId)
         {
-            //bool dev, int userId
             int companyId = User.Identity.GetCompanyId().Value;
             string userId = _userManager.GetUserId(User);
             Random rnd = new();

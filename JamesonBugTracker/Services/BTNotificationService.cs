@@ -55,9 +55,8 @@ namespace JamesonBugTracker.Services
 
         public async Task<List<Notification>> GetReceivedNotificationsAsync(string userId)
         {
-            List<Notification> recievedNotifictions = await _context.Notification
+            List<Notification> recievedNotifictions = await _context.Notification.Where(n => n.RecipientId == userId)
                                                                         .Include(n => n.Sender)
-                                                                        .Include(n => n.Recipient)
                                                                         .Include(n => n.Ticket)
                                                                             .ThenInclude(t => t.Project)
                                                                         .Include(n => n.Ticket)
@@ -70,7 +69,8 @@ namespace JamesonBugTracker.Services
                                                                             .ThenInclude(t => t.Attachments)
                                                                         .Include(n => n.Ticket)
                                                                             .ThenInclude(t => t.Comments)
-                                                                        .Where(n => n.RecipientId == userId).AsNoTracking().ToListAsync();
+                                                                            .AsNoTracking()
+                                                                        .ToListAsync();
             return recievedNotifictions;
         }
 
