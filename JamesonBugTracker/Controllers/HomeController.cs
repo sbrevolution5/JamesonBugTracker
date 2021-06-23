@@ -61,6 +61,7 @@ namespace JamesonBugTracker.Controllers
             if (User.IsInRole("Admin") || viewModel.UnresolvedDevelopmentTickets.Count == 0)
             {
                 viewModel.UnresolvedDevelopmentTickets= (await _companyInfoService.GetAllTicketsAsync(companyId)).Where(t => !t.Archived).ToList();
+                viewModel.HasNoDevTickets = true;
             }
             viewModel.DevelopmentTickets = await _ticketService.GetAllTicketsByRoleAsync("Developer", userId);
             return View(viewModel);

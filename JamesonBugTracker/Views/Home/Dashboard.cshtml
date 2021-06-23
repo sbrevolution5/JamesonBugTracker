@@ -285,13 +285,17 @@
                 <!-- /.col -->
                 <!-- /.row -->
                 <!-- TABLE: Development Tickets -->
+                @if (!User.IsInRole("Submitter"))
+                {
+
                 <div class="card">
                     <div class="card-header border-transparent">
-                        @if (User.IsInRole("Admin"))
+                        @if (Model.HasNoDevTickets)
                         {
                         <h3 class="card-title">All Company Tickets</h3>
 
-                        }<h3 class="card-title">Development Tickets</h3>
+                        }
+                        <h3 class="card-title">Development Tickets</h3>
 
                         <div class="card-tools">
                             <button type="button" class="btn btn-tool" data-card-widget="collapse">
@@ -451,6 +455,7 @@
 
 
                 </div>
+                }
                 <!-- /.card -->
                 <!-- CARD: Submitted Tickets -->
                 <div class="card">
