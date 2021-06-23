@@ -1,25 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Text.Encodings.Web;
-using System.Threading.Tasks;
+﻿using JamesonBugTracker.Data;
+using JamesonBugTracker.Models;
+using JamesonBugTracker.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
-using JamesonBugTracker.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
-using Microsoft.Extensions.Logging;
-using System.ComponentModel;
-using Microsoft.AspNetCore.Http;
-using static JamesonBugTracker.Extensions.CustomAttributes;
-using JamesonBugTracker.Services.Interfaces;
 using Microsoft.Extensions.Configuration;
-using JamesonBugTracker.Data;
+using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Text;
+using System.Text.Encodings.Web;
+using System.Threading.Tasks;
+using static JamesonBugTracker.Extensions.CustomAttributes;
 
 namespace JamesonBugTracker.Areas.Identity.Pages.Account
 {
@@ -123,7 +122,8 @@ namespace JamesonBugTracker.Areas.Identity.Pages.Account
                 };
                 await _context.AddAsync(newCompany);
                 await _context.SaveChangesAsync();
-                var user = new BTUser {
+                var user = new BTUser
+                {
                     UserName = Input.Email,
                     Email = Input.Email,
                     FirstName = Input.FirstName,
