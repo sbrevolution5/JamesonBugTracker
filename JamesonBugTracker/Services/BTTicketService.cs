@@ -103,11 +103,11 @@ namespace JamesonBugTracker.Services
                                                     .Include(t => t.TicketPriority)
                                                     .Include(t => t.TicketStatus)
                                                     .Include(t => t.TicketType)
-                                                    .Include(t => t.Attachments)
-                                                    .Include(t => t.History)
-                                                    .Include(t => t.Comments)
+                                                    //.Include(t => t.Attachments)
+                                                    //.Include(t => t.History)
+                                                    //.Include(t => t.Comments)
                                                     .Include(t=> t.Project)
-                                                    .OrderByDescending(t => t.Updated)
+                                                    //.OrderByDescending(t => t.Updated)
                                                     
                                                  .ToListAsync();
                 return tickets;
