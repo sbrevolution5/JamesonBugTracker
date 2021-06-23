@@ -58,7 +58,7 @@ namespace JamesonBugTracker.Controllers
                 UnassignedTickets = await _ticketService.GetAllUnassignedTicketsAsync(companyId),
             };
             viewModel.UnresolvedDevelopmentTickets = await _ticketService.GetAllDeveloperTicketsByResolvedAsync(userId, false);
-            if (User.IsInRole("Admin") || viewModel.UnresolvedDevelopmentTickets.Count == 0)
+            if (viewModel.UnresolvedDevelopmentTickets.Count == 0)
             {
                 viewModel.UnresolvedDevelopmentTickets= (await _companyInfoService.GetAllTicketsAsync(companyId)).Where(t => !t.Archived).ToList();
                 viewModel.HasNoDevTickets = true;
