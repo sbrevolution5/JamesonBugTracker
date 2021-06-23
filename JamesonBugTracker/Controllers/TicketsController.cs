@@ -37,18 +37,6 @@ namespace JamesonBugTracker.Controllers
             _historyService = historyService;
             _notificationService = notificationService;
         }
-
-        // GET: Tickets
-        public async Task<IActionResult> Index()
-        {
-            var applicationDbContext = _context.Ticket.Include(t => t.DeveloperUser)
-                                                      .Include(t => t.OwnerUser)
-                                                      .Include(t => t.Project)
-                                                      .Include(t => t.TicketPriority)
-                                                      .Include(t => t.TicketStatus)
-                                                      .Include(t => t.TicketType);
-            return View(await applicationDbContext.ToListAsync());
-        }
         public async Task<IActionResult> AllTickets()
         {
             int companyId = User.Identity.GetCompanyId().Value;
@@ -225,7 +213,6 @@ namespace JamesonBugTracker.Controllers
 
         // GET: Tickets/Edit/5
         [Authorize(Roles = "Admin,ProjectManager,Developer,Submitter")]
-
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -236,6 +223,10 @@ namespace JamesonBugTracker.Controllers
             if (ticket == null)
             {
                 return NotFound();
+            }
+            if (User.IsInRole("DemoUser"))
+            {
+                return RedirectToAction("DemoError", "Home");
             }
             BTUser user = await _userManager.GetUserAsync(User);
             int companyId = User.Identity.GetCompanyId().Value;
@@ -269,6 +260,10 @@ namespace JamesonBugTracker.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Created,Updated,Description,ProjectId,TicketPriorityId,TicketStatusId,TicketTypeId,OwnerUserId,DeveloperUserId")] Ticket ticket)
         {
+            if (User.IsInRole("DemoUser"))
+            {
+                return RedirectToAction("DemoError", "Home");
+            }
             if (id != ticket.Id)
             {
                 return NotFound();

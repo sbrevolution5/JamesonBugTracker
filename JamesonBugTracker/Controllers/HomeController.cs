@@ -73,7 +73,6 @@ namespace JamesonBugTracker.Controllers
             //bool dev, int userId
             int companyId = User.Identity.GetCompanyId().Value;
             string userId = _userManager.GetUserId(User);
-            Random rnd = new();
 
             List<Project> projects = (await _projectService.GetAllProjectsByCompanyAsync(companyId)).OrderBy(p => p.Id).ToList();
 

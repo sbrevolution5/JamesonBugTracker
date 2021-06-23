@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace JamesonBugTracker.Controllers
 {
-        [Authorize]
+    [Authorize]
     public class TicketStatusController : Controller
     {
         private readonly ApplicationDbContext _context;
