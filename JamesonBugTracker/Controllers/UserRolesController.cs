@@ -34,6 +34,10 @@ namespace JamesonBugTracker.Controllers
         [HttpGet]
         public async Task<IActionResult> ManageUserRoles()
         {
+            if (User.IsInRole("DemoUser"))
+            {
+                return RedirectToAction("DemoError", "Home");
+            }
             List<ManageUserRolesViewModel> model = new();
             int companyId = User.Identity.GetCompanyId().Value;
             List<BTUser> users = await _companyInfoService.GetAllMembersAsync(companyId);

@@ -369,11 +369,9 @@ namespace JamesonBugTracker.Controllers
             return View(project);
         }
 
-        // POST: Projects/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin,ProjectManager")]
-
         public async Task<IActionResult> ArchiveConfirmed(int id)
         {
             if (User.IsInRole("DemoUser"))
