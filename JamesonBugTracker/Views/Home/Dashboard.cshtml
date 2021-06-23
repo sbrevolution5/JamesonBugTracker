@@ -607,6 +607,7 @@
                                     </div>
                                 </div>
                                 <a class="my-2 btn btn-block btn-primary" asp-controller="Tickets" asp-action="MyTickets"> View My Tickets</a>
+                                <a class="my-2 btn btn-block btn-primary" asp-controller="Tickets" asp-action="Create"> Add New Ticket</a>
                                 @if (User.IsInRole("ProjectManager") || User.IsInRole("Admin"))
                                 {
                                     <a class="my-2 btn btn-block btn-success" asp-controller="Tickets" asp-action="AllTickets"> View All Tickets</a>
