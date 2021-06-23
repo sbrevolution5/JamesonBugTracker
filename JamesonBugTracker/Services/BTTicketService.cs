@@ -80,7 +80,7 @@ namespace JamesonBugTracker.Services
                         allTickets.Add(ticket);
                     }
                 }
-                return allTickets.OrderByDescending(t => t.Updated).ToList();
+                return allTickets.ToList();
             }
             catch
             {
@@ -153,11 +153,11 @@ namespace JamesonBugTracker.Services
                                                 .Include(t => t.TicketPriority)
                                                 .Include(t => t.TicketStatus)
                                                 .Include(t => t.TicketType)
-                                                .Include(t => t.Attachments)
-                                                .Include(t => t.History)
-                                                .Include(t => t.Comments)
+                                                //.Include(t => t.Attachments)
+                                                //.Include(t => t.History)
+                                                //.Include(t => t.Comments)
                                                 .Where(t => t.DeveloperUserId == userId)
-                                                .OrderByDescending(t => t.Updated)
+                                                //.OrderByDescending(t => t.Updated)
                                                 
                                                 .ToListAsync();
                 }
@@ -177,9 +177,9 @@ namespace JamesonBugTracker.Services
                                                 .Include(t => t.TicketPriority)
                                                 .Include(t => t.TicketStatus)
                                                 .Include(t => t.TicketType)
-                                                .Include(t => t.Attachments)
-                                                .Include(t => t.History)
-                                                .Include(t => t.Comments)
+                                                //.Include(t => t.Attachments)
+                                                //.Include(t => t.History)
+                                                //.Include(t => t.Comments)
                                                 .Where(t => t.OwnerUserId == userId)
                                                 
                                                 .ToListAsync();
