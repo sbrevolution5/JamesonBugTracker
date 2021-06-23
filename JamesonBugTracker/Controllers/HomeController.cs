@@ -48,23 +48,23 @@ namespace JamesonBugTracker.Controllers
             string userId = _userManager.GetUserId(User);
             int companyId = User.Identity.GetCompanyId().Value;
 
-            List<Ticket> companyTickets = await _companyInfoService.GetAllTicketsAsync(companyId);
+            List<Ticket> companyTickets = (await _companyInfoService.GetAllTicketsAsync(companyId)).Where(t=>!t.Archived).ToList();
             List<Project> companyProjects = await _companyInfoService.GetAllProjectsAsync(companyId);
             DashboardViewModel viewModel = new()
             {
                 Projects = companyProjects.Where(p=>!p.Archived).ToList(),
-                SubmittedTickets = await _ticketService.GetAllTicketsByRoleAsync("Submitter", userId),
+                SubmittedTickets = companyTickets.Where(t => t.OwnerUserId == userId).ToList(),
                 Members = await _companyInfoService.GetAllMembersAsync(companyId),
                 CurrentUser = await _userManager.GetUserAsync(User),
                 UnassignedTickets = companyTickets.Where(p=>p.DeveloperUserId == null).ToList(),
             };
-            viewModel.UnresolvedDevelopmentTickets = await _ticketService.GetAllDeveloperTicketsByResolvedAsync(userId, false);
+            viewModel.UnresolvedDevelopmentTickets = companyTickets.Where(t => t.OwnerUserId == userId).Where(t=>t.TicketStatus.Name !="Resolved").ToList();
             if (viewModel.UnresolvedDevelopmentTickets.Count == 0)
             {
-                viewModel.UnresolvedDevelopmentTickets= (await _companyInfoService.GetAllTicketsAsync(companyId)).Where(t => !t.Archived).ToList();
+                viewModel.UnresolvedDevelopmentTickets = companyTickets;
                 viewModel.HasNoDevTickets = true;
             }
-            viewModel.DevelopmentTickets = await _ticketService.GetAllTicketsByRoleAsync("Developer", userId);
+            viewModel.DevelopmentTicketsCount = companyTickets.Count;
             return View(viewModel);
         }
         

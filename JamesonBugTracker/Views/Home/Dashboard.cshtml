@@ -40,7 +40,7 @@
                     <div class="info-box-content">
                         <span class="info-box-text">Development Tickets</span>
                         <span class="info-box-number">
-                            @Model.UnresolvedDevelopmentTickets.Count Open | <span class="text-muted">@Model.DevelopmentTickets.Count Assigned</span>
+                            @Model.UnresolvedDevelopmentTickets.Count Open | <span class="text-muted">@Model.DevelopmentTicketsCount Total</span>
                         </span>
                     </div>
                     <!-- /.info-box-content -->
@@ -65,7 +65,7 @@
                         else
                         {
                             <span class="info-box-text">Total Tickets</span>
-                            <span class="info-box-number"><a asp-controller="Tickets" asp-action="MyTickets">@(Model.DevelopmentTickets.Count + Model.SubmittedTickets.Count)</a></span>
+                            <span class="info-box-number"><a asp-controller="Tickets" asp-action="MyTickets">@(Model.SubmittedTickets.Count)</a></span>
                         }
                     </div>
                     <!-- /.info-box-content -->
