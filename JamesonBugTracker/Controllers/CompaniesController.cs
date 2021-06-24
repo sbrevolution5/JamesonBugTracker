@@ -12,6 +12,8 @@ using JamesonBugTracker.Extensions;
 using JamesonBugTracker.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Processing;
 
 namespace JamesonBugTracker.Controllers
 {
@@ -86,6 +88,14 @@ namespace JamesonBugTracker.Controllers
         // GET: Companies/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
+            if (User.Identity.GetCompanyId() != id)
+            {
+                return RedirectToAction("Edit", new { id = User.Identity.GetCompanyId() });
+            }
+            if (User.IsInRole("DemoUser"))
+            {
+                return RedirectToAction("DemoError", "Home");
+            }
             if (id == null)
             {
                 return NotFound();
@@ -106,6 +116,10 @@ namespace JamesonBugTracker.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description")] Company company, IFormFile imageFile)
         {
+            if (User.IsInRole("DemoUser"))
+            {
+                return RedirectToAction("DemoError", "Home");
+            }
             if (id != company.Id)
             {
                 return NotFound();
@@ -115,8 +129,13 @@ namespace JamesonBugTracker.Controllers
             {
                 try
                 {
+                    if (imageFile is not null)
+                    {
+                        using var image = Image.Load(imageFile.OpenReadStream());
+                        image.Mutate(x => x.Resize(256, 256));
                     company.ImageFileContentType = imageFile is null ? _configuration["DefaultCompanyImage"].Split('.')[1] : imageFile.ContentType;
-                    company.ImageFileData = imageFile is null ? await _fileService.EncodeFileAsync(_configuration["DefaultCompanyImage"]) : await _fileService.ConvertFileToByteArrayAsync(imageFile);
+                    company.ImageFileData = imageFile is null ? await _fileService.EncodeFileAsync(_configuration["DefaultCompanyImage"]) : await _fileService.ConvertFileToByteArrayAsync(image);
+                    }
                     _context.Update(company);
                     await _context.SaveChangesAsync();
                 }

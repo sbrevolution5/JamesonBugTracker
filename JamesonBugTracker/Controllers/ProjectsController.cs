@@ -14,6 +14,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Authorization;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Processing;
 
 namespace JamesonBugTracker.Controllers
 {
@@ -185,7 +187,9 @@ namespace JamesonBugTracker.Controllers
                 {
                     if (customFile is not null)
                     {
-                        project.ImageFileData = await _fileService.ConvertFileToByteArrayAsync(customFile);
+                        using var image = Image.Load(customFile.OpenReadStream());
+                        image.Mutate(x => x.Resize(256, 256));
+                        project.ImageFileData = await _fileService.ConvertFileToByteArrayAsync(image);
                         project.ImageFileContentType = customFile.ContentType;
                     }
                     else if (project.ImageFileData is null)
