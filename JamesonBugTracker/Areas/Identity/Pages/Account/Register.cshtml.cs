@@ -11,6 +11,8 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Processing;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -112,16 +114,21 @@ namespace JamesonBugTracker.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
+                //reduce size of images
+                using var image = Image.Load(Input.CompanyImageFile.OpenReadStream());
+                image.Mutate(x => x.Resize(256,256));
                 var newCompany = new Company()
                 {
                     Name = Input.CompanyName,
                     Description = Input.CompanyDescription,
 
                     ImageFileContentType = Input.CompanyImageFile is null ? _configuration["DefaultCompanyImage"].Split('.')[1] : Input.CompanyImageFile.ContentType,
-                    ImageFileData = Input.CompanyImageFile is null ? await _fileService.EncodeFileAsync(_configuration["DefaultCompanyImage"]) : await _fileService.ConvertFileToByteArrayAsync(Input.CompanyImageFile)
+                    ImageFileData = Input.CompanyImageFile is null ? await _fileService.EncodeFileAsync(_configuration["DefaultCompanyImage"]) : await _fileService.ConvertFileToByteArrayAsync(image)
                 };
                 await _context.AddAsync(newCompany);
                 await _context.SaveChangesAsync();
+                using var userImage = Image.Load(Input.ImageFile.OpenReadStream());
+                userImage.Mutate(x => x.Resize(256, 256));
                 var user = new BTUser
                 {
                     UserName = Input.Email,
@@ -130,7 +137,7 @@ namespace JamesonBugTracker.Areas.Identity.Pages.Account
                     LastName = Input.LastName,
                     AvatarFormFile = Input.ImageFile,
                     AvatarFileContentType = Input.ImageFile is null ? _configuration["DefaultUserImage"].Split('.')[1] : Input.ImageFile.ContentType,
-                    AvatarFileData = Input.ImageFile is null ? await _fileService.EncodeFileAsync(_configuration["DefaultUserImage"]) : await _fileService.ConvertFileToByteArrayAsync(Input.ImageFile),
+                    AvatarFileData = Input.ImageFile is null ? await _fileService.EncodeFileAsync(_configuration["DefaultUserImage"]) : await _fileService.ConvertFileToByteArrayAsync(userImage),
                     CompanyId = newCompany.Id
                 };
                 var result = await _userManager.CreateAsync(user, Input.Password);

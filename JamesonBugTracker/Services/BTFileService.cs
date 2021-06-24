@@ -1,6 +1,7 @@
 ﻿using JamesonBugTracker.Models;
 using JamesonBugTracker.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
+using SixLabors.ImageSharp;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -13,10 +14,24 @@ namespace JamesonBugTracker.Services
     public class BTFileService : IBTFileService
     {
         private readonly string[] suffixes = { "Bytes", "KB", "MB", "GB", "TB", "PB" };
+        
         public async Task<byte[]> ConvertFileToByteArrayAsync(IFormFile file)
         {
             MemoryStream memoryStream = new MemoryStream();
             await file.CopyToAsync(memoryStream);
+            var byteFile = memoryStream.ToArray();
+            memoryStream.Close();
+            memoryStream.Dispose();
+
+
+            return byteFile;
+
+
+        }
+        public async Task<byte[]> ConvertFileToByteArrayAsync(Image file)
+        {
+            MemoryStream memoryStream = new MemoryStream();
+            await file.SaveAsPngAsync(memoryStream);
             var byteFile = memoryStream.ToArray();
             memoryStream.Close();
             memoryStream.Dispose();
