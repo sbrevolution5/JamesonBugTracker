@@ -10,6 +10,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Configuration;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Processing;
 using static JamesonBugTracker.Extensions.CustomAttributes;
 
 namespace JamesonBugTracker.Areas.Identity.Pages.Account.Manage
@@ -131,11 +133,13 @@ namespace JamesonBugTracker.Areas.Identity.Pages.Account.Manage
             }
             if (Input.ImageFile is not null)
             {
-
+                using var image = Image.Load(Input.ImageFile.OpenReadStream());
+                image.Mutate(x => x.Resize(256, 256));
                 user.AvatarFileData = await _fileService.ConvertFileToByteArrayAsync(Input.ImageFile);
                 user.AvatarFileContentType = Input.ImageFile.ContentType;
                 await _userManager.UpdateAsync(user);
-            }else if (user.AvatarFileData is null)
+            }
+            else if (user.AvatarFileData is null)
             {
                 user.AvatarFileData = await _fileService.EncodeFileAsync(_configuration["DefaultUserImage"]);
                 user.AvatarFileContentType = _configuration["DefaultUserImage"].Split('.')[1];

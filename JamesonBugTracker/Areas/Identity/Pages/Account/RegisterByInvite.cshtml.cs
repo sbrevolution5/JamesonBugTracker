@@ -20,6 +20,8 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Processing;
 using static JamesonBugTracker.Extensions.CustomAttributes;
 
 namespace JamesonBugTracker.Areas.Identity.Pages.Account
@@ -124,7 +126,8 @@ namespace JamesonBugTracker.Areas.Identity.Pages.Account
 
             if (ModelState.IsValid)
             {
-
+                using var image = Image.Load(Input.ImageFile.OpenReadStream());
+                image.Mutate(x => x.Resize(256, 256));
                 var user = new BTUser
                 {
                     FirstName = Input.FirstName,
@@ -134,7 +137,7 @@ namespace JamesonBugTracker.Areas.Identity.Pages.Account
                     CompanyId = Input.CompanyId,
                     AvatarFormFile = Input.ImageFile,
                     AvatarFileContentType = Input.ImageFile is null ? _configuration["DefaultUserImage"].Split('.')[1] : Input.ImageFile.ContentType,
-                    AvatarFileData = Input.ImageFile is null ? await _fileService.EncodeFileAsync(_configuration["DefaultUserImage"]) : await _fileService.ConvertFileToByteArrayAsync(Input.ImageFile),
+                    AvatarFileData = Input.ImageFile is null ? await _fileService.EncodeFileAsync(_configuration["DefaultUserImage"]) : await _fileService.ConvertFileToByteArrayAsync(image),
                 };
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
