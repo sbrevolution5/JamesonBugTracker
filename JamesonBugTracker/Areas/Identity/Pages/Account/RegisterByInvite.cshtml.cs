@@ -137,7 +137,7 @@ namespace JamesonBugTracker.Areas.Identity.Pages.Account
                     CompanyId = Input.CompanyId,
                     AvatarFormFile = Input.ImageFile,
                     AvatarFileContentType = Input.ImageFile is null ? _configuration["DefaultUserImage"].Split('.')[1] : Input.ImageFile.ContentType,
-                    AvatarFileData = Input.ImageFile is null ? await _fileService.EncodeFileAsync(_configuration["DefaultUserImage"]) : await _fileService.ConvertFileToByteArrayAsync(image),
+                    AvatarFileData = Input.ImageFile is null ? await _fileService.EncodeFileAsync(_configuration["DefaultUserImage"]) : await _fileService.ConvertFileToByteArrayAsync(image,Input.ImageFile.ContentType),
                 };
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)

@@ -123,7 +123,7 @@ namespace JamesonBugTracker.Areas.Identity.Pages.Account
                     Description = Input.CompanyDescription,
 
                     ImageFileContentType = Input.CompanyImageFile is null ? _configuration["DefaultCompanyImage"].Split('.')[1] : Input.CompanyImageFile.ContentType,
-                    ImageFileData = Input.CompanyImageFile is null ? await _fileService.EncodeFileAsync(_configuration["DefaultCompanyImage"]) : await _fileService.ConvertFileToByteArrayAsync(image)
+                    ImageFileData = Input.CompanyImageFile is null ? await _fileService.EncodeFileAsync(_configuration["DefaultCompanyImage"]) : await _fileService.ConvertFileToByteArrayAsync(image, Input.CompanyImageFile.ContentType)
                 };
                 await _context.AddAsync(newCompany);
                 await _context.SaveChangesAsync();
@@ -137,7 +137,7 @@ namespace JamesonBugTracker.Areas.Identity.Pages.Account
                     LastName = Input.LastName,
                     AvatarFormFile = Input.ImageFile,
                     AvatarFileContentType = Input.ImageFile is null ? _configuration["DefaultUserImage"].Split('.')[1] : Input.ImageFile.ContentType,
-                    AvatarFileData = Input.ImageFile is null ? await _fileService.EncodeFileAsync(_configuration["DefaultUserImage"]) : await _fileService.ConvertFileToByteArrayAsync(userImage),
+                    AvatarFileData = Input.ImageFile is null ? await _fileService.EncodeFileAsync(_configuration["DefaultUserImage"]) : await _fileService.ConvertFileToByteArrayAsync(userImage, Input.ImageFile.ContentType),
                     CompanyId = newCompany.Id
                 };
                 var result = await _userManager.CreateAsync(user, Input.Password);

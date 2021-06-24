@@ -131,10 +131,10 @@ namespace JamesonBugTracker.Controllers
                 {
                     if (imageFile is not null)
                     {
+                    company.ImageFileContentType = imageFile is null ? _configuration["DefaultCompanyImage"].Split('.')[1] : imageFile.ContentType;
                         using var image = Image.Load(imageFile.OpenReadStream());
                         image.Mutate(x => x.Resize(256, 256));
-                    company.ImageFileContentType = imageFile is null ? _configuration["DefaultCompanyImage"].Split('.')[1] : imageFile.ContentType;
-                    company.ImageFileData = imageFile is null ? await _fileService.EncodeFileAsync(_configuration["DefaultCompanyImage"]) : await _fileService.ConvertFileToByteArrayAsync(image);
+                    company.ImageFileData = imageFile is null ? await _fileService.EncodeFileAsync(_configuration["DefaultCompanyImage"]) : await _fileService.ConvertFileToByteArrayAsync(image,company.ImageFileContentType);
                     }
                     _context.Update(company);
                     await _context.SaveChangesAsync();

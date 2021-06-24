@@ -189,7 +189,7 @@ namespace JamesonBugTracker.Controllers
                     {
                         using var image = Image.Load(customFile.OpenReadStream());
                         image.Mutate(x => x.Resize(256, 256));
-                        project.ImageFileData = await _fileService.ConvertFileToByteArrayAsync(image);
+                        project.ImageFileData = await _fileService.ConvertFileToByteArrayAsync(image, customFile.ContentType);
                         project.ImageFileContentType = customFile.ContentType;
                     }
                     else if (project.ImageFileData is null)

@@ -135,8 +135,8 @@ namespace JamesonBugTracker.Areas.Identity.Pages.Account.Manage
             {
                 using var image = Image.Load(Input.ImageFile.OpenReadStream());
                 image.Mutate(x => x.Resize(256, 256));
-                user.AvatarFileData = await _fileService.ConvertFileToByteArrayAsync(image);
                 user.AvatarFileContentType = Input.ImageFile.ContentType;
+                user.AvatarFileData = await _fileService.ConvertFileToByteArrayAsync(image, user.AvatarFileContentType);
                 await _userManager.UpdateAsync(user);
             }
             else if (user.AvatarFileData is null)

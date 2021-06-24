@@ -28,10 +28,18 @@ namespace JamesonBugTracker.Services
 
 
         }
-        public async Task<byte[]> ConvertFileToByteArrayAsync(Image file)
+        public async Task<byte[]> ConvertFileToByteArrayAsync(Image file, string contentType)
         {
             MemoryStream memoryStream = new MemoryStream();
+            if (contentType == "image/png")
+            {
+
             await file.SaveAsPngAsync(memoryStream);
+            }
+            else if (contentType == "image/jpeg") 
+            {
+                await file.SaveAsJpegAsync(memoryStream);
+            }
             var byteFile = memoryStream.ToArray();
             memoryStream.Close();
             memoryStream.Dispose();
