@@ -18,6 +18,8 @@ using System.Threading.Tasks;
 
 namespace JamesonBugTracker.Controllers
 {
+    [Authorize]
+
     public class HomeController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -70,6 +72,7 @@ namespace JamesonBugTracker.Controllers
         }
         
         [HttpPost]
+        [Authorize]
         public async Task<JsonResult> ProjChartMethod(bool dev)
         {
             //bool dev, int userId
@@ -116,6 +119,7 @@ namespace JamesonBugTracker.Controllers
             return Json(chartData);
         }
         [HttpPost]
+        [Authorize]
         public async Task<JsonResult> StatusChartMethod(bool dev)
         {
             //bool dev, int userId
@@ -166,6 +170,8 @@ namespace JamesonBugTracker.Controllers
             return Json(chartData);
         }
         [HttpPost]
+        [Authorize]
+
         public async Task<JsonResult> PriorityChartMethod(bool dev)
         {
             //bool dev, int userId
@@ -372,10 +378,12 @@ namespace JamesonBugTracker.Controllers
 
             return Json(chartData);
         }
+        [AllowAnonymous]
         public IActionResult Privacy()
         {
             return View();
         }
+        [AllowAnonymous]
         public IActionResult Landing()
         {
             return View();

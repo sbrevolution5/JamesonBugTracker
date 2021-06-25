@@ -118,7 +118,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach (var project in Model.Projects)
+                            @foreach (var project in Model.Projects.Where(p=>!p.Archived))
                             {
                                 <tr>
                                     <td>

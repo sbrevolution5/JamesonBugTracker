@@ -7,9 +7,11 @@
     <link href="~/plugins/datatables-bs4/css/dataTables.bootstrap4.css" rel="stylesheet" />
 
 }
-
+@using Microsoft.AspNetCore.Identity
 @using JamesonBugTracker.Services.Interfaces
 @inject IBTFileService _fileService
+@inject IBTProjectService _projectService
+@inject UserManager<BTUser> _userManager
 
 <h1>Archived Projects</h1>
 @if (User.IsInRole("Admin") || User.IsInRole("ProjectManager"))
@@ -56,7 +58,7 @@
                     {
                         <tr>
                             <td>
-                                <a>
+                                <a asp-action="Details" asp-route-id="@project.Id">
                                     @project.Name
                                 </a>
                                 <br />
@@ -89,35 +91,44 @@
                                 <span class="badge priorityBadge">@project.ProjectPriority.Name</span>
                             </td>
                             <td class="project-actions text-right">
-                                @if (User.IsInRole("Admin") || User.IsInRole("ProjectManager"))
+                                @if (User.IsInRole("Admin") || (User.IsInRole("ProjectManager") && (await _projectService.GetProjectManagerAsync(project.Id)).Id == _userManager.GetUserId(User)))
                                 {
-                                    <a asp-action="Edit" asp-route-id="@project.Id">
-                                        <i class="fas fa-pencil-alt">
-                                        </i>Edit
-                                    </a> <span>|</span>
-                                    <a asp-action="Details" asp-route-id="@project.Id">
+                                    <div class="btn-group">
+                                        <a asp-action="Details" asp-route-id="@project.Id" class="btn btn-default">
+                                            <i class="fas fa-folder mr-1">
+                                            </i>Details
+                                        </a>
+                                        <button type="button" class="btn btn-default dropdown-toggle dropdown-icon" data-toggle="dropdown">
+                                            <span class="sr-only">Toggle Dropdown</span>
+                                        </button>
+                                        <div class="dropdown-menu bg-warning" role="menu">
+                                            <a class="dropdown-item" asp-action="AddMembers" asp-route-id="@project.Id">
+                                                <i class="fas fa-user mr-1">
+                                                </i>Assign Users
+                                            </a>
+                                            @if (User.IsInRole("Admin"))
+                                            {
+                                                <a class="dropdown-item" asp-action="AddManager" asp-route-id="@project.Id">
+                                                    <i class="fas fa-user mr-1">
+                                                    </i>Assign Manager
+                                                </a>
+                                            }
+                                            <a class="dropdown-item bg-warning" asp-action="Edit" asp-route-id="@project.Id">
+                                                <i class="fas fa-pencil-alt mr-1">
+                                                </i>Edit
+                                            </a>
+                                            <a class="dropdown-item bg-danger" asp-action="Archive" asp-route-id="@project.Id">
+                                                <i class="fas fa-archive mr-1">
+                                                </i>Archive
+                                            </a>
 
-                                        <i class="fas fa-folder">
-                                        </i>Details
-                                    </a> <span>|</span>
+                                        </div>
+                                    </div>
 
-
-
-                                    <a asp-action="UnArchive" asp-route-id="@project.Id">
-
-
-
-                                        <i class="fas fa-archive">
-                                        </i>Unarchive
-                                    </a> <span>|</span>
-                                    <a asp-action="AddMembers" asp-route-id="@project.Id">
-                                        <i class="fas fa-user">
-                                        </i>Assign Users
-                                    </a>
                                 }
                                 else
                                 {
-                                    <a asp-action="Details" asp-route-id="@project.Id">
+                                    <a asp-action="Details" asp-route-id="@project.Id" class="btn">
 
                                         <i class="fas fa-folder">
                                         </i>Details
@@ -136,27 +147,27 @@
 
 </section>
 
-            @section Scripts{
-                <script src="~/js/PriorityBadge.js"></script>
-                <script src="~/plugins/datatables/jquery.dataTables.js"></script>
-                <script src="~/plugins/datatables-bs4/js/dataTables.bootstrap4.js"></script>
-                <script>
-                    $(document).ready(function () {
-                        $('#projectTable').DataTable();
+@section Scripts{
+    <script src="~/js/PriorityBadge.js"></script>
+    <script src="~/plugins/datatables/jquery.dataTables.js"></script>
+    <script src="~/plugins/datatables-bs4/js/dataTables.bootstrap4.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#projectTable').DataTable();
 
-                    });
-                </script>
-                <script>
-                    var endDate
-                    var startDate
-                    var interval
-                    var now
-                    var width
-                    var barElement
-                </script>
-                @foreach (var project in Model)
-                {
-                    <script>
+        });
+    </script>
+    <script>
+        var endDate
+        var startDate
+        var interval
+        var now
+        var width
+        var barElement
+    </script>
+    @foreach (var project in Model)
+    {
+        <script>
         //TODO Get date from c#
 
         endDate = @project.EndDate.ToUnixTimeSeconds();
@@ -187,6 +198,6 @@
           document.getElementById("progress-percent-@project.Id").innerText = `Project End Date was @string.Format("{0:MMM dd yyyy}", project.EndDate)`
 
     }
-                    </script>
-                }
-            }
+        </script>
+    }
+}
