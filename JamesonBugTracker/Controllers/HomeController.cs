@@ -47,21 +47,25 @@ namespace JamesonBugTracker.Controllers
         //GET: Dashboard
         public async Task<IActionResult> Dashboard()
         {
-            
+
             string userId = _userManager.GetUserId(User);
             int companyId = User.Identity.GetCompanyId().Value;
 
-            List<Ticket> companyTickets = (await _companyInfoService.GetAllTicketsAsync(companyId)).Where(t=>!t.Archived).ToList();
+            List<Ticket> companyTickets = (await _companyInfoService.GetAllTicketsAsync(companyId)).Where(t => !t.Archived).ToList();
             List<Project> companyProjects = await _companyInfoService.GetAllProjectsAsync(companyId);
             DashboardViewModel viewModel = new()
             {
-                Projects = companyProjects.Where(p=>!p.Archived).ToList(),
+                Projects = companyProjects.Where(p => !p.Archived).ToList(),
                 SubmittedTickets = companyTickets.Where(t => t.OwnerUserId == userId).ToList(),
                 Members = await _companyInfoService.GetAllMembersAsync(companyId),
                 CurrentUser = await _userManager.GetUserAsync(User),
-                UnassignedTickets = companyTickets.Where(p=>p.DeveloperUserId == null).ToList(),
             };
-            viewModel.UnresolvedDevelopmentTickets = companyTickets.Where(t => t.OwnerUserId == userId).Where(t=>t.TicketStatus.Name !="Resolved").ToList();
+
+            if (User.IsInRole("Admin") || User.IsInRole("ProjectManager"))
+            {
+                viewModel.UnassignedTickets = await _ticketService.GetAllUnassignedTicketsAsync(companyId);
+            }
+            viewModel.UnresolvedDevelopmentTickets = companyTickets.Where(t => t.OwnerUserId == userId).Where(t => t.TicketStatus.Name != "Resolved").ToList();
             if (viewModel.UnresolvedDevelopmentTickets.Count == 0)
             {
                 viewModel.UnresolvedDevelopmentTickets = companyTickets;
@@ -70,7 +74,7 @@ namespace JamesonBugTracker.Controllers
             viewModel.DevelopmentTicketsCount = companyTickets.Count;
             return View(viewModel);
         }
-        
+
         [HttpPost]
         [Authorize]
         public async Task<JsonResult> ProjChartMethod(bool dev)
@@ -93,7 +97,7 @@ namespace JamesonBugTracker.Controllers
                 if (dev)
                 {
 
-                    tickets.Add(prj.Tickets.Where(t=>t.DeveloperUserId == userId).Count());
+                    tickets.Add(prj.Tickets.Where(t => t.DeveloperUserId == userId).Count());
                 }
                 else
                 {
@@ -127,7 +131,7 @@ namespace JamesonBugTracker.Controllers
             string userId = _userManager.GetUserId(User);
             Random rnd = new();
 
-           
+
             List<Ticket> tickets;
             if (dev)
             {
@@ -246,7 +250,7 @@ namespace JamesonBugTracker.Controllers
             {
                 howManyTickets.Add(tickets.Where(t => t.TicketTypeId == type.Id).Count());
 
-            //Antonio's Random Colors
+                //Antonio's Random Colors
                 //    // This code will randomly select a color for each element of the data 
                 //    Color randomColor = Color.FromArgb(rnd.Next(256), rnd.Next(256), rnd.Next(256));
                 //    string colorHex = string.Format("#{0:X6}", randomColor.ToArgb() & 0X00FFFFFF);
