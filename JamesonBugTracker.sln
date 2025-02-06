@@ -1,14 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.31313.79
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32014.148
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JamesonBugTracker.csproj", "{7B573EEB-90D0-4B72-964C-743841C4DEE0}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{28D2555E-8D96-429C-8B58-178B02EB3E9F}"
-	ProjectSection(SolutionItems) = preProject
-		.editorconfig = .editorconfig
-	EndProjectSection
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JamesonBugTracker", "JamesonBugTracker.csproj", "{38061522-DD1D-4753-B370-A6E0A32A90FA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -16,15 +11,15 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{7B573EEB-90D0-4B72-964C-743841C4DEE0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7B573EEB-90D0-4B72-964C-743841C4DEE0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7B573EEB-90D0-4B72-964C-743841C4DEE0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7B573EEB-90D0-4B72-964C-743841C4DEE0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{38061522-DD1D-4753-B370-A6E0A32A90FA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{38061522-DD1D-4753-B370-A6E0A32A90FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{38061522-DD1D-4753-B370-A6E0A32A90FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{38061522-DD1D-4753-B370-A6E0A32A90FA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {3E9E3852-7F98-4E4D-BFC0-E73024C58476}
+		SolutionGuid = {F7A79286-8A53-4B63-BB3E-F863771B221B}
 	EndGlobalSection
 EndGlobal
