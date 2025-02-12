@@ -21,7 +21,7 @@
                 @{
                     var company = await _companyInfoService.GetCompanyInfoByIdAsync(User.Identity.GetCompanyId().Value);
                 }
-                <h2 class="m-0 text-muted"><img src="@_fileService.ConvertByteArrayToFile(company.ImageFileData, company.ImageFileContentType)" class=" mr-3 img-circle elevation-2" alt="User Image" style="height:2.1rem">@company.Name</h2>
+                <h2 class="m-0 text-muted"><img src="@_fileService.ConvertByteArrayToFile(company.ImageFileData, company.ImageFileContentType)" class=" mr-3 img-circle elevation-2" alt="Company Image" style="height:2.1rem">@company.Name</h2>
             </div>
         </div><!-- /.row -->
     </div><!-- /.container-fluid -->
